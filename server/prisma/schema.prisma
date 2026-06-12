@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  username  String   @unique
+  name      String
+  createdAt DateTime @default(now())
+  cards     Card[]
+}
+
+model Card {
+  id            String    @id @default(uuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  recipientName String
+  slug          String
+  theme         String    @default("minimal")
+
+  option1Label  String    @default("🍕 Pizza")
+  option2Label  String    @default("🍦 Dondurma")
+  option3Label  String    @default("☕ Kahve")
+  option4Label  String    @default("🍸 Kokteyl")
+  option5Label  String    @default("🎨 Workshop")
+  option6Label  String    @default("🍺 Bar")
+
+  status         String    @default("pending")
+  selectedOption String?
+  selectedDate   DateTime?
+  pickupChoice   Boolean?
+  location       String?
+  withBarAfter   Boolean   @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, slug])
+}
