@@ -77,6 +77,14 @@ function RunawayBtn({ onClick }: { onClick: () => void }) {
 /* ── Date card (final) ──────────────────────────────────── */
 function DateCard({ card, username }: { card: Card; username: string }) {
   const link = `${window.location.origin}/${username}/${card.slug}`
+  const [copied, setCopied] = useState(false)
+
+  const themeStyle: Record<string, { bg: string; surface: string; accent: string; border: string }> = {
+    minimal: { bg: '#0D0D0D', surface: '#1A1A1A', accent: '#F5C400', border: '#F5C400' },
+    rosy:    { bg: '#1A0810', surface: '#2D1520', accent: '#FF8FAB', border: '#C06080' },
+    emoji:   { bg: '#0A0D1A', surface: '#12172A', accent: '#F5C400', border: '#4C6EF5' },
+  }
+  const ts = themeStyle[card.theme] ?? themeStyle.minimal
 
   function fmt(iso: string) {
     return new Date(iso).toLocaleString('tr-TR', {
@@ -84,57 +92,68 @@ function DateCard({ card, username }: { card: Card; username: string }) {
     })
   }
 
-  function icsUrl() { return `/api/cards/${card.id}/ics` }
+  function copyLink() {
+    navigator.clipboard.writeText(link)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', position: 'relative', overflow: 'hidden' }}>
+    <div style={{ minHeight: '100vh', background: ts.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px', position: 'relative', overflow: 'hidden' }}>
       <EmojiBg theme={card.theme} />
-      <div className="date-card-border" style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '440px' }}>
-        <div style={{ background: '#1A1A1A', borderRadius: '18px', padding: '36px 32px' }}>
-          <p style={{ fontSize: '12px', fontWeight: 700, letterSpacing: '2px', color: '#F5C400', marginBottom: '8px', textTransform: 'uppercase' }}>Date Confirmed 💛</p>
+      <div style={{ position: 'relative', zIndex: 1, width: '100%', maxWidth: '440px', borderRadius: '20px', padding: '3px', background: `linear-gradient(135deg, ${ts.border}, ${ts.accent}88, ${ts.border})` }}>
+        <div style={{ background: ts.surface, borderRadius: '18px', padding: '36px 32px' }}>
+          <p style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '2px', color: ts.accent, marginBottom: '8px', textTransform: 'uppercase' }}>Date Confirmed 💛</p>
           <h1 style={{ fontSize: '28px', fontWeight: 800, marginBottom: '24px', lineHeight: 1.2 }}>
             {card.user.name} & {card.recipientName} 💛
           </h1>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {card.selectedOption && (
-              <div style={{ background: '#222', borderRadius: '10px', padding: '12px 16px' }}>
-                <p style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>Date tipi</p>
+              <div style={{ background: '#00000030', border: `1px solid ${ts.border}44`, borderRadius: '10px', padding: '12px 16px' }}>
+                <p style={{ fontSize: '11px', color: ts.accent, marginBottom: '4px', fontWeight: 700 }}>🎯 Seçim</p>
                 <p style={{ fontWeight: 600, fontSize: '16px' }}>{card.selectedOption}</p>
               </div>
             )}
-            {card.selectedDate && (
-              <div style={{ background: '#222', borderRadius: '10px', padding: '12px 16px' }}>
-                <p style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>📅 Tarih & Saat</p>
-                <p style={{ fontWeight: 600, fontSize: '15px' }}>{fmt(card.selectedDate)}</p>
-              </div>
-            )}
+            <div style={{ background: '#00000030', border: `1px solid ${ts.border}44`, borderRadius: '10px', padding: '12px 16px' }}>
+              <p style={{ fontSize: '11px', color: ts.accent, marginBottom: '4px', fontWeight: 700 }}>📅 Tarih & Saat</p>
+              <p style={{ fontWeight: 600, fontSize: '15px' }}>
+                {card.selectedDate ? fmt(card.selectedDate) : '—'}
+              </p>
+            </div>
             {card.location && (
-              <div style={{ background: '#222', borderRadius: '10px', padding: '12px 16px' }}>
-                <p style={{ fontSize: '12px', color: '#666', marginBottom: '4px' }}>📍 Mekan</p>
+              <div style={{ background: '#00000030', border: `1px solid ${ts.border}44`, borderRadius: '10px', padding: '12px 16px' }}>
+                <p style={{ fontSize: '11px', color: ts.accent, marginBottom: '4px', fontWeight: 700 }}>📍 Mekan</p>
                 <p style={{ fontWeight: 600 }}>{card.location}</p>
               </div>
             )}
             {card.pickupChoice !== null && (
-              <div style={{ background: '#222', borderRadius: '10px', padding: '12px 16px' }}>
+              <div style={{ background: '#00000030', border: `1px solid ${ts.border}44`, borderRadius: '10px', padding: '12px 16px' }}>
                 <p style={{ fontWeight: 600 }}>{card.pickupChoice ? '🚗 Seni alıyor' : '🗺️ Orada buluşuyorsunuz'}</p>
               </div>
             )}
             {card.withBarAfter && (
-              <div style={{ background: '#222', borderRadius: '10px', padding: '12px 16px' }}>
+              <div style={{ background: '#00000030', border: `1px solid ${ts.border}44`, borderRadius: '10px', padding: '12px 16px' }}>
                 <p style={{ fontWeight: 600 }}>🍺 Bar sonrası da var!</p>
               </div>
             )}
           </div>
 
           <div style={{ display: 'flex', gap: '10px', marginTop: '28px', flexWrap: 'wrap' }}>
-            {card.selectedDate && (
-              <a href={icsUrl()} download className="btn-primary" style={{ fontSize: '13px', padding: '10px 18px', textDecoration: 'none' }}>
-                📅 Takvime Ekle
-              </a>
-            )}
-            <button onClick={() => { navigator.clipboard.writeText(link) }} className="btn-secondary" style={{ fontSize: '13px', padding: '10px 18px' }}>
-              🔗 Kartı Paylaş
+            <a
+              href={card.selectedDate ? `/api/cards/${card.id}/ics` : undefined}
+              download={card.selectedDate ? true : undefined}
+              onClick={!card.selectedDate ? e => e.preventDefault() : undefined}
+              style={{
+                background: card.selectedDate ? ts.accent : '#333',
+                color: card.selectedDate ? '#000' : '#666',
+                fontSize: '13px', fontWeight: 700, padding: '10px 18px',
+                borderRadius: '9999px', textDecoration: 'none', cursor: card.selectedDate ? 'pointer' : 'not-allowed',
+              }}>
+              📅 Takvime Ekle
+            </a>
+            <button onClick={copyLink} className="btn-secondary" style={{ fontSize: '13px', padding: '10px 18px' }}>
+              {copied ? '✓ Kopyalandı' : '🔗 Kartı Paylaş'}
             </button>
           </div>
         </div>
@@ -198,8 +217,11 @@ export default function InvitePage() {
     setSaving(true)
     try {
       let iso: string | undefined
-      if (date && time) {
-        const d = new Date(`${date}T${time}:00`)
+      if (date) {
+        const timeStr = time || '20:00'
+        const [h, m] = timeStr.split(':').map(Number)
+        const d = new Date(date)
+        d.setHours(h || 20, m || 0, 0, 0)
         if (!isNaN(d.getTime())) iso = d.toISOString()
       }
       const r = await api.post(`/api/public/${username}/${slug}/respond`, {
