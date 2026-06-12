@@ -6,7 +6,13 @@ export interface AuthRequest extends Request {
 }
 
 export function requireAuth(req: AuthRequest, res: Response, next: NextFunction): void {
-  const token = req.cookies?.token
+  // Support both cookie and Authorization header (Bearer token)
+  const cookieToken = req.cookies?.token
+  const headerToken = req.headers.authorization?.startsWith('Bearer ')
+    ? req.headers.authorization.slice(7)
+    : undefined
+  const token = cookieToken || headerToken
+
   if (!token) {
     res.status(401).json({ error: 'Giriş gerekli' })
     return

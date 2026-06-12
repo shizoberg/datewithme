@@ -9,7 +9,7 @@ const router = Router()
 
 const isProd = process.env.NODE_ENV === 'production' || !!process.env.DATABASE_URL
 
-function setToken(res: Response, userId: string) {
+function setToken(res: Response, userId: string): string {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET!, { expiresIn: '30d' })
   res.cookie('token', token, {
     httpOnly: true,
@@ -18,6 +18,7 @@ function setToken(res: Response, userId: string) {
     maxAge: 30 * 24 * 60 * 60 * 1000,
     path: '/',
   })
+  return token
 }
 
 // POST /api/auth/register
@@ -46,8 +47,8 @@ router.post('/register', async (req: Request, res: Response) => {
   const hashed = await bcrypt.hash(password, 10)
   const user = await prisma.user.create({ data: { name, email, password: hashed, username } })
 
-  setToken(res, user.id)
-  res.status(201).json({ user: { id: user.id, name: user.name, email: user.email, username: user.username } })
+  const token = setToken(res, user.id)
+  res.status(201).json({ token, user: { id: user.id, name: user.name, email: user.email, username: user.username } })
 })
 
 // POST /api/auth/login
@@ -68,8 +69,8 @@ router.post('/login', async (req: Request, res: Response) => {
   const valid = await bcrypt.compare(parsed.data.password, user.password)
   if (!valid) { res.status(401).json({ error: 'Email veya şifre hatalı' }); return }
 
-  setToken(res, user.id)
-  res.json({ user: { id: user.id, name: user.name, email: user.email, username: user.username } })
+  const token = setToken(res, user.id)
+  res.json({ token, user: { id: user.id, name: user.name, email: user.email, username: user.username } })
 })
 
 // POST /api/auth/logout

@@ -26,16 +26,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function login(email: string, password: string) {
     const r = await api.post('/api/auth/login', { email, password })
+    if (r.data.token) localStorage.setItem('token', r.data.token)
     setUser(r.data.user)
   }
 
   async function register(data: { name: string; email: string; password: string; username: string }) {
     const r = await api.post('/api/auth/register', data)
+    if (r.data.token) localStorage.setItem('token', r.data.token)
     setUser(r.data.user)
   }
 
   async function logout() {
     await api.post('/api/auth/logout')
+    localStorage.removeItem('token')
     setUser(null)
   }
 
