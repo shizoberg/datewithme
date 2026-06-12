@@ -76,7 +76,7 @@ export default function LandingPage() {
       <section style={{ padding: '0 24px 80px', display: 'flex', justifyContent: 'center' }}>
         <div style={{ background: '#111', border: '2px solid #F5C400', borderRadius: '20px', padding: '28px 32px', maxWidth: '360px', width: '100%', boxShadow: '0 0 60px rgba(245,196,0,0.08)' }}>
           <p style={{ fontSize: '10px', color: '#F5C400', letterSpacing: '2px', fontWeight: 700, marginBottom: '10px' }}>DATE CONFIRMED 💛</p>
-          <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '24px', marginBottom: '20px' }}>Berk & Şule 💛</h3>
+          <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '24px', marginBottom: '20px' }}>Mert & Zeynep 💛</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {[
               { icon: '🎯', label: 'Seçim', val: '🍕 Pizza' },
