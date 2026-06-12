@@ -7,7 +7,7 @@ import { requireAuth, AuthRequest } from '../middleware/auth'
 
 const router = Router()
 
-const isProd = process.env.NODE_ENV === 'production'
+const isProd = process.env.NODE_ENV === 'production' || !!process.env.DATABASE_URL
 
 function setToken(res: Response, userId: string) {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET!, { expiresIn: '30d' })
