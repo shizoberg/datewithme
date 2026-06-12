@@ -14,10 +14,11 @@ const DEFAULT_OPTIONS = ['🍕 Pizza', '🍦 Dondurma', '☕ Kahve', '🍸 Kokte
 export default function CreateCardPage() {
   const { user } = useAuth()
   const navigate = useNavigate()
-  const [step, setStep] = useState<1 | 2>(1)
+  const [step, setStep] = useState<1 | 2 | 3>(1)
   const [recipientName, setRecipientName] = useState('')
   const [theme, setTheme] = useState('minimal')
   const [options, setOptions] = useState([...DEFAULT_OPTIONS])
+  const [suggestions, setSuggestions] = useState({ select: '', datetime: '', location: '', pickup: '' })
   const [saving, setSaving] = useState(false)
   const [done, setDone] = useState<{ link: string } | null>(null)
   const [copied, setCopied] = useState(false)
@@ -41,6 +42,10 @@ export default function CreateCardPage() {
         option4Label: options[3],
         option5Label: options[4],
         option6Label: options[5],
+        suggestSelect:   suggestions.select   || undefined,
+        suggestDatetime: suggestions.datetime || undefined,
+        suggestLocation: suggestions.location || undefined,
+        suggestPickup:   suggestions.pickup   || undefined,
       })
       const slug = r.data.card.slug
       const link = `${window.location.origin}/${user?.username}/${slug}`
@@ -86,8 +91,7 @@ export default function CreateCardPage() {
 
         {/* Step indicator */}
         <div style={{ display: 'flex', gap: '6px', marginBottom: '32px' }}>
-          <div style={{ flex: 1, height: '3px', borderRadius: '9999px', background: '#F5C400' }} />
-          <div style={{ flex: 1, height: '3px', borderRadius: '9999px', background: '#2A2A2A' }} />
+          {[1,2,3].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: i === 1 ? '#F5C400' : '#2A2A2A' }} />)}
         </div>
 
         <h2 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '6px' }}>Kimin için? 💌</h2>
@@ -127,15 +131,14 @@ export default function CreateCardPage() {
   )
 
   // ── STEP 2 ───────────────────────────────────────────────────
-  return (
+  if (step === 2) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
       <div style={{ maxWidth: '480px', width: '100%' }}>
         <button onClick={() => setStep(1)} style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', fontSize: '14px', marginBottom: '32px', display: 'block' }}>← Geri</button>
 
         {/* Step indicator */}
         <div style={{ display: 'flex', gap: '6px', marginBottom: '32px' }}>
-          <div style={{ flex: 1, height: '3px', borderRadius: '9999px', background: '#F5C400' }} />
-          <div style={{ flex: 1, height: '3px', borderRadius: '9999px', background: '#F5C400' }} />
+          {[1,2,3].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: i <= 2 ? '#F5C400' : '#2A2A2A' }} />)}
         </div>
 
         <h2 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '6px' }}>Seçenekleri özelleştir ✏️</h2>
@@ -148,7 +151,54 @@ export default function CreateCardPage() {
           ))}
         </div>
 
-        <button className="btn-primary" onClick={publish} disabled={saving || options.some(o => !o.trim())}
+        <button className="btn-primary" onClick={() => setStep(3)} disabled={options.some(o => !o.trim())}
+          style={{ width: '100%', padding: '14px', fontSize: '16px' }}>
+          İlerle →
+        </button>
+      </div>
+    </div>
+  )
+
+  // ── STEP 3 ───────────────────────────────────────────────────
+  const SUGGEST_FIELDS = [
+    { key: 'select',   icon: '🎯', label: 'Date tipi seçerken', placeholder: 'Örn: Kahveyi seç, favorim o! ☕' },
+    { key: 'datetime', icon: '📅', label: 'Tarih & saat seçerken', placeholder: 'Örn: Cumartesi akşamları uygunumdur 😊' },
+    { key: 'location', icon: '📍', label: 'Mekan seçerken', placeholder: 'Örn: Kadıköy\'de bir yer olursa harika' },
+    { key: 'pickup',   icon: '🚗', label: 'Karşılama için', placeholder: 'Örn: Seni almak isterim ama sen bilirsin 🙂' },
+  ] as const
+
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+      <div style={{ maxWidth: '480px', width: '100%' }}>
+        <button onClick={() => setStep(2)} style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', fontSize: '14px', marginBottom: '32px', display: 'block' }}>← Geri</button>
+
+        {/* Step indicator */}
+        <div style={{ display: 'flex', gap: '6px', marginBottom: '32px' }}>
+          {[1,2,3].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: '#F5C400' }} />)}
+        </div>
+
+        <h2 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '6px' }}>Önerilerini ekle 💬</h2>
+        <p style={{ color: '#999', marginBottom: '28px' }}>
+          {recipientName} her adımda senin önerini görecek. Boş bırakabilirsin.
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '32px' }}>
+          {SUGGEST_FIELDS.map(f => (
+            <div key={f.key}>
+              <label className="label" style={{ marginBottom: '6px' }}>
+                {f.icon} {f.label}
+              </label>
+              <input
+                className="input"
+                placeholder={f.placeholder}
+                value={suggestions[f.key]}
+                onChange={e => setSuggestions(s => ({ ...s, [f.key]: e.target.value }))}
+              />
+            </div>
+          ))}
+        </div>
+
+        <button className="btn-primary" onClick={publish} disabled={saving}
           style={{ width: '100%', padding: '14px', fontSize: '16px' }}>
           {saving ? 'Oluşturuluyor…' : '🚀 Kartı Yayınla'}
         </button>

@@ -20,6 +20,10 @@ interface Card {
   pickupChoice: boolean | null
   location: string | null
   withBarAfter: boolean
+  suggestSelect:   string | null
+  suggestDatetime: string | null
+  suggestLocation: string | null
+  suggestPickup:   string | null
   user: { name: string; username: string }
 }
 
@@ -134,6 +138,19 @@ function DateCard({ card, username }: { card: Card; username: string }) {
             </button>
           </div>
         </div>
+      </div>
+    </div>
+  )
+}
+
+/* ── Öneri kutusu ───────────────────────────────────────── */
+function SuggestBox({ name, text, accent }: { name: string; text: string; accent: string }) {
+  return (
+    <div style={{ background: `${accent}14`, border: `1px solid ${accent}44`, borderRadius: '12px', padding: '12px 16px', marginBottom: '24px', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+      <span style={{ fontSize: '18px', flexShrink: 0 }}>💬</span>
+      <div>
+        <p style={{ fontSize: '11px', fontWeight: 700, color: accent, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '3px' }}>{name}'in önerisi</p>
+        <p style={{ fontSize: '14px', color: '#ccc', lineHeight: 1.5 }}>"{text}"</p>
       </div>
     </div>
   )
@@ -259,7 +276,8 @@ export default function InvitePage() {
           {[1,2,3,4].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: i === 1 ? tc.accent : '#2A2A2A' }} />)}
         </div>
         <h2 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>Ne yapalım? 🎯</h2>
-        <p style={{ color: '#999', marginBottom: '28px' }}>Bir seçenek seç</p>
+        <p style={{ color: '#999', marginBottom: '20px' }}>Bir seçenek seç</p>
+        {card.suggestSelect && <SuggestBox name={card.user.name} text={card.suggestSelect} accent={tc.accent} />}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginBottom: '32px' }}>
           {options.map((opt, i) => (
             <button key={i} onClick={() => setSelectedOption(opt)}
@@ -296,7 +314,8 @@ export default function InvitePage() {
             {[1,2,3,4].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: i <= 2 ? tc.accent : '#2A2A2A' }} />)}
           </div>
           <h2 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>Ne zaman? 📅</h2>
-          <p style={{ color: '#999', marginBottom: '28px' }}>Tarih ve saat seç</p>
+          <p style={{ color: '#999', marginBottom: '20px' }}>Tarih ve saat seç</p>
+          {card.suggestDatetime && <SuggestBox name={card.user.name} text={card.suggestDatetime} accent={tc.accent} />}
 
           <div className="card" style={{ padding: '24px', marginBottom: '24px' }}>
             <div style={{ marginBottom: '16px' }}>
@@ -333,7 +352,8 @@ export default function InvitePage() {
           {[1,2,3,4].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: i <= 3 ? tc.accent : '#2A2A2A' }} />)}
         </div>
         <h2 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>Nerede? 📍</h2>
-        <p style={{ color: '#999', marginBottom: '28px' }}>Mekan tercihin nedir? (opsiyonel)</p>
+        <p style={{ color: '#999', marginBottom: '20px' }}>Mekan tercihin nedir? (opsiyonel)</p>
+        {card.suggestLocation && <SuggestBox name={card.user.name} text={card.suggestLocation} accent={tc.accent} />}
 
         <div className="card" style={{ padding: '24px', marginBottom: '16px' }}>
           <label className="label">Mekan / Adres</label>
@@ -368,7 +388,8 @@ export default function InvitePage() {
           {[1,2,3,4].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: tc.accent }} />)}
         </div>
         <h2 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>Seni alayım mı? 🚗</h2>
-        <p style={{ color: '#999', marginBottom: '28px' }}>Nasıl buluşalım?</p>
+        <p style={{ color: '#999', marginBottom: '20px' }}>Nasıl buluşalım?</p>
+        {card.suggestPickup && <SuggestBox name={card.user.name} text={card.suggestPickup} accent={tc.accent} />}
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '28px' }}>
           {[

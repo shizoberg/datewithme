@@ -33,7 +33,7 @@ export default function LandingPage() {
 
       {/* NAV */}
       <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 32px', borderBottom: '1px solid #1A1A1A' }}>
-        <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '20px', color: '#F5C400', letterSpacing: '-0.5px' }}>
+        <span style={{ fontFamily: 'Raleway, sans-serif', fontWeight: 800, fontSize: '20px', color: '#F5C400', letterSpacing: '-0.5px' }}>
           datewith.me
         </span>
         <div style={{ display: 'flex', gap: '12px' }}>
@@ -52,7 +52,7 @@ export default function LandingPage() {
           ✨ Date teklifleri için
         </div>
 
-        <h1 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 'clamp(42px, 8vw, 72px)', lineHeight: 1.05, marginBottom: '24px', letterSpacing: '-2px' }}>
+        <h1 style={{ fontFamily: 'Raleway, sans-serif', fontWeight: 800, fontSize: 'clamp(42px, 8vw, 72px)', lineHeight: 1.05, marginBottom: '24px', letterSpacing: '-2px' }}>
           Çıkma teklifi<br />
           <span style={{ color: '#F5C400' }}>geri geldi.</span>
         </h1>
@@ -76,7 +76,7 @@ export default function LandingPage() {
       <section style={{ padding: '0 24px 80px', display: 'flex', justifyContent: 'center' }}>
         <div style={{ background: '#111', border: '2px solid #F5C400', borderRadius: '20px', padding: '28px 32px', maxWidth: '360px', width: '100%', boxShadow: '0 0 60px rgba(245,196,0,0.08)' }}>
           <p style={{ fontSize: '10px', color: '#F5C400', letterSpacing: '2px', fontWeight: 700, marginBottom: '10px' }}>DATE CONFIRMED 💛</p>
-          <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '24px', marginBottom: '20px' }}>Mert & Zeynep 💛</h3>
+          <h3 style={{ fontFamily: 'Raleway, sans-serif', fontWeight: 800, fontSize: '24px', marginBottom: '20px' }}>Mert & Zeynep 💛</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {[
               { icon: '🎯', label: 'Seçim', val: '🍕 Pizza' },
@@ -95,7 +95,7 @@ export default function LandingPage() {
 
       {/* HOW IT WORKS */}
       <section style={{ padding: '60px 24px 100px', maxWidth: '800px', margin: '0 auto' }}>
-        <h2 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '32px', textAlign: 'center', marginBottom: '8px' }}>
+        <h2 style={{ fontFamily: 'Raleway, sans-serif', fontWeight: 800, fontSize: '32px', textAlign: 'center', marginBottom: '8px' }}>
           Nasıl çalışır?
         </h2>
         <p style={{ color: '#666', textAlign: 'center', marginBottom: '56px', fontSize: '15px' }}>
@@ -109,7 +109,7 @@ export default function LandingPage() {
                 <span style={{ fontSize: '22px' }}>{s.icon}</span>
                 <span style={{ fontSize: '11px', color: '#F5C400', fontWeight: 800, letterSpacing: '1px' }}>{s.num}</span>
               </div>
-              <h4 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '15px', marginBottom: '6px' }}>{s.title}</h4>
+              <h4 style={{ fontFamily: 'Raleway, sans-serif', fontWeight: 700, fontSize: '15px', marginBottom: '6px' }}>{s.title}</h4>
               <p style={{ fontSize: '13px', color: '#666', lineHeight: 1.5 }}>{s.desc}</p>
             </div>
           ))}
@@ -118,7 +118,7 @@ export default function LandingPage() {
 
       {/* CTA FOOTER */}
       <section style={{ borderTop: '1px solid #1A1A1A', padding: '60px 24px', textAlign: 'center' }}>
-        <h2 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '28px', marginBottom: '16px' }}>
+        <h2 style={{ fontFamily: 'Raleway, sans-serif', fontWeight: 800, fontSize: '28px', marginBottom: '16px' }}>
           İlk kartını oluştur 💌
         </h2>
         <p style={{ color: '#666', marginBottom: '28px', fontSize: '15px' }}>Ücretsiz, kayıt gerektiriyor.</p>

@@ -32,6 +32,11 @@ model Card {
   option5Label  String    @default("🎨 Workshop")
   option6Label  String    @default("🍺 Bar")
 
+  suggestSelect   String?
+  suggestDatetime String?
+  suggestLocation String?
+  suggestPickup   String?
+
   status         String    @default("pending")
   selectedOption String?
   selectedDate   DateTime?

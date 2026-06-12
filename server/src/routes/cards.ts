@@ -31,7 +31,11 @@ router.post('/', requireAuth, async (req: AuthRequest, res: Response) => {
     option3Label:  z.string().max(40).default('☕ Kahve'),
     option4Label:  z.string().max(40).default('🍸 Kokteyl'),
     option5Label:  z.string().max(40).default('🎨 Workshop'),
-    option6Label:  z.string().max(40).default('🍺 Bar'),
+    option6Label:    z.string().max(40).default('🍺 Bar'),
+    suggestSelect:   z.string().max(200).optional(),
+    suggestDatetime: z.string().max(200).optional(),
+    suggestLocation: z.string().max(200).optional(),
+    suggestPickup:   z.string().max(200).optional(),
   })
   const parsed = schema.safeParse(req.body)
   if (!parsed.success) {
