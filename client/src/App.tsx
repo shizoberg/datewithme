@@ -15,7 +15,7 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-          <Route path="/dashboard/create" element={<ProtectedRoute><CreateCardPage /></ProtectedRoute>} />
+          <Route path="/create" element={<ProtectedRoute><CreateCardPage /></ProtectedRoute>} />
           <Route path="/:username/:slug" element={<InvitePage />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
         </Routes>

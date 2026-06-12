@@ -120,7 +120,7 @@ export default function DashboardPage() {
         </div>
 
         {/* New card CTA */}
-        <Link to="/dashboard/create" style={{ textDecoration: 'none' }}>
+        <Link to="/create" style={{ textDecoration: 'none' }}>
           <button className="btn-primary" style={{ marginBottom: '32px' }}>
             ✨ Yeni Kart Oluştur
           </button>
