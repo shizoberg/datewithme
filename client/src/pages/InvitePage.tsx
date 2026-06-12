@@ -197,7 +197,11 @@ export default function InvitePage() {
     if (!card || saving) return
     setSaving(true)
     try {
-      const iso = date && time ? new Date(`${date}T${time}`).toISOString() : undefined
+      let iso: string | undefined
+      if (date && time) {
+        const d = new Date(`${date}T${time}:00`)
+        if (!isNaN(d.getTime())) iso = d.toISOString()
+      }
       const r = await api.post(`/api/public/${username}/${slug}/respond`, {
         accepted: true,
         selectedOption,
@@ -208,6 +212,9 @@ export default function InvitePage() {
       })
       setCard(r.data.card)
       setStep('done')
+    } catch (err: any) {
+      const msg = err?.response?.data?.error || 'Bir hata oluştu, tekrar dene.'
+      alert(msg)
     } finally { setSaving(false) }
   }
 
