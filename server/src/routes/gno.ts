@@ -79,6 +79,7 @@ router.post('/:id/vote', async (req: Request, res: Response) => {
     selectedEvent:    z.string().min(1).max(100),
     selectedTime:     z.string().min(1).max(100),
     selectedLocation: z.string().min(1).max(100),
+    pickupChoice:     z.enum(['meet', 'pickup']).default('meet'),
   })
   const parsed = schema.safeParse(req.body)
   if (!parsed.success) {

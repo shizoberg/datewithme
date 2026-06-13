@@ -90,5 +90,6 @@ model GNOVote {
   selectedEvent    String
   selectedTime     String
   selectedLocation String
+  pickupChoice     String   @default("meet")
   createdAt        DateTime @default(now())
 }
