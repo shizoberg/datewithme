@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser'
 import authRouter from './routes/auth'
 import cardsRouter from './routes/cards'
 import publicRouter from './routes/public'
+import gnoRouter from './routes/gno'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -21,5 +22,6 @@ app.get('/health', (_req, res) => res.json({ ok: true }))
 app.use('/api/auth', authRouter)
 app.use('/api/cards', cardsRouter)
 app.use('/api/public', publicRouter)
+app.use('/api/gno', gnoRouter)
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

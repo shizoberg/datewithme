@@ -5,7 +5,9 @@ import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
 import CreateCardPage from './pages/CreateCardPage'
+import CreateGNOPage from './pages/CreateGNOPage'
 import InvitePage from './pages/InvitePage'
+import GNOPage from './pages/GNOPage'
 import LandingPage from './pages/LandingPage'
 
 export default function App() {
@@ -18,6 +20,8 @@ export default function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
           <Route path="/create" element={<ProtectedRoute><CreateCardPage /></ProtectedRoute>} />
+          <Route path="/create-gno" element={<ProtectedRoute><CreateGNOPage /></ProtectedRoute>} />
+          <Route path="/girlsnightout/:slug" element={<GNOPage />} />
           <Route path="/:username/:slug" element={<InvitePage />} />
         </Routes>
       </BrowserRouter>

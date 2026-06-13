@@ -8,13 +8,14 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
+  id        String    @id @default(uuid())
+  email     String    @unique
   password  String
-  username  String   @unique
+  username  String    @unique
   name      String
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
   cards     Card[]
+  gnoCards  GNOCard[]
 }
 
 model Card {
@@ -48,4 +49,46 @@ model Card {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, slug])
+}
+
+model GNOCard {
+  id        String    @id @default(uuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  groupName String
+  slug      String
+  theme     String    @default("rosy")
+
+  option1Label String @default("🍕 Pizza")
+  option2Label String @default("🍦 Dondurma")
+  option3Label String @default("☕ Kahve")
+  option4Label String @default("🍸 Kokteyl")
+  option5Label String @default("🎨 Workshop")
+  option6Label String @default("🍺 Bar")
+
+  time1Label String @default("Cuma 20:00")
+  time2Label String @default("Cumartesi 20:00")
+  time3Label String @default("Pazar 18:00")
+
+  location1Label String @default("Kadıköy")
+  location2Label String @default("Beşiktaş")
+  location3Label String @default("Nişantaşı")
+
+  votes     GNOVote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, slug])
+}
+
+model GNOVote {
+  id               String  @id @default(uuid())
+  cardId           String
+  card             GNOCard @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  voterName        String
+  selectedEvent    String
+  selectedTime     String
+  selectedLocation String
+  createdAt        DateTime @default(now())
 }
