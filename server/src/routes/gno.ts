@@ -1,4 +1,4 @@
-import { Router, Response } from 'express'
+import { Router, Request, Response } from 'express'
 import { z } from 'zod'
 import { prisma } from '../lib/prisma'
 import { requireAuth, AuthRequest } from '../middleware/auth'
@@ -60,7 +60,7 @@ router.post('/', requireAuth, async (req: AuthRequest, res: Response) => {
 })
 
 // GET /api/gno/public/:slug — public vote page
-router.get('/public/:slug', async (req, res: Response) => {
+router.get('/public/:slug', async (req: Request, res: Response) => {
   const card = await prisma.gNOCard.findFirst({
     where: { slug: req.params.slug },
     include: {
@@ -73,7 +73,7 @@ router.get('/public/:slug', async (req, res: Response) => {
 })
 
 // POST /api/gno/:id/vote — submit vote
-router.post('/:id/vote', async (req, res: Response) => {
+router.post('/:id/vote', async (req: Request, res: Response) => {
   const schema = z.object({
     voterName:        z.string().min(1).max(50),
     selectedEvent:    z.string().min(1).max(100),
