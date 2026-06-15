@@ -6,13 +6,13 @@ import { api } from '../lib/api'
 const THEMES = [
   { id: 'minimal', label: 'Minimal', desc: 'Sade & şık', preview: { bg: '#111', border: '#333', dot: '#fff' } },
   { id: 'rosy',    label: 'Rosy',    desc: 'Pembe & romantik', preview: { bg: '#2D1A1E', border: '#C06080', dot: '#FF8FAB' } },
-  { id: 'emoji',   label: 'Emoji',   desc: 'Eğlenceli & renkli', preview: { bg: '#1A1F2A', border: '#4C6EF5', dot: '#F5C400' } },
+  { id: 'emoji',   label: 'Emoji',   desc: 'Eğlenceli & renkli', preview: { bg: '#1A1F2A', border: '#4C6EF5', dot: '#00F680' } },
 ]
 
 const DEFAULT_OPTIONS = ['🍕 Pizza', '🍦 Dondurma', '☕ Kahve', '🍸 Kokteyl', '🎨 Workshop', '🍺 Bar']
 
 const CAT = {
-  cafe:       { emoji: '☕', color: '#F5C400' },
+  cafe:       { emoji: '☕', color: '#00F680' },
   restaurant: { emoji: '🍽️', color: '#FB923C' },
   bar:        { emoji: '🍸', color: '#A855F7' },
   park:       { emoji: '🌿', color: '#22C55E' },
@@ -27,27 +27,27 @@ interface Venue {
 }
 
 function VenueCard({ venue, selected, onSelect }: { venue: Venue; selected: boolean; onSelect: () => void }) {
-  const cat = CAT[venue.category as keyof typeof CAT] ?? { emoji: '📍', color: '#F5C400' }
+  const cat = CAT[venue.category as keyof typeof CAT] ?? { emoji: '📍', color: '#00F680' }
   const price = venue.priceLevel ? '₺'.repeat(venue.priceLevel) : ''
   const stars = venue.rating ? Math.round(venue.rating) : 0
 
   return (
     <div onClick={onSelect} style={{
       padding: '14px 16px', borderRadius: '12px', cursor: 'pointer', transition: 'all 0.15s',
-      border: `2px solid ${selected ? '#F5C400' : '#2A2A2A'}`,
-      background: selected ? '#F5C40010' : '#1A1A1A',
+      border: `2px solid ${selected ? '#00F680' : '#2A2A2A'}`,
+      background: selected ? '#00F68010' : '#1A1A1A',
       display: 'flex', alignItems: 'center', gap: '12px',
     }}>
       <div style={{ fontSize: '24px', flexShrink: 0 }}>{cat.emoji}</div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
-          {selected && <span style={{ fontSize: '10px', fontWeight: 700, color: '#F5C400', background: '#F5C40020', border: '1px solid #F5C40040', borderRadius: '4px', padding: '1px 5px' }}>✓ Önerildi</span>}
+          {selected && <span style={{ fontSize: '10px', fontWeight: 700, color: '#00F680', background: '#00F68020', border: '1px solid #00F68040', borderRadius: '4px', padding: '1px 5px' }}>✓ Önerildi</span>}
           <span style={{ fontWeight: 700, fontSize: '14px', color: '#fff' }}>{venue.name}</span>
         </div>
         <div style={{ fontSize: '12px', color: '#666' }}>{venue.district}</div>
       </div>
       <div style={{ textAlign: 'right', flexShrink: 0 }}>
-        <div style={{ fontSize: '12px', color: '#F5C400', marginBottom: '4px' }}>
+        <div style={{ fontSize: '12px', color: '#00F680', marginBottom: '4px' }}>
           {'★'.repeat(stars)}{'☆'.repeat(5 - stars)}
         </div>
         <div style={{ fontSize: '11px', color: '#888' }}>{price}</div>
@@ -164,7 +164,7 @@ export default function CreateCardPage() {
       <div style={{ maxWidth: '480px', width: '100%' }}>
         <Link to="/dashboard" style={{ color: '#999', fontSize: '14px', textDecoration: 'none', display: 'block', marginBottom: '32px' }}>← Dashboard</Link>
         <div style={{ display: 'flex', gap: '6px', marginBottom: '32px' }}>
-          {[1,2,3].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: i === 1 ? '#F5C400' : '#2A2A2A' }} />)}
+          {[1,2,3].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: i === 1 ? '#00F680' : '#2A2A2A' }} />)}
         </div>
         <h2 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '6px' }}>Kimin için? 💌</h2>
         <p style={{ color: '#999', marginBottom: '28px' }}>Alıcının adını yaz, tema seç, mekan öner.</p>
@@ -175,7 +175,7 @@ export default function CreateCardPage() {
             onChange={e => setRecipientName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && recipientName.trim() && setStep(2)} autoFocus />
           {recipientName && (
-            <p style={{ marginTop: '8px', fontSize: '13px', color: '#F5C400' }}>
+            <p style={{ marginTop: '8px', fontSize: '13px', color: '#00F680' }}>
               getdatewith.me/{user?.username}/{slugify(recipientName)}
             </p>
           )}
@@ -186,7 +186,7 @@ export default function CreateCardPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
             {THEMES.map(t => (
               <button key={t.id} onClick={() => setTheme(t.id)}
-                style={{ padding: '16px 12px', borderRadius: '12px', border: `2px solid ${theme === t.id ? '#F5C400' : '#2A2A2A'}`, background: t.preview.bg, cursor: 'pointer', textAlign: 'center', transition: 'border-color 0.15s' }}>
+                style={{ padding: '16px 12px', borderRadius: '12px', border: `2px solid ${theme === t.id ? '#00F680' : '#2A2A2A'}`, background: t.preview.bg, cursor: 'pointer', textAlign: 'center', transition: 'border-color 0.15s' }}>
                 <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: t.preview.dot, margin: '0 auto 8px' }} />
                 <p style={{ fontWeight: 700, fontSize: '13px', color: '#fff' }}>{t.label}</p>
                 <p style={{ fontSize: '11px', color: '#888', marginTop: '2px' }}>{t.desc}</p>
@@ -243,7 +243,7 @@ export default function CreateCardPage() {
       <div style={{ maxWidth: '480px', width: '100%' }}>
         <button onClick={() => setStep(1)} style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', fontSize: '14px', marginBottom: '32px', display: 'block' }}>← Geri</button>
         <div style={{ display: 'flex', gap: '6px', marginBottom: '32px' }}>
-          {[1,2,3].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: i <= 2 ? '#F5C400' : '#2A2A2A' }} />)}
+          {[1,2,3].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: i <= 2 ? '#00F680' : '#2A2A2A' }} />)}
         </div>
         <h2 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '6px' }}>Seçenekleri özelleştir ✏️</h2>
         <p style={{ color: '#999', marginBottom: '28px' }}>İstersen değiştir, olduğu gibi de bırakabilirsin. 6 seçenek {recipientName}'e gönderilecek.</p>
@@ -274,7 +274,7 @@ export default function CreateCardPage() {
       <div style={{ maxWidth: '480px', width: '100%' }}>
         <button onClick={() => setStep(2)} style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', fontSize: '14px', marginBottom: '32px', display: 'block' }}>← Geri</button>
         <div style={{ display: 'flex', gap: '6px', marginBottom: '32px' }}>
-          {[1,2,3].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: '#F5C400' }} />)}
+          {[1,2,3].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: '#00F680' }} />)}
         </div>
         <h2 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '6px' }}>Önerilerini ekle 💬</h2>
         <p style={{ color: '#999', marginBottom: '28px' }}>

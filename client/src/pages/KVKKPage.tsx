@@ -47,7 +47,7 @@ const sections = [
           <li>Verilerin silinmesini veya yok edilmesini isteme</li>
           <li>İşlemenin kısıtlanmasını talep etme</li>
         </ul>
-        <p>Talepleriniz için: <a href="mailto:getdatewith@gmail.com" style={{ color: '#F5C400' }}>getdatewith@gmail.com</a></p>
+        <p>Talepleriniz için: <a href="mailto:getdatewith@gmail.com" style={{ color: '#00F680' }}>getdatewith@gmail.com</a></p>
       </>
     ),
   },
@@ -67,7 +67,7 @@ export default function KVKKPage() {
     <div style={{ minHeight: '100vh', background: '#0D0D0D', color: '#fff', fontFamily: 'Syne, sans-serif', padding: '40px 24px' }}>
       <div style={{ maxWidth: '720px', margin: '0 auto' }}>
 
-        <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#F5C400', textDecoration: 'none', fontSize: '14px', fontWeight: 600, marginBottom: '32px' }}>
+        <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#00F680', textDecoration: 'none', fontSize: '14px', fontWeight: 600, marginBottom: '32px' }}>
           ← Ana Sayfaya Dön
         </Link>
 
@@ -80,7 +80,7 @@ export default function KVKKPage() {
 
         {sections.map((s, i) => (
           <div key={i} style={{ marginBottom: '32px', borderBottom: '1px solid #1A1A1A', paddingBottom: '32px' }}>
-            <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#F5C400', marginBottom: '12px' }}>{s.title}</h2>
+            <h2 style={{ fontSize: '16px', fontWeight: 700, color: '#00F680', marginBottom: '12px' }}>{s.title}</h2>
             <div style={{ color: '#ccc', fontSize: '14px', lineHeight: 1.8 }}>
               {s.content}
             </div>

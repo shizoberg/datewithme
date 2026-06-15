@@ -53,7 +53,7 @@ export default function RegisterPage() {
             <label className="label">Kullanıcı adı</label>
             <input className="input" placeholder="berk123" value={form.username} onChange={e => set('username', e.target.value)} required />
             {form.username && (
-              <p style={{ marginTop: '6px', fontSize: '13px', color: '#F5C400' }}>
+              <p style={{ marginTop: '6px', fontSize: '13px', color: '#00F680' }}>
                 getdatewith.me/{form.username}
               </p>
             )}
@@ -69,7 +69,7 @@ export default function RegisterPage() {
 
         <p style={{ marginTop: '24px', textAlign: 'center', color: '#999', fontSize: '14px' }}>
           Hesabın var mı?{' '}
-          <Link to="/login" style={{ color: '#F5C400', textDecoration: 'none', fontWeight: 600 }}>Giriş yap</Link>
+          <Link to="/login" style={{ color: '#00F680', textDecoration: 'none', fontWeight: 600 }}>Giriş yap</Link>
         </p>
       </div>
     </div>

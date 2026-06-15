@@ -4,7 +4,7 @@
 :root {
   --bg: #0D0D0D;
   --surface: #1A1A1A;
-  --primary: #F5C400;
+  --primary: #00F680;
   --border: #2A2A2A;
   --text: #FFFFFF;
   --muted: #999999;
@@ -90,7 +90,7 @@ h1, h2, h3, h4 { font-family: 'Raleway', sans-serif; }
   inherits: false;
 }
 .date-card-border {
-  background: conic-gradient(from var(--angle), #F5C400, #FFE066, #F5A000, #F5C400);
+  background: conic-gradient(from var(--angle), #00F680, #FFE066, #F5A000, #00F680);
   animation: spin-border 3s linear infinite;
   border-radius: 20px;
   padding: 3px;

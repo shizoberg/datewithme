@@ -25,7 +25,7 @@ export default function CookieBanner() {
         Deneyimini geliştirmek için çerez kullanıyoruz.{' '}
         Devam ederek{' '}
         <button onClick={() => navigate('/kvkk')}
-          style={{ background: 'none', border: 'none', color: '#F5C400', cursor: 'pointer', fontSize: '13px', fontFamily: 'inherit', padding: 0, textDecoration: 'underline' }}>
+          style={{ background: 'none', border: 'none', color: '#00F680', cursor: 'pointer', fontSize: '13px', fontFamily: 'inherit', padding: 0, textDecoration: 'underline' }}>
           KVKK Aydınlatma Metni
         </button>
         'ni kabul etmiş olursun.
@@ -36,7 +36,7 @@ export default function CookieBanner() {
           Detaylar
         </button>
         <button onClick={accept}
-          style={{ background: '#F5C400', color: '#000', borderRadius: '9999px', padding: '8px 18px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', border: 'none', fontFamily: 'inherit' }}>
+          style={{ background: '#00F680', color: '#000', borderRadius: '9999px', padding: '8px 18px', fontSize: '13px', fontWeight: 700, cursor: 'pointer', border: 'none', fontFamily: 'inherit' }}>
           Kabul Et
         </button>
       </div>

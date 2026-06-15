@@ -52,7 +52,7 @@ export default function LoginPage() {
 
         <p style={{ marginTop: '24px', textAlign: 'center', color: '#999', fontSize: '14px' }}>
           Hesabın yok mu?{' '}
-          <Link to="/register" style={{ color: '#F5C400', textDecoration: 'none', fontWeight: 600 }}>Kayıt ol</Link>
+          <Link to="/register" style={{ color: '#00F680', textDecoration: 'none', fontWeight: 600 }}>Kayıt ol</Link>
         </p>
       </div>
     </div>

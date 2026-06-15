@@ -29,7 +29,7 @@ interface GNOCard {
 }
 
 const STATUS: Record<string, { label: string; color: string; bg: string }> = {
-  pending:  { label: 'Bekliyor',  color: '#F5C400', bg: '#2A2300' },
+  pending:  { label: 'Bekliyor',  color: '#00F680', bg: '#2A2300' },
   accepted: { label: 'Kabul ✓',  color: '#22C55E', bg: '#0D2E1A' },
   declined: { label: 'Reddetti', color: '#EF4444', bg: '#2D1010' },
 }
@@ -59,7 +59,7 @@ function CardRow({ card, username }: { card: Card; username: string }) {
           <span style={{ background: s.bg, color: s.color, border: `1px solid ${s.color}33`, borderRadius: '9999px', padding: '3px 10px', fontSize: '12px', fontWeight: 600 }}>{s.label}</span>
           {card.status === 'pending' && (
             <button onClick={e => { e.stopPropagation(); copyLink() }}
-              style={{ fontSize: '12px', color: '#F5C400', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
+              style={{ fontSize: '12px', color: '#00F680', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
               Linki Kopyala
             </button>
           )}
@@ -161,7 +161,7 @@ export default function DashboardPage() {
   return (
     <div style={{ minHeight: '100vh' }}>
       <header style={{ borderBottom: '1px solid #2A2A2A', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h1 style={{ fontSize: '20px', fontWeight: 800, color: '#F5C400' }}>getdatewith.me</h1>
+        <h1 style={{ fontSize: '20px', fontWeight: 800, color: '#00F680' }}>getdatewith.me</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <span style={{ color: '#999', fontSize: '14px' }}>@{user?.username}</span>
           <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', fontSize: '14px' }}>Çıkış</button>

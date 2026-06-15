@@ -103,13 +103,13 @@ export default function AdminPage() {
   return (
     <div style={{ minHeight: '100vh', background: '#0D0D0D', color: '#fff', fontFamily: 'Syne, sans-serif' }}>
       <header style={{ borderBottom: '1px solid #2A2A2A', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h1 style={{ fontSize: '18px', fontWeight: 800, color: '#F5C400' }}>Admin Panel</h1>
+        <h1 style={{ fontSize: '18px', fontWeight: 800, color: '#00F680' }}>Admin Panel</h1>
         <Link to="/dashboard" style={{ color: '#999', fontSize: '14px', textDecoration: 'none' }}>← Dashboard</Link>
       </header>
 
       <div style={{ display: 'flex', borderBottom: '1px solid #2A2A2A' }}>
         <button onClick={() => setTab('venues')}
-          style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'venues' ? '#F5C400' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'venues' ? '2px solid #F5C400' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
+          style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'venues' ? '#00F680' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'venues' ? '2px solid #00F680' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
           📍 Mekanlar
         </button>
       </div>
@@ -141,7 +141,7 @@ export default function AdminPage() {
                   <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
                     {[1,2,3].map(n => (
                       <button key={n} onClick={() => setForm(p => ({ ...p, priceLevel: String(n) }))}
-                        style={{ flex: 1, padding: '10px', borderRadius: '8px', border: `2px solid ${form.priceLevel === String(n) ? '#F5C400' : '#2A2A2A'}`, background: form.priceLevel === String(n) ? '#F5C40018' : '#1A1A1A', color: '#fff', cursor: 'pointer', fontWeight: 700, fontSize: '14px', fontFamily: 'inherit' }}>
+                        style={{ flex: 1, padding: '10px', borderRadius: '8px', border: `2px solid ${form.priceLevel === String(n) ? '#00F680' : '#2A2A2A'}`, background: form.priceLevel === String(n) ? '#00F68018' : '#1A1A1A', color: '#fff', cursor: 'pointer', fontWeight: 700, fontSize: '14px', fontFamily: 'inherit' }}>
                         {'₺'.repeat(n)}
                       </button>
                     ))}
@@ -213,12 +213,12 @@ export default function AdminPage() {
                       </td>
                       <td style={{ padding: '10px 12px' }}>
                         <button onClick={() => toggleActive(v)}
-                          style={{ width: '36px', height: '20px', borderRadius: '9999px', background: v.isActive ? '#F5C400' : '#2A2A2A', border: 'none', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }}>
+                          style={{ width: '36px', height: '20px', borderRadius: '9999px', background: v.isActive ? '#00F680' : '#2A2A2A', border: 'none', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }}>
                           <span style={{ position: 'absolute', top: '2px', left: v.isActive ? '18px' : '2px', width: '16px', height: '16px', borderRadius: '50%', background: '#fff', transition: 'left 0.2s' }} />
                         </button>
                       </td>
                       <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
-                        <button onClick={() => startEdit(v)} style={{ background: 'none', border: 'none', color: '#F5C400', cursor: 'pointer', fontSize: '14px', marginRight: '8px' }}>✏️</button>
+                        <button onClick={() => startEdit(v)} style={{ background: 'none', border: 'none', color: '#00F680', cursor: 'pointer', fontSize: '14px', marginRight: '8px' }}>✏️</button>
                         <button onClick={() => setDeleteId(v.id)} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', fontSize: '14px' }}>🗑️</button>
                       </td>
                     </tr>

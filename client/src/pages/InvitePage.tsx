@@ -104,9 +104,9 @@ function DateCard({ card, username }: { card: Card; username: string }) {
     : undefined
 
   const themeStyle: Record<string, { bg: string; surface: string; accent: string; border: string }> = {
-    minimal: { bg: '#0D0D0D', surface: '#1A1A1A', accent: '#F5C400', border: '#F5C400' },
+    minimal: { bg: '#0D0D0D', surface: '#1A1A1A', accent: '#00F680', border: '#00F680' },
     rosy:    { bg: '#1A0810', surface: '#2D1520', accent: '#FF8FAB', border: '#C06080' },
-    emoji:   { bg: '#0A0D1A', surface: '#12172A', accent: '#F5C400', border: '#4C6EF5' },
+    emoji:   { bg: '#0A0D1A', surface: '#12172A', accent: '#00F680', border: '#4C6EF5' },
   }
   const ts = themeStyle[card.theme] ?? themeStyle.minimal
 
@@ -316,9 +316,9 @@ export default function InvitePage() {
   }
 
   const themeColors: Record<string, { bg: string; accent: string }> = {
-    minimal: { bg: '#0D0D0D', accent: '#F5C400' },
+    minimal: { bg: '#0D0D0D', accent: '#00F680' },
     rosy:    { bg: '#1A0D10', accent: '#FF8FAB' },
-    emoji:   { bg: '#0A0D1A', accent: '#F5C400' },
+    emoji:   { bg: '#0A0D1A', accent: '#00F680' },
   }
   const tc = themeColors[card.theme] ?? themeColors.minimal
 

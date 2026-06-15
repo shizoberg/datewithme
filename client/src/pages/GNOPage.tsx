@@ -24,9 +24,9 @@ interface Vote {
 }
 
 const TS = {
-  minimal: { bg: '#0D0D0D', surface: '#1A1A1A', surface2: '#222', accent: '#F5C400', border: '#F5C400', muted: '#888' },
+  minimal: { bg: '#0D0D0D', surface: '#1A1A1A', surface2: '#222', accent: '#00F680', border: '#00F680', muted: '#888' },
   rosy:    { bg: '#130810', surface: '#2D1520', surface2: '#3D1F2C', accent: '#FF8FAB', border: '#C06080', muted: '#a06070' },
-  emoji:   { bg: '#0A0D1A', surface: '#12172A', surface2: '#1C2438', accent: '#F5C400', border: '#4C6EF5', muted: '#6080c0' },
+  emoji:   { bg: '#0A0D1A', surface: '#12172A', surface2: '#1C2438', accent: '#00F680', border: '#4C6EF5', muted: '#6080c0' },
 }
 
 function PollBar({ label, count, total, accent, isLeader }: { label: string; count: number; total: number; accent: string; isLeader: boolean }) {

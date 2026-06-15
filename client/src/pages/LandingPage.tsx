@@ -50,14 +50,14 @@ export default function LandingPage() {
 
       {/* NAV */}
       <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 32px', borderBottom: '1px solid #1A1A1A' }}>
-        <span style={{ fontWeight: 800, fontSize: '20px', color: '#F5C400', letterSpacing: '-0.5px' }}>
+        <span style={{ fontWeight: 800, fontSize: '20px', color: '#00F680', letterSpacing: '-0.5px' }}>
           getdatewith.me
         </span>
         <div style={{ display: 'flex', gap: '12px' }}>
           <Link to="/login" style={{ color: '#999', textDecoration: 'none', fontSize: '14px', padding: '8px 16px' }}>
             Giriş Yap
           </Link>
-          <Link to="/register" style={{ background: '#F5C400', color: '#000', textDecoration: 'none', fontSize: '14px', fontWeight: 700, padding: '8px 20px', borderRadius: '9999px' }}>
+          <Link to="/register" style={{ background: '#00F680', color: '#000', textDecoration: 'none', fontSize: '14px', fontWeight: 700, padding: '8px 20px', borderRadius: '9999px' }}>
             Başla
           </Link>
         </div>
@@ -65,19 +65,19 @@ export default function LandingPage() {
 
       {/* HERO */}
       <section style={{ textAlign: 'center', padding: '100px 24px 80px', maxWidth: '720px', margin: '0 auto' }}>
-        <div style={{ display: 'inline-block', background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '9999px', padding: '6px 16px', fontSize: '12px', color: '#F5C400', letterSpacing: '2px', fontWeight: 700, marginBottom: '32px', textTransform: 'uppercase' }}>
+        <div style={{ display: 'inline-block', background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '9999px', padding: '6px 16px', fontSize: '12px', color: '#00F680', letterSpacing: '2px', fontWeight: 700, marginBottom: '32px', textTransform: 'uppercase' }}>
           ✨ Date & Girls Night Out için
         </div>
         <h1 style={{ fontWeight: 900, fontSize: 'clamp(42px, 8vw, 72px)', lineHeight: 1.05, marginBottom: '24px', letterSpacing: '-2px' }}>
           Çıkma teklifi<br />
-          <span style={{ color: '#F5C400' }}>geri geldi.</span>
+          <span style={{ color: '#00F680' }}>geri geldi.</span>
         </h1>
         <p style={{ fontSize: '18px', color: '#888', lineHeight: 1.6, maxWidth: '480px', margin: '0 auto 40px' }}>
           İster bire bir date, ister kız grubu gecesi —<br />
           planlama tartışması bitti, link gönder yeter.
         </p>
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link to="/register" style={{ background: '#F5C400', color: '#000', textDecoration: 'none', fontSize: '16px', fontWeight: 800, padding: '14px 32px', borderRadius: '9999px' }}>
+          <Link to="/register" style={{ background: '#00F680', color: '#000', textDecoration: 'none', fontSize: '16px', fontWeight: 800, padding: '14px 32px', borderRadius: '9999px' }}>
             Hemen Başla →
           </Link>
           <Link to="/login" style={{ background: 'transparent', color: '#fff', textDecoration: 'none', fontSize: '16px', fontWeight: 600, padding: '14px 32px', borderRadius: '9999px', border: '1px solid #2A2A2A' }}>
@@ -90,8 +90,8 @@ export default function LandingPage() {
       <section style={{ padding: '0 24px 80px', display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
 
         {/* Date Card */}
-        <div style={{ background: '#111', border: '2px solid #F5C400', borderRadius: '20px', padding: '24px 28px', maxWidth: '320px', width: '100%', boxShadow: '0 0 50px rgba(245,196,0,0.07)' }}>
-          <p style={{ fontSize: '10px', color: '#F5C400', letterSpacing: '2px', fontWeight: 700, marginBottom: '10px' }}>💛 DATE CONFIRMED</p>
+        <div style={{ background: '#111', border: '2px solid #00F680', borderRadius: '20px', padding: '24px 28px', maxWidth: '320px', width: '100%', boxShadow: '0 0 50px rgba(245,196,0,0.07)' }}>
+          <p style={{ fontSize: '10px', color: '#00F680', letterSpacing: '2px', fontWeight: 700, marginBottom: '10px' }}>💛 DATE CONFIRMED</p>
           <h3 style={{ fontWeight: 800, fontSize: '20px', marginBottom: '16px' }}>Mert & Zeynep</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
             {[
@@ -146,8 +146,8 @@ export default function LandingPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
 
           {/* Date Mode */}
-          <div style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: '20px', padding: '28px', borderTop: '3px solid #F5C400' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#1A1A00', border: '1px solid #F5C40040', borderRadius: '9999px', padding: '4px 12px', fontSize: '11px', color: '#F5C400', fontWeight: 700, letterSpacing: '1px', marginBottom: '16px' }}>
+          <div style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: '20px', padding: '28px', borderTop: '3px solid #00F680' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: '#1A1A00', border: '1px solid #00F68040', borderRadius: '9999px', padding: '4px 12px', fontSize: '11px', color: '#00F680', fontWeight: 700, letterSpacing: '1px', marginBottom: '16px' }}>
               💛 DATE KARTI
             </div>
             <h3 style={{ fontWeight: 800, fontSize: '20px', marginBottom: '8px' }}>Çıkma teklifi gönder</h3>
@@ -165,7 +165,7 @@ export default function LandingPage() {
                 </div>
               ))}
             </div>
-            <Link to="/register" style={{ display: 'block', marginTop: '24px', background: '#F5C400', color: '#000', textDecoration: 'none', fontSize: '14px', fontWeight: 800, padding: '12px', borderRadius: '12px', textAlign: 'center' }}>
+            <Link to="/register" style={{ display: 'block', marginTop: '24px', background: '#00F680', color: '#000', textDecoration: 'none', fontSize: '14px', fontWeight: 800, padding: '12px', borderRadius: '12px', textAlign: 'center' }}>
               Date Kartı Oluştur →
             </Link>
           </div>
@@ -204,7 +204,7 @@ export default function LandingPage() {
           Başlamak ücretsiz 💌
         </h2>
         <p style={{ color: '#666', marginBottom: '28px', fontSize: '15px' }}>Kayıt ol, ilk kartını oluştur, linki gönder.</p>
-        <Link to="/register" style={{ background: '#F5C400', color: '#000', textDecoration: 'none', fontSize: '15px', fontWeight: 800, padding: '14px 36px', borderRadius: '9999px', display: 'inline-block' }}>
+        <Link to="/register" style={{ background: '#00F680', color: '#000', textDecoration: 'none', fontSize: '15px', fontWeight: 800, padding: '14px 36px', borderRadius: '9999px', display: 'inline-block' }}>
           Hemen Başla →
         </Link>
       </section>
@@ -212,7 +212,7 @@ export default function LandingPage() {
       {/* CREATED BY */}
       <footer style={{ borderTop: '1px solid #141414', padding: '28px 24px', textAlign: 'center' }}>
         <p style={{ color: '#444', fontSize: '13px', marginBottom: '12px' }}>
-          created by <span style={{ color: '#F5C400', fontWeight: 700 }}>krebsatka</span>
+          created by <span style={{ color: '#00F680', fontWeight: 700 }}>krebsatka</span>
         </p>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '16px' }}>
           <a href="https://www.youtube.com/@krebsatka" target="_blank" rel="noopener noreferrer"

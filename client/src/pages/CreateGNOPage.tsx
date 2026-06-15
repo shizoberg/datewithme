@@ -6,7 +6,7 @@ import { api } from '../lib/api'
 const THEMES = [
   { id: 'rosy',    label: 'Rosy',    desc: 'Pembe & romantic', preview: { bg: '#2D1A1E', border: '#C06080', dot: '#FF8FAB' } },
   { id: 'minimal', label: 'Minimal', desc: 'Sade & şık',       preview: { bg: '#111',    border: '#333',    dot: '#fff' } },
-  { id: 'emoji',   label: 'Emoji',   desc: 'Renkli & eğlenceli', preview: { bg: '#1A1F2A', border: '#4C6EF5', dot: '#F5C400' } },
+  { id: 'emoji',   label: 'Emoji',   desc: 'Renkli & eğlenceli', preview: { bg: '#1A1F2A', border: '#4C6EF5', dot: '#00F680' } },
 ]
 
 const DEFAULT_OPTIONS  = ['🍕 Pizza', '🍦 Dondurma', '☕ Kahve', '🍸 Kokteyl', '🎨 Workshop', '🍺 Bar']
