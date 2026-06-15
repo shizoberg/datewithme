@@ -36,6 +36,9 @@ router.post('/', requireAuth, async (req: AuthRequest, res: Response) => {
     suggestDatetime: z.string().max(200).optional(),
     suggestLocation: z.string().max(200).optional(),
     suggestPickup:   z.string().max(200).optional(),
+    venueCity:        z.string().max(60).optional(),
+    venueDistrict:    z.string().max(60).optional(),
+    suggestedVenueId: z.string().optional(),
   })
   const parsed = schema.safeParse(req.body)
   if (!parsed.success) {

@@ -15,6 +15,8 @@ interface Card {
   location: string | null
   withBarAfter: boolean
   createdAt: string
+  suggestedVenueId: string | null
+  selectedVenueId: string | null
 }
 
 interface GNOCard {
@@ -71,6 +73,8 @@ function CardRow({ card, username }: { card: Card; username: string }) {
           {card.pickupChoice !== null && <p style={{ fontSize: '14px' }}>{card.pickupChoice ? '🚗' : '🗺️'} <strong>Karşılama:</strong> {card.pickupChoice ? 'Seni alıyor' : 'Orada buluşuyor'}</p>}
           {card.location && <p style={{ fontSize: '14px' }}>📍 <strong>Mekan:</strong> {card.location}</p>}
           {card.withBarAfter && <p style={{ fontSize: '14px' }}>🍺 Bar sonrası da var</p>}
+          {card.suggestedVenueId && <p style={{ fontSize: '14px' }}>📍 <strong>Önerilen Mekan ID:</strong> {card.suggestedVenueId}</p>}
+          {card.selectedVenueId  && <p style={{ fontSize: '14px' }}>✓ <strong>Seçilen Mekan ID:</strong> {card.selectedVenueId}</p>}
         </div>
       )}
     </div>

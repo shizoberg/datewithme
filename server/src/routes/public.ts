@@ -15,7 +15,13 @@ router.get('/:username/:slug', async (req: Request, res: Response) => {
   })
   if (!card) { res.status(404).json({ error: 'Kart bulunamadı' }); return }
 
-  res.json({ card })
+  const venueSelect = { id: true, name: true, category: true, district: true, address: true, googleMapsUrl: true, instagramUrl: true, rating: true, priceLevel: true }
+  const [suggestedVenue, selectedVenue] = await Promise.all([
+    card.suggestedVenueId ? prisma.venue.findUnique({ where: { id: card.suggestedVenueId }, select: venueSelect }) : null,
+    card.selectedVenueId  ? prisma.venue.findUnique({ where: { id: card.selectedVenueId  }, select: venueSelect }) : null,
+  ])
+
+  res.json({ card: { ...card, suggestedVenue, selectedVenue } })
 })
 
 // POST /api/public/:username/:slug/respond
@@ -31,12 +37,13 @@ router.post('/:username/:slug/respond', async (req: Request, res: Response) => {
   }
 
   const schema = z.object({
-    accepted:       z.boolean(),
-    selectedOption: z.string().max(40).optional(),
-    selectedDate:   z.string().datetime().optional(),
-    pickupChoice:   z.boolean().optional(),
-    location:       z.string().max(200).optional(),
-    withBarAfter:   z.boolean().optional(),
+    accepted:        z.boolean(),
+    selectedOption:  z.string().max(40).optional(),
+    selectedDate:    z.string().datetime().optional(),
+    pickupChoice:    z.boolean().optional(),
+    location:        z.string().max(200).optional(),
+    withBarAfter:    z.boolean().optional(),
+    selectedVenueId: z.string().optional(),
   })
   const parsed = schema.safeParse(req.body)
   if (!parsed.success) {
@@ -50,12 +57,20 @@ router.post('/:username/:slug/respond', async (req: Request, res: Response) => {
       selectedOption: parsed.data.selectedOption ?? null,
       selectedDate:   parsed.data.selectedDate ? new Date(parsed.data.selectedDate) : null,
       pickupChoice:   parsed.data.pickupChoice ?? null,
-      location:       parsed.data.location ?? null,
-      withBarAfter:   parsed.data.withBarAfter ?? false,
+      location:        parsed.data.location ?? null,
+      withBarAfter:    parsed.data.withBarAfter ?? false,
+      selectedVenueId: parsed.data.selectedVenueId ?? null,
     },
     include: { user: { select: { name: true, username: true } } },
   })
-  res.json({ card: updated })
+
+  const venueSelect = { id: true, name: true, category: true, district: true, address: true, googleMapsUrl: true, instagramUrl: true, rating: true, priceLevel: true }
+  const [suggestedVenue, selectedVenue] = await Promise.all([
+    updated.suggestedVenueId ? prisma.venue.findUnique({ where: { id: updated.suggestedVenueId }, select: venueSelect }) : null,
+    updated.selectedVenueId  ? prisma.venue.findUnique({ where: { id: updated.selectedVenueId  }, select: venueSelect }) : null,
+  ])
+
+  res.json({ card: { ...updated, suggestedVenue, selectedVenue } })
 })
 
 export default router

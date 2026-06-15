@@ -51,7 +51,7 @@ export default function LandingPage() {
       {/* NAV */}
       <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 32px', borderBottom: '1px solid #1A1A1A' }}>
         <span style={{ fontWeight: 800, fontSize: '20px', color: '#F5C400', letterSpacing: '-0.5px' }}>
-          datewith.me
+          getdatewith.me
         </span>
         <div style={{ display: 'flex', gap: '12px' }}>
           <Link to="/login" style={{ color: '#999', textDecoration: 'none', fontSize: '14px', padding: '8px 16px' }}>

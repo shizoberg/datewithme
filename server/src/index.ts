@@ -5,6 +5,7 @@ import authRouter from './routes/auth'
 import cardsRouter from './routes/cards'
 import publicRouter from './routes/public'
 import gnoRouter from './routes/gno'
+import venueRouter from './routes/venues'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -23,5 +24,6 @@ app.use('/api/auth', authRouter)
 app.use('/api/cards', cardsRouter)
 app.use('/api/public', publicRouter)
 app.use('/api/gno', gnoRouter)
+app.use('/api/venues', venueRouter)
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

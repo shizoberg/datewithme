@@ -3,6 +3,12 @@ import { useParams } from 'react-router-dom'
 import { api } from '../lib/api'
 
 /* ── Types ─────────────────────────────────────────────── */
+interface VenueInfo {
+  id: string; name: string; category: string; district: string
+  address?: string; googleMapsUrl?: string; instagramUrl?: string
+  rating?: number; priceLevel?: number
+}
+
 interface Card {
   id: string
   recipientName: string
@@ -24,10 +30,21 @@ interface Card {
   suggestDatetime: string | null
   suggestLocation: string | null
   suggestPickup:   string | null
+  venueCity:        string | null
+  venueDistrict:    string | null
+  suggestedVenueId: string | null
+  selectedVenueId:  string | null
+  suggestedVenue:   VenueInfo | null
+  selectedVenue:    VenueInfo | null
   user: { name: string; username: string }
 }
 
-type Step = 'invite' | 'select' | 'datetime' | 'location' | 'pickup' | 'done'
+const CAT: Record<string, { emoji: string }> = {
+  cafe: { emoji: '☕' }, restaurant: { emoji: '🍽️' }, bar: { emoji: '🍸' },
+  park: { emoji: '🌿' }, rooftop: { emoji: '🌆' }, cultural: { emoji: '🎨' },
+}
+
+type Step = 'invite' | 'select' | 'venue' | 'datetime' | 'location' | 'pickup' | 'done'
 
 /* ── Emoji background ───────────────────────────────────── */
 function EmojiBg({ theme }: { theme: string }) {
@@ -144,6 +161,24 @@ function DateCard({ card, username }: { card: Card; username: string }) {
                 <p style={{ fontWeight: 600 }}>🍺 Bar sonrası da var!</p>
               </div>
             )}
+            {(card.selectedVenue || card.suggestedVenue) && (() => {
+              const v = card.selectedVenue || card.suggestedVenue!
+              const label = card.selectedVenue ? '📍 Buluşma Mekanı' : '📍 Önerilen Mekan'
+              const sub   = card.selectedVenue ? v.district : `${v.district} (önerildi)`
+              return (
+                <div style={{ background: '#00000030', border: `1px solid ${ts.border}44`, borderRadius: '10px', padding: '12px 16px' }}>
+                  <p style={{ fontSize: '11px', color: ts.accent, marginBottom: '4px', fontWeight: 700 }}>{label}</p>
+                  <p style={{ fontWeight: 600 }}>{CAT[v.category]?.emoji ?? '📍'} {v.name}</p>
+                  <p style={{ fontSize: '12px', color: '#888', marginTop: '2px' }}>{sub}</p>
+                  {v.googleMapsUrl && (
+                    <a href={v.googleMapsUrl} target="_blank" rel="noreferrer"
+                      style={{ display: 'inline-block', marginTop: '6px', fontSize: '12px', color: ts.accent, textDecoration: 'none', fontWeight: 600 }}>
+                      🗺️ Haritada Gör →
+                    </a>
+                  )}
+                </div>
+              )
+            })()}
           </div>
 
           <div style={{ display: 'flex', gap: '10px', marginTop: '28px', flexWrap: 'wrap' }}>
@@ -195,6 +230,9 @@ export default function InvitePage() {
   const [location, setLocation] = useState('')
   const [pickupChoice, setPickupChoice] = useState<boolean | null>(null)
   const [withBarAfter, setWithBarAfter] = useState(false)
+  const [selectedVenueId, setSelectedVenueId] = useState<string | null>(null)
+  const [venueList, setVenueList] = useState<VenueInfo[]>([])
+  const [showVenueList, setShowVenueList] = useState(false)
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
@@ -204,6 +242,12 @@ export default function InvitePage() {
         setCard(c)
         if (c.status === 'accepted') setStep('done')
         if (c.status === 'declined') setStep('done')
+        // pre-load venue list for receiver if city known
+        if (c.venueCity) {
+          const params = new URLSearchParams({ city: c.venueCity })
+          if (c.venueDistrict) params.set('district', c.venueDistrict)
+          api.get(`/api/venues/suggest?${params}`).then(vr => setVenueList(vr.data.venues)).catch(() => {})
+        }
       })
       .catch(() => setNotFound(true))
   }, [username, slug])
@@ -237,6 +281,7 @@ export default function InvitePage() {
         pickupChoice,
         location: location || undefined,
         withBarAfter,
+        selectedVenueId: selectedVenueId || undefined,
       })
       setCard(r.data.card)
       setStep('done')
@@ -321,13 +366,119 @@ export default function InvitePage() {
             </button>
           ))}
         </div>
-        <button className="btn-primary" onClick={() => setStep('datetime')} disabled={!selectedOption}
+        <button className="btn-primary"
+          onClick={() => setStep(card.suggestedVenueId || card.venueCity ? 'venue' : 'datetime')}
+          disabled={!selectedOption}
           style={{ width: '100%', padding: '14px', fontSize: '16px' }}>
           İlerle →
         </button>
       </div>
     </div>
   )
+
+  /* ── VENUE ── */
+  if (step === 'venue') {
+    const sugVenue = card.suggestedVenue
+    const showList = showVenueList || !sugVenue
+
+    function VenueRow({ v, sel, onSel }: { v: VenueInfo; sel: boolean; onSel: () => void }) {
+      const cat = CAT[v.category] ?? { emoji: '📍' }
+      const price = v.priceLevel ? '₺'.repeat(v.priceLevel) : ''
+      return (
+        <div onClick={onSel} style={{
+          padding: '12px 14px', borderRadius: '10px', cursor: 'pointer',
+          border: `2px solid ${sel ? tc.accent : '#2A2A2A'}`,
+          background: sel ? `${tc.accent}12` : '#1A1A1A',
+          display: 'flex', alignItems: 'center', gap: '10px', transition: 'all 0.15s',
+        }}>
+          <span style={{ fontSize: '20px' }}>{cat.emoji}</span>
+          <div style={{ flex: 1 }}>
+            <p style={{ fontWeight: 700, fontSize: '14px' }}>{v.name}</p>
+            <p style={{ fontSize: '12px', color: '#666' }}>{v.district}</p>
+          </div>
+          <div style={{ textAlign: 'right', fontSize: '12px' }}>
+            <div style={{ color: tc.accent }}>{v.rating ? `★ ${v.rating}` : ''}</div>
+            <div style={{ color: '#666' }}>{price}</div>
+          </div>
+          {v.googleMapsUrl && (
+            <a href={v.googleMapsUrl} target="_blank" rel="noreferrer"
+              onClick={e => e.stopPropagation()}
+              style={{ fontSize: '16px', textDecoration: 'none' }}>🗺️</a>
+          )}
+        </div>
+      )
+    }
+
+    return (
+      <div style={{ minHeight: '100vh', background: tc.bg, padding: '40px 24px', position: 'relative', overflow: 'hidden' }}>
+        <EmojiBg theme={card.theme} />
+        <div className="fade-in" style={{ maxWidth: '520px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'flex', gap: '6px', marginBottom: '32px' }}>
+            {[1,2,3,4].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: i <= 2 ? tc.accent : '#2A2A2A' }} />)}
+          </div>
+          <h2 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>📍 Buluşma Mekanı</h2>
+          <p style={{ color: '#999', marginBottom: '20px' }}>Bir mekan seçebilirsin (opsiyonel)</p>
+
+          {sugVenue && !showList && (
+            <div style={{ background: `${tc.accent}10`, border: `2px solid ${tc.accent}44`, borderRadius: '14px', padding: '20px', marginBottom: '16px' }}>
+              <p style={{ fontSize: '12px', fontWeight: 700, color: tc.accent, marginBottom: '10px' }}>
+                💛 {card.user.name || card.user.username} şunu öneriyor:
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+                <span style={{ fontSize: '28px' }}>{CAT[sugVenue.category]?.emoji ?? '📍'}</span>
+                <div>
+                  <p style={{ fontWeight: 800, fontSize: '18px' }}>{sugVenue.name}</p>
+                  <p style={{ fontSize: '13px', color: '#999' }}>{sugVenue.district}{sugVenue.rating ? ` · ★ ${sugVenue.rating}` : ''}{sugVenue.priceLevel ? ` · ${'₺'.repeat(sugVenue.priceLevel)}` : ''}</p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                {sugVenue.googleMapsUrl && (
+                  <a href={sugVenue.googleMapsUrl} target="_blank" rel="noreferrer"
+                    style={{ padding: '7px 14px', borderRadius: '9999px', background: '#1A1A1A', border: '1px solid #333', color: '#60A5FA', fontSize: '13px', textDecoration: 'none', fontWeight: 600 }}>
+                    🗺️ Haritada Gör
+                  </a>
+                )}
+                {sugVenue.instagramUrl && (
+                  <a href={sugVenue.instagramUrl} target="_blank" rel="noreferrer"
+                    style={{ padding: '7px 14px', borderRadius: '9999px', background: '#1A1A1A', border: '1px solid #333', color: '#F472B6', fontSize: '13px', textDecoration: 'none', fontWeight: 600 }}>
+                    @ Instagram
+                  </a>
+                )}
+              </div>
+              <button onClick={() => { setSelectedVenueId(sugVenue.id); setStep('datetime') }}
+                className="btn-primary" style={{ width: '100%', marginTop: '14px', padding: '12px' }}>
+                ✓ Bu mekanı onaylıyorum
+              </button>
+              <button onClick={() => setShowVenueList(true)}
+                style={{ width: '100%', marginTop: '8px', background: 'none', border: '1px solid #333', borderRadius: '9999px', color: '#999', padding: '10px', cursor: 'pointer', fontSize: '14px', fontFamily: 'inherit' }}>
+                Başka mekan seç
+              </button>
+            </div>
+          )}
+
+          {showList && venueList.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
+              {venueList.map(v => (
+                <VenueRow key={v.id} v={v} sel={selectedVenueId === v.id}
+                  onSel={() => setSelectedVenueId(selectedVenueId === v.id ? null : v.id)} />
+              ))}
+            </div>
+          )}
+
+          {showList && venueList.length === 0 && (
+            <p style={{ color: '#555', fontSize: '14px', marginBottom: '16px' }}>Bu şehir için mekan bulunamadı.</p>
+          )}
+
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button onClick={() => setStep('select')} className="btn-secondary" style={{ flex: 1 }}>← Geri</button>
+            <button onClick={() => setStep('datetime')} className="btn-primary" style={{ flex: 2 }}>
+              {selectedVenueId ? 'İlerle →' : 'Atla →'}
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   /* ── DATETIME ── */
   if (step === 'datetime') {

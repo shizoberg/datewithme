@@ -11,6 +11,7 @@ import InvitePage from './pages/InvitePage'
 import GNOPage from './pages/GNOPage'
 import LandingPage from './pages/LandingPage'
 import KVKKPage from './pages/KVKKPage'
+import AdminPage from './pages/AdminPage'
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/kvkk" element={<KVKKPage />} />
+          <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
           <Route path="/create" element={<ProtectedRoute><CreateCardPage /></ProtectedRoute>} />
           <Route path="/create-gno" element={<ProtectedRoute><CreateGNOPage /></ProtectedRoute>} />
