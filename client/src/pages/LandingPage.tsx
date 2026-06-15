@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 const DATE_STEPS = [
@@ -15,6 +16,35 @@ const GNO_STEPS = [
 ]
 
 export default function LandingPage() {
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.type = 'application/ld+json'
+    script.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "getdatewith.me",
+      "url": "https://www.getdatewith.me",
+      "description": "Date planlamak, buluşma organize etmek ve kaliteli arkadaş bulmak için en kolay uygulama.",
+      "applicationCategory": "SocialNetworkingApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "TRY"
+      },
+      "inLanguage": "tr",
+      "featureList": [
+        "Date planlama ve organizasyon",
+        "Girls Night Out organizasyonu",
+        "Koşu arkadaşı bulma",
+        "Çalışma arkadaşı bulma",
+        "Kişiye özel buluşma linki"
+      ]
+    })
+    document.head.appendChild(script)
+    return () => { document.head.removeChild(script) }
+  }, [])
+
   return (
     <div style={{ minHeight: '100vh', background: '#0D0D0D', color: '#fff', fontFamily: 'Raleway, sans-serif' }}>
 
