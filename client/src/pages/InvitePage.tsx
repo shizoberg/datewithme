@@ -78,6 +78,13 @@ function RunawayBtn({ onClick }: { onClick: () => void }) {
 function DateCard({ card, username }: { card: Card; username: string }) {
   const link = `${window.location.origin}/${username}/${card.slug}`
   const [copied, setCopied] = useState(false)
+  const creatorName = card.user.name || card.user.username
+
+  // webcal:// makes iOS/Android open the native Calendar app directly
+  const apiBase = (import.meta.env.VITE_API_URL as string) || ''
+  const icsUrl = card.selectedDate
+    ? apiBase.replace(/^https?:\/\//, 'webcal://') + `/api/cards/${card.id}/ics`
+    : undefined
 
   const themeStyle: Record<string, { bg: string; surface: string; accent: string; border: string }> = {
     minimal: { bg: '#0D0D0D', surface: '#1A1A1A', accent: '#F5C400', border: '#F5C400' },
@@ -105,7 +112,7 @@ function DateCard({ card, username }: { card: Card; username: string }) {
         <div style={{ background: ts.surface, borderRadius: '18px', padding: '36px 32px' }}>
           <p style={{ fontSize: '11px', fontWeight: 700, letterSpacing: '2px', color: ts.accent, marginBottom: '8px', textTransform: 'uppercase' }}>Date Confirmed 💛</p>
           <h1 style={{ fontSize: '28px', fontWeight: 800, marginBottom: '24px', lineHeight: 1.2 }}>
-            {card.user.name} & {card.recipientName} 💛
+            {creatorName} & {card.recipientName} 💛
           </h1>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -141,14 +148,13 @@ function DateCard({ card, username }: { card: Card; username: string }) {
 
           <div style={{ display: 'flex', gap: '10px', marginTop: '28px', flexWrap: 'wrap' }}>
             <a
-              href={card.selectedDate ? `/api/cards/${card.id}/ics` : undefined}
-              download={card.selectedDate ? true : undefined}
-              onClick={!card.selectedDate ? e => e.preventDefault() : undefined}
+              href={icsUrl}
+              onClick={!icsUrl ? e => e.preventDefault() : undefined}
               style={{
-                background: card.selectedDate ? ts.accent : '#333',
-                color: card.selectedDate ? '#000' : '#666',
+                background: icsUrl ? ts.accent : '#333',
+                color: icsUrl ? '#000' : '#666',
                 fontSize: '13px', fontWeight: 700, padding: '10px 18px',
-                borderRadius: '9999px', textDecoration: 'none', cursor: card.selectedDate ? 'pointer' : 'not-allowed',
+                borderRadius: '9999px', textDecoration: 'none', cursor: icsUrl ? 'pointer' : 'not-allowed',
               }}>
               📅 Takvime Ekle
             </a>

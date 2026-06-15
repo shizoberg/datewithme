@@ -157,7 +157,7 @@ export default function DashboardPage() {
   return (
     <div style={{ minHeight: '100vh' }}>
       <header style={{ borderBottom: '1px solid #2A2A2A', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h1 style={{ fontSize: '20px', fontWeight: 800, color: '#F5C400' }}>datewith.me</h1>
+        <h1 style={{ fontSize: '20px', fontWeight: 800, color: '#F5C400' }}>getdatewith.me</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <span style={{ color: '#999', fontSize: '14px' }}>@{user?.username}</span>
           <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', fontSize: '14px' }}>Çıkış</button>
