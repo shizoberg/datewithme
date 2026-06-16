@@ -112,8 +112,6 @@ h1, h2, h3, h4 { font-family: 'Raleway', sans-serif; }
 /* Responsive nav */
 @media (max-width: 480px) {
   .nav-mekanlar { display: none !important; }
-}
-@media (max-width: 400px) {
   .nav-giris { display: none !important; }
 }
 
