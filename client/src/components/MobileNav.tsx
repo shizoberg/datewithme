@@ -1,10 +1,22 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 export default function MobileNav() {
   const location = useLocation()
+  const navigate = useNavigate()
   const path = location.pathname
+  const isLoggedIn = !!localStorage.getItem('token')
 
-  const items = [
+  const handleCreateCard = (e: React.MouseEvent) => {
+    e.preventDefault()
+    navigate(isLoggedIn ? '/dashboard' : '/login')
+  }
+
+  const isActive = (to: string) => {
+    if (to === '/') return path === '/'
+    return path.startsWith(to)
+  }
+
+  const regularItems = [
     {
       to: '/',
       label: 'Ana Sayfa',
@@ -27,18 +39,9 @@ export default function MobileNav() {
         </svg>
       ),
     },
-    {
-      to: '/dashboard',
-      label: 'Kart Oluştur',
-      icon: (
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
-          <circle cx="12" cy="12" r="12" fill="#00F680"/>
-          <line x1="12" y1="7" x2="12" y2="17" stroke="#0D0D0D" strokeWidth="2.5" strokeLinecap="round"/>
-          <line x1="7" y1="12" x2="17" y2="12" stroke="#0D0D0D" strokeWidth="2.5" strokeLinecap="round"/>
-        </svg>
-      ),
-      isMain: true,
-    },
+  ]
+
+  const rightItems = [
     {
       to: '/topluluk',
       label: 'Topluluk',
@@ -53,22 +56,44 @@ export default function MobileNav() {
       ),
     },
     {
-      to: '/login',
-      label: 'Giriş',
-      icon: (
+      to: isLoggedIn ? '/dashboard' : '/login',
+      label: isLoggedIn ? 'Profil' : 'Giriş',
+      icon: isLoggedIn ? (
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-             stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+             stroke="#00F680" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
           <circle cx="12" cy="7" r="4"/>
+        </svg>
+      ) : (
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+          <polyline points="10 17 15 12 10 7"/>
+          <line x1="15" y1="12" x2="3" y2="12"/>
         </svg>
       ),
     },
   ]
 
-  const isActive = (to: string) => {
-    if (to === '/') return path === '/'
-    return path.startsWith(to)
-  }
+  const itemStyle = (active: boolean): React.CSSProperties => ({
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '3px',
+    textDecoration: 'none',
+    color: active ? '#00F680' : '#555',
+    minWidth: '52px',
+    padding: '4px 0',
+    transition: 'color 0.15s',
+  })
+
+  const labelStyle = (active: boolean): React.CSSProperties => ({
+    fontSize: '10px',
+    fontFamily: 'Raleway, sans-serif',
+    fontWeight: active ? 600 : 400,
+    letterSpacing: '0.01em',
+  })
 
   return (
     <>
@@ -89,43 +114,49 @@ export default function MobileNav() {
         zIndex: 1000,
         paddingBottom: 'env(safe-area-inset-bottom)',
       }}>
-        {items.map(item => {
+        {regularItems.map(item => {
           const active = isActive(item.to)
           return (
-            <Link
-              key={item.to}
-              to={item.to}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '3px',
-                textDecoration: 'none',
-                color: item.isMain ? '#00F680' : (active ? '#00F680' : '#555'),
-                minWidth: '52px',
-                padding: '4px 0',
-                transition: 'color 0.15s',
-              }}
-            >
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transform: item.isMain ? 'translateY(-8px)' : 'none',
-              }}>
+            <Link key={item.to} to={item.to} style={itemStyle(active)}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {item.icon}
               </div>
-              {!item.isMain && (
-                <span style={{
-                  fontSize: '10px',
-                  fontFamily: 'DM Sans, sans-serif',
-                  fontWeight: active ? 600 : 400,
-                  letterSpacing: '0.01em',
-                }}>
-                  {item.label}
-                </span>
-              )}
+              <span style={labelStyle(active)}>{item.label}</span>
+            </Link>
+          )
+        })}
+
+        {/* Orta + butonu */}
+        <button onClick={handleCreateCard} style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          minWidth: '52px',
+          padding: '4px 0',
+        }}>
+          <div style={{ transform: 'translateY(-8px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg width="44" height="44" viewBox="0 0 44 44">
+              <circle cx="22" cy="22" r="22" fill="#00F680"/>
+              <line x1="22" y1="13" x2="22" y2="31"
+                    stroke="#0D0D0D" strokeWidth="3" strokeLinecap="round"/>
+              <line x1="13" y1="22" x2="31" y2="22"
+                    stroke="#0D0D0D" strokeWidth="3" strokeLinecap="round"/>
+            </svg>
+          </div>
+        </button>
+
+        {rightItems.map(item => {
+          const active = isActive(item.to)
+          return (
+            <Link key={item.to} to={item.to} style={itemStyle(active)}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {item.icon}
+              </div>
+              <span style={labelStyle(active)}>{item.label}</span>
             </Link>
           )
         })}
