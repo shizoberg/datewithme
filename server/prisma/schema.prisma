@@ -68,6 +68,7 @@ model Venue {
   rating        Float?
   priceLevel    Int?
   imageUrl      String?
+  description   String?
   isActive      Boolean  @default(true)
   createdAt     DateTime @default(now())
 }
