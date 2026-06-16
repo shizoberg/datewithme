@@ -43,6 +43,11 @@ const CAT: Record<string, { emoji: string }> = {
   cultural:   { emoji: '🎨' },
 }
 
+const isRealUrl = (url?: string | null) => !!url && url.startsWith('https://') && url.length > 35
+
+const igUrl = (raw: string) =>
+  raw.startsWith('http') ? raw : `https://instagram.com/${raw.replace('@', '')}`
+
 const TS = {
   minimal: { bg: '#0D0D0D', surface: '#1A1A1A', surface2: '#222', accent: '#00F680', border: '#00F680', muted: '#888' },
   rosy:    { bg: '#130810', surface: '#2D1520', surface2: '#3D1F2C', accent: '#FF8FAB', border: '#C06080', muted: '#a06070' },
@@ -447,6 +452,36 @@ export default function GNOPage() {
             {/* Location */}
             <div style={{ marginBottom: '20px' }}>
               <p style={{ fontSize: '12px', fontWeight: 700, color: ts.accent, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '10px' }}>📍 Mekan {selLoc && <span style={{ color: '#666', fontWeight: 500 }}>· {selLoc}</span>}</p>
+
+              {/* Venue suggestion box — shown if creator picked a venue from DB */}
+              {suggestedVenue && !chosenVenue && (
+                <div style={{ background: `${ts.accent}08`, border: `1px solid ${ts.accent}30`, borderRadius: '12px', padding: '14px 16px', marginBottom: '12px' }}>
+                  <div style={{ fontSize: '11px', color: ts.accent, marginBottom: '8px', fontWeight: 700, letterSpacing: '1px' }}>✦ MEKAN ÖNERİSİ</div>
+                  <div style={{ fontSize: '15px', fontWeight: 600, color: '#fff', marginBottom: '4px' }}>
+                    {CAT[suggestedVenue.category]?.emoji ?? '📍'} {suggestedVenue.name}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#999', marginBottom: '8px' }}>
+                    {suggestedVenue.district}
+                    {suggestedVenue.priceLevel ? ` · ${'₺'.repeat(suggestedVenue.priceLevel)}` : ''}
+                    {suggestedVenue.rating ? ` · ★ ${suggestedVenue.rating.toFixed(1)}` : ''}
+                  </div>
+                  <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                    {isRealUrl(suggestedVenue.googleMapsUrl) && (
+                      <a href={suggestedVenue.googleMapsUrl!} target="_blank" rel="noopener noreferrer"
+                        style={{ fontSize: '12px', color: '#60A5FA', textDecoration: 'none', fontWeight: 600 }}>
+                        🗺️ Haritada Gör
+                      </a>
+                    )}
+                    {suggestedVenue.instagramUrl && (
+                      <a href={igUrl(suggestedVenue.instagramUrl)} target="_blank" rel="noopener noreferrer"
+                        style={{ fontSize: '12px', color: '#F472B6', textDecoration: 'none', fontWeight: 600 }}>
+                        @ {suggestedVenue.instagramUrl.replace('https://instagram.com/', '').replace('@', '')}
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
+
               <PillSelect options={locationOptions} value={selLoc} onChange={setSelLoc} accent={ts.accent} surface2={ts.surface2} placeholder="Kendi mekanını yaz…" />
             </div>
 
@@ -503,15 +538,34 @@ export default function GNOPage() {
                     <span style={{ fontSize: '14px', fontWeight: 600 }}>{(pickupTally['pickup'] || 0) > (pickupTally['meet'] || 0) ? 'Alınmak istiyor' : 'Orada buluşuyor'}</span>
                   </div>
                   {/* Show selected or suggested venue */}
-                  {(chosenVenue || suggestedVenue) && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', paddingTop: '4px', borderTop: `1px solid ${ts.border}20`, marginTop: '4px' }}>
-                      <span style={{ fontSize: '16px' }}>{CAT[(chosenVenue || suggestedVenue)!.category]?.emoji ?? '📍'}</span>
-                      <div>
-                        <span style={{ fontSize: '14px', fontWeight: 600 }}>{(chosenVenue || suggestedVenue)!.name}</span>
-                        <span style={{ fontSize: '11px', color: ts.muted, marginLeft: '6px' }}>{chosenVenue ? 'Seçilen mekan' : 'Önerilen mekan'}</span>
+                  {(chosenVenue || suggestedVenue) && (() => {
+                    const v = (chosenVenue || suggestedVenue)!
+                    return (
+                      <div style={{ paddingTop: '8px', borderTop: `1px solid ${ts.border}20`, marginTop: '4px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                          <span style={{ fontSize: '16px' }}>{CAT[v.category]?.emoji ?? '📍'}</span>
+                          <div>
+                            <span style={{ fontSize: '14px', fontWeight: 600 }}>{v.name}</span>
+                            <span style={{ fontSize: '11px', color: ts.muted, marginLeft: '6px' }}>{chosenVenue ? 'Seçilen mekan' : 'Önerilen mekan'}</span>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '10px', paddingLeft: '24px' }}>
+                          {isRealUrl(v.googleMapsUrl) && (
+                            <a href={v.googleMapsUrl!} target="_blank" rel="noopener noreferrer"
+                              style={{ fontSize: '12px', color: ts.accent, textDecoration: 'none', fontWeight: 600 }}>
+                              🗺️ Haritada Gör →
+                            </a>
+                          )}
+                          {v.instagramUrl && (
+                            <a href={igUrl(v.instagramUrl)} target="_blank" rel="noopener noreferrer"
+                              style={{ fontSize: '12px', color: '#F472B6', textDecoration: 'none' }}>
+                              @ {v.instagramUrl.replace('https://instagram.com/', '').replace('@', '')}
+                            </a>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )
+                  })()}
                 </div>
               </div>
             )}
