@@ -50,7 +50,7 @@ export default function LandingPage() {
     <div style={{ minHeight: '100vh', background: '#0D0D0D', color: '#fff', fontFamily: 'Raleway, sans-serif' }}>
 
       {/* NAV */}
-      <nav style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1A1A1A', position: 'sticky', top: 0, background: '#0D0D0D', zIndex: 100 }}>
+      <nav className="desktop-nav" style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1A1A1A', position: 'sticky', top: 0, background: '#0D0D0D', zIndex: 100 }}>
         <Link to="/" style={{ color: '#00F680', fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '15px', textDecoration: 'none', flexShrink: 0 }}>
           getdatewith.me
         </Link>

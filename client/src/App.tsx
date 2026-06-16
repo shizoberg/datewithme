@@ -1,7 +1,9 @@
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import CookieBanner from './components/CookieBanner'
+import MobileNav from './components/MobileNav'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
@@ -16,6 +18,14 @@ import CommunityPage from './pages/CommunityPage'
 import VenuesPage from './pages/VenuesPage'
 
 export default function App() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', handler)
+    return () => window.removeEventListener('resize', handler)
+  }, [])
+
   return (
     <AuthProvider>
       <BrowserRouter>
@@ -34,6 +44,7 @@ export default function App() {
           <Route path="/bulusma-mekanlari" element={<VenuesPage />} />
           <Route path="/:username/:slug" element={<InvitePage />} />
         </Routes>
+        {isMobile && <MobileNav />}
       </BrowserRouter>
     </AuthProvider>
   )

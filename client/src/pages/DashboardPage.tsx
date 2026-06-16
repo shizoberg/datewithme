@@ -161,7 +161,7 @@ export default function DashboardPage() {
 
   return (
     <div style={{ minHeight: '100vh' }}>
-      <header style={{ borderBottom: '1px solid #2A2A2A', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <header className="desktop-nav" style={{ borderBottom: '1px solid #2A2A2A', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <h1 style={{ fontSize: '20px', fontWeight: 800, color: '#00F680' }}>getdatewith.me</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <Link to="/bulusma-mekanlari" style={{ color: '#999', textDecoration: 'none', fontSize: '13px', padding: '8px 12px' }}>Mekanlar</Link>

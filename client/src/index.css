@@ -115,6 +115,21 @@ h1, h2, h3, h4 { font-family: 'Raleway', sans-serif; }
   .nav-giris { display: none !important; }
 }
 
+/* Desktop nav — mobilde gizle */
+@media (max-width: 768px) {
+  .desktop-nav { display: none !important; }
+}
+
+/* Mobile nav spacer — sadece mobilde */
+@media (min-width: 769px) {
+  .mobile-nav-spacer { display: none; }
+}
+
+/* Safe area bottom padding */
+@media (max-width: 768px) {
+  body { padding-bottom: env(safe-area-inset-bottom); }
+}
+
 /* Responsive hero */
 @media (max-width: 480px) {
   .hero-h1 { font-size: 36px !important; }
