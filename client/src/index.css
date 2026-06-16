@@ -109,6 +109,20 @@ h1, h2, h3, h4 { font-family: 'Raleway', sans-serif; }
   z-index: 0;
 }
 
+/* Responsive nav */
+@media (max-width: 480px) {
+  .nav-mekanlar { display: none !important; }
+}
+@media (max-width: 400px) {
+  .nav-giris { display: none !important; }
+}
+
+/* Responsive hero */
+@media (max-width: 480px) {
+  .hero-h1 { font-size: 36px !important; }
+  .hero-subtitle { font-size: 15px !important; }
+}
+
 /* Fade in */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }

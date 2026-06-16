@@ -50,25 +50,25 @@ export default function LandingPage() {
     <div style={{ minHeight: '100vh', background: '#0D0D0D', color: '#fff', fontFamily: 'Raleway, sans-serif' }}>
 
       {/* NAV */}
-      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 32px', borderBottom: '1px solid #1A1A1A' }}>
-        <span style={{ fontWeight: 800, fontSize: '20px', color: '#00F680', letterSpacing: '-0.5px' }}>
+      <nav style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1A1A1A', position: 'sticky', top: 0, background: '#0D0D0D', zIndex: 100 }}>
+        <Link to="/" style={{ color: '#00F680', fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '15px', textDecoration: 'none', flexShrink: 0 }}>
           getdatewith.me
-        </span>
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <Link to="/bulusma-mekanlari" style={{ color: '#999', textDecoration: 'none', fontSize: '13px', padding: '8px 12px' }}>
+        </Link>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <Link to="/bulusma-mekanlari" className="nav-mekanlar" style={{ color: '#999', fontSize: '13px', textDecoration: 'none' }}>
             Mekanlar
           </Link>
-          <Link to="/topluluk" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#00F680', textDecoration: 'none', fontSize: '13px', fontWeight: 600, padding: '7px 14px', border: '1px solid rgba(0,246,128,0.3)', borderRadius: '9999px', background: 'rgba(0,246,128,0.06)' }}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <Link to="/topluluk" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', color: '#00F680', textDecoration: 'none', fontSize: '12px', fontWeight: 600, padding: '6px 12px', border: '1px solid rgba(0,246,128,0.3)', borderRadius: '100px', background: 'rgba(0,246,128,0.06)', whiteSpace: 'nowrap', flexShrink: 0 }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
               <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
             </svg>
             Topluluk
           </Link>
-          <Link to="/login" style={{ color: '#999', textDecoration: 'none', fontSize: '14px', padding: '8px 16px' }}>
+          <Link to="/login" className="nav-giris" style={{ color: '#999', fontSize: '13px', textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}>
             Giriş Yap
           </Link>
-          <Link to="/register" style={{ background: '#00F680', color: '#000', textDecoration: 'none', fontSize: '14px', fontWeight: 700, padding: '8px 20px', borderRadius: '9999px' }}>
+          <Link to="/register" style={{ background: '#00F680', color: '#0D0D0D', textDecoration: 'none', borderRadius: '100px', padding: '8px 16px', fontSize: '13px', fontWeight: 700, whiteSpace: 'nowrap', flexShrink: 0 }}>
             Başla
           </Link>
         </div>
@@ -79,11 +79,11 @@ export default function LandingPage() {
         <div style={{ display: 'inline-block', background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '9999px', padding: '6px 16px', fontSize: '12px', color: '#00F680', letterSpacing: '2px', fontWeight: 700, marginBottom: '32px', textTransform: 'uppercase' }}>
           ✨ Date & Girls Night Out için
         </div>
-        <h1 style={{ fontWeight: 900, fontSize: 'clamp(42px, 8vw, 72px)', lineHeight: 1.05, marginBottom: '24px', letterSpacing: '-2px' }}>
+        <h1 className="hero-h1" style={{ fontWeight: 900, fontSize: 'clamp(42px, 8vw, 72px)', lineHeight: 1.05, marginBottom: '24px', letterSpacing: '-2px' }}>
           Buluşma işi<br />
           <span style={{ color: '#00F680' }}>ciddi bir iştir.</span>
         </h1>
-        <p style={{ fontSize: '18px', color: '#888', lineHeight: 1.6, maxWidth: '480px', margin: '0 auto 40px' }}>
+        <p className="hero-subtitle" style={{ fontSize: '18px', color: '#888', lineHeight: 1.6, maxWidth: '480px', margin: '0 auto 40px' }}>
           Date planla, GNO organize et, şehrinin en iyi<br />
           mekanlarını keşfet. Link gönder, gerisini bırak bize.
         </p>
