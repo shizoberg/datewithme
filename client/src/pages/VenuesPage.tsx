@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import AppHeader from '../components/AppHeader'
 import CommunityBanner from '../components/CommunityBanner'
 import { api } from '../lib/api'
 
@@ -143,21 +144,7 @@ export default function VenuesPage() {
 
   return (
     <div style={{ minHeight: '100vh', fontFamily: 'Raleway, sans-serif' }}>
-      {/* NAV */}
-      <nav style={{ borderBottom: '1px solid #1A1A1A', padding: '18px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: '#0D0D0D', zIndex: 50 }}>
-        <Link to="/" style={{ color: '#00F680', fontWeight: 800, fontSize: '18px', textDecoration: 'none', letterSpacing: '-0.5px' }}>
-          getdatewith.me
-        </Link>
-        <div className="desktop-nav-links" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Link to="/topluluk" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#00F680', textDecoration: 'none', fontSize: '13px', fontWeight: 600, padding: '7px 14px', border: '1px solid rgba(0,246,128,0.3)', borderRadius: '9999px', background: 'rgba(0,246,128,0.06)' }}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-            Topluluk
-          </Link>
-        </div>
-      </nav>
+      <AppHeader showBack backTo="/" backLabel="Ana Sayfa" />
 
       {/* HERO */}
       <section style={{ textAlign: 'center', padding: '64px 24px 48px', maxWidth: '680px', margin: '0 auto' }}>
@@ -174,21 +161,21 @@ export default function VenuesPage() {
       </section>
 
       {/* FILTERS */}
-      <div style={{ maxWidth: '960px', margin: '0 auto', padding: '0 24px 32px' }}>
-        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '16px' }}>
-          <select value={city} onChange={e => setCity(e.target.value)}
-            style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: '10px', padding: '10px 16px', color: city ? '#fff' : '#666', fontSize: '14px', fontFamily: 'Raleway, sans-serif', cursor: 'pointer', minWidth: '140px' }}>
-            <option value="">Tüm şehirler</option>
-            {CITIES.filter(Boolean).map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-            {CATEGORIES.map(cat => (
-              <button key={cat.value} onClick={() => setCategory(cat.value)}
-                style={{ background: category === cat.value ? 'rgba(0,246,128,0.12)' : '#111', border: `1px solid ${category === cat.value ? 'rgba(0,246,128,0.4)' : '#2A2A2A'}`, borderRadius: '9999px', padding: '8px 16px', color: category === cat.value ? '#00F680' : '#888', fontSize: '13px', fontWeight: category === cat.value ? 700 : 400, cursor: 'pointer', fontFamily: 'Raleway, sans-serif' }}>
-                {cat.emoji} {cat.label}
-              </button>
-            ))}
-          </div>
+      <div style={{ maxWidth: '960px', margin: '0 auto', padding: '0 20px 32px', boxSizing: 'border-box' }}>
+        <select value={city} onChange={e => setCity(e.target.value)}
+          style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '10px', padding: '10px 14px', color: '#fff', fontSize: '13px', width: '100%', marginBottom: '12px', outline: 'none', cursor: 'pointer', fontFamily: 'Raleway, sans-serif', boxSizing: 'border-box' }}>
+          <option value="">Tüm Şehirler</option>
+          <option value="İstanbul">İstanbul</option>
+          <option value="İzmir">İzmir</option>
+          <option value="Ankara">Ankara</option>
+        </select>
+        <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'none', msOverflowStyle: 'none', marginBottom: '12px' } as React.CSSProperties}>
+          {CATEGORIES.map(cat => (
+            <button key={cat.value} onClick={() => setCategory(cat.value)}
+              style={{ background: category === cat.value ? 'rgba(0,246,128,0.12)' : '#111', border: `1px solid ${category === cat.value ? 'rgba(0,246,128,0.4)' : '#2A2A2A'}`, borderRadius: '9999px', padding: '8px 14px', color: category === cat.value ? '#00F680' : '#888', fontSize: '13px', fontWeight: category === cat.value ? 700 : 400, cursor: 'pointer', fontFamily: 'Raleway, sans-serif', flexShrink: 0 }}>
+              {cat.emoji} {cat.label}
+            </button>
+          ))}
         </div>
         <input
           type="text"
@@ -223,6 +210,7 @@ export default function VenuesPage() {
       </div>
 
       <CommunityBanner />
+      <div style={{ height: '80px' }} />
     </div>
   )
 }

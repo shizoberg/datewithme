@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import AppHeader from '../components/AppHeader'
 import CommunityBanner from '../components/CommunityBanner'
 import { useAuth } from '../context/AuthContext'
 import { api } from '../lib/api'
@@ -161,21 +162,11 @@ export default function DashboardPage() {
 
   return (
     <div style={{ minHeight: '100vh' }}>
-      <header style={{ borderBottom: '1px solid #2A2A2A', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Link to="/" style={{ color: '#00F680', fontWeight: 800, fontSize: '18px', textDecoration: 'none', letterSpacing: '-0.5px' }}>getdatewith.me</Link>
-        <div className="desktop-nav-links" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <Link to="/bulusma-mekanlari" style={{ color: '#999', textDecoration: 'none', fontSize: '13px', padding: '8px 12px' }}>Mekanlar</Link>
-          <Link to="/topluluk" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#00F680', textDecoration: 'none', fontSize: '13px', fontWeight: 600, padding: '7px 14px', border: '1px solid rgba(0,246,128,0.3)', borderRadius: '9999px', background: 'rgba(0,246,128,0.06)' }}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-            Topluluk
-          </Link>
-          <span style={{ color: '#999', fontSize: '14px' }}>@{user?.username}</span>
-          <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', fontSize: '14px' }}>Çıkış</button>
-        </div>
-      </header>
+      <AppHeader />
+      <div style={{ borderBottom: '1px solid #1A1A1A', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '12px' }}>
+        <span style={{ color: '#666', fontSize: '13px' }}>@{user?.username}</span>
+        <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#666', cursor: 'pointer', fontSize: '13px', fontFamily: 'Raleway, sans-serif' }}>Çıkış</button>
+      </div>
 
       <main style={{ maxWidth: '720px', margin: '0 auto', padding: '40px 24px 80px' }}>
         <div style={{ marginBottom: '40px' }}>
@@ -233,6 +224,7 @@ export default function DashboardPage() {
 
       </main>
       <CommunityBanner />
+      <div style={{ height: '80px' }} />
     </div>
   )
 }

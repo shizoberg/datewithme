@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import AppHeader from '../components/AppHeader'
 import { api } from '../lib/api'
 
 const CATEGORIES = [
@@ -72,17 +73,7 @@ export default function CommunityPage() {
   return (
     <div style={{ minHeight: '100vh', background: '#0D0D0D', color: '#fff', fontFamily: 'Raleway, sans-serif' }}>
 
-      {/* NAV */}
-      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 32px', borderBottom: '1px solid #1A1A1A' }}>
-        <Link to="/" style={{ color: '#00F680', fontWeight: 800, fontSize: '18px', textDecoration: 'none', letterSpacing: '-0.5px' }}>
-          getdatewith.me
-        </Link>
-        <div className="desktop-nav-links" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <Link to="/" style={{ color: '#666', textDecoration: 'none', fontSize: '13px', padding: '8px 12px' }}>← Ana Sayfa</Link>
-          <Link to="/login" style={{ color: '#999', textDecoration: 'none', fontSize: '14px', padding: '8px 16px' }}>Giriş Yap</Link>
-          <Link to="/register" style={{ background: '#00F680', color: '#000', textDecoration: 'none', fontSize: '14px', fontWeight: 700, padding: '8px 20px', borderRadius: '9999px' }}>Başla</Link>
-        </div>
-      </nav>
+      <AppHeader showBack backTo="/bulusma-mekanlari" backLabel="← Mekanlar" />
 
       {/* HERO */}
       <section style={{ textAlign: 'center', padding: '80px 24px 60px', maxWidth: '680px', margin: '0 auto' }}>
@@ -100,17 +91,22 @@ export default function CommunityPage() {
       </section>
 
       {/* STATS */}
-      <section style={{ display: 'flex', justifyContent: 'center', gap: '16px', padding: '0 24px 60px', flexWrap: 'wrap' }}>
-        {[
-          { value: '75+', label: 'Mekan' },
-          { value: '3',   label: 'Şehir' },
-          { value: '↑',   label: 'Toplulukla Büyüyor' },
-        ].map(s => (
-          <div key={s.label} style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: '16px', padding: '20px 28px', textAlign: 'center', minWidth: '120px' }}>
-            <p style={{ fontSize: '28px', fontWeight: 900, color: '#00F680', marginBottom: '4px' }}>{s.value}</p>
-            <p style={{ fontSize: '13px', color: '#666' }}>{s.label}</p>
+      <section style={{ padding: '0 20px 60px', maxWidth: '640px', margin: '0 auto', boxSizing: 'border-box' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+          {[
+            { value: '75+', label: 'Mekan' },
+            { value: '3',   label: 'Şehir' },
+          ].map(s => (
+            <div key={s.label} style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: '12px', padding: '20px', textAlign: 'center' }}>
+              <p style={{ fontSize: '28px', fontWeight: 900, color: '#00F680', marginBottom: '4px' }}>{s.value}</p>
+              <p style={{ fontSize: '13px', color: '#666' }}>{s.label}</p>
+            </div>
+          ))}
+          <div style={{ gridColumn: '1 / -1', background: '#1A1A1A', border: '1px solid rgba(0,246,128,0.2)', borderRadius: '12px', padding: '16px', textAlign: 'center' }}>
+            <div style={{ fontSize: '18px', fontWeight: 700, color: '#00F680' }}>∞</div>
+            <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>Toplulukla Büyüyor</div>
           </div>
-        ))}
+        </div>
       </section>
 
       {/* FORM */}
@@ -280,6 +276,7 @@ export default function CommunityPage() {
           {' '}· <Link to="/kvkk" style={{ color: '#444', textDecoration: 'none' }}>KVKK</Link>
         </p>
       </footer>
+      <div style={{ height: '80px' }} />
     </div>
   )
 }

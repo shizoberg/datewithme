@@ -253,7 +253,7 @@ export default function LandingPage() {
           </a>
         </div>
       </footer>
-
+      <div style={{ height: '80px' }} />
     </div>
   )
 }
