@@ -73,11 +73,11 @@ export default function CommunityPage() {
     <div style={{ minHeight: '100vh', background: '#0D0D0D', color: '#fff', fontFamily: 'Raleway, sans-serif' }}>
 
       {/* NAV */}
-      <nav className="desktop-nav" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 32px', borderBottom: '1px solid #1A1A1A' }}>
+      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 32px', borderBottom: '1px solid #1A1A1A' }}>
         <Link to="/" style={{ fontWeight: 800, fontSize: '20px', color: '#00F680', textDecoration: 'none', letterSpacing: '-0.5px' }}>
           getdatewith.me
         </Link>
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+        <div className="desktop-nav-links" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           <Link to="/" style={{ color: '#666', textDecoration: 'none', fontSize: '13px', padding: '8px 12px' }}>← Ana Sayfa</Link>
           <Link to="/login" style={{ color: '#999', textDecoration: 'none', fontSize: '14px', padding: '8px 16px' }}>Giriş Yap</Link>
           <Link to="/register" style={{ background: '#00F680', color: '#000', textDecoration: 'none', fontSize: '14px', fontWeight: 700, padding: '8px 20px', borderRadius: '9999px' }}>Başla</Link>

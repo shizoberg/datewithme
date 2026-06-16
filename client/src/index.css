@@ -115,9 +115,9 @@ h1, h2, h3, h4 { font-family: 'Raleway', sans-serif; }
   .nav-giris { display: none !important; }
 }
 
-/* Desktop nav — mobilde gizle */
+/* Desktop nav links — mobilde gizle (logo kalır) */
 @media (max-width: 768px) {
-  .desktop-nav { display: none !important; }
+  .desktop-nav-links { display: none !important; }
 }
 
 /* Mobile nav spacer — sadece mobilde */

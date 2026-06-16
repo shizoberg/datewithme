@@ -144,11 +144,11 @@ export default function VenuesPage() {
   return (
     <div style={{ minHeight: '100vh', fontFamily: 'Raleway, sans-serif' }}>
       {/* NAV */}
-      <nav className="desktop-nav" style={{ borderBottom: '1px solid #1A1A1A', padding: '18px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: '#0D0D0D', zIndex: 50 }}>
+      <nav style={{ borderBottom: '1px solid #1A1A1A', padding: '18px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: '#0D0D0D', zIndex: 50 }}>
         <Link to="/" style={{ fontSize: '18px', fontWeight: 900, color: '#00F680', textDecoration: 'none', letterSpacing: '-0.5px' }}>
           getdatewith.me
         </Link>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="desktop-nav-links" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Link to="/topluluk" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#00F680', textDecoration: 'none', fontSize: '13px', fontWeight: 600, padding: '7px 14px', border: '1px solid rgba(0,246,128,0.3)', borderRadius: '9999px', background: 'rgba(0,246,128,0.06)' }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
