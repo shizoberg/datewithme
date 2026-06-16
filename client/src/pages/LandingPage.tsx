@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import CommunityBanner from '../components/CommunityBanner'
 
 const DATE_STEPS = [
   { num: '01', icon: '✏️', title: 'Kartını oluştur', desc: 'Kime göndereceğini yaz, 6 date seçeneğini özelleştir.' },
@@ -88,6 +89,14 @@ export default function LandingPage() {
           </Link>
         </div>
       </section>
+
+      {/* COMMUNITY TINY BANNER */}
+      <div style={{ textAlign: 'center', padding: '0 24px 32px', fontSize: '13px', color: '#555' }}>
+        <span>Şehrinin en iyi mekanını biliyor musun? </span>
+        <Link to="/topluluk" style={{ color: '#00F680', textDecoration: 'none', fontWeight: 600 }}>
+          Topluluğa ekle →
+        </Link>
+      </div>
 
       {/* MOCK CARDS — side by side */}
       <section style={{ padding: '0 24px 80px', display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
@@ -211,6 +220,9 @@ export default function LandingPage() {
           Hemen Başla →
         </Link>
       </section>
+
+      {/* COMMUNITY BANNER */}
+      <CommunityBanner />
 
       {/* CREATED BY */}
       <footer style={{ borderTop: '1px solid #141414', padding: '28px 24px', textAlign: 'center' }}>

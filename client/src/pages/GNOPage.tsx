@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { api } from '../lib/api'
+import CommunityBanner from '../components/CommunityBanner'
 
 interface VenueInfo {
   id: string; name: string; category: string; city: string
@@ -577,6 +578,7 @@ export default function GNOPage() {
           <span style={{ color: ts.accent, fontWeight: 700 }}>getdatewith.me</span> ile oluşturuldu
         </p>
       </div>
+      {step === 'done' && <CommunityBanner />}
     </div>
   )
 }

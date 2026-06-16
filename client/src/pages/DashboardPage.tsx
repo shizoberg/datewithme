@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import CommunityBanner from '../components/CommunityBanner'
 import { useAuth } from '../context/AuthContext'
 import { api } from '../lib/api'
 
@@ -222,13 +223,8 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Footer community link */}
-        <div style={{ textAlign: 'center', marginTop: '40px' }}>
-          <Link to="/topluluk" style={{ color: '#555', fontSize: '13px', textDecoration: 'none' }}>
-            Harika bir mekan biliyor musun? → <span style={{ color: '#00F680' }}>Ekle</span>
-          </Link>
-        </div>
       </main>
+      <CommunityBanner />
     </div>
   )
 }

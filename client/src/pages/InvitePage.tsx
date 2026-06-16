@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { api } from '../lib/api'
+import CommunityBanner from '../components/CommunityBanner'
 
 const isRealUrl = (url?: string | null) => !!url && url.startsWith('https://') && url.length > 35
 
@@ -334,7 +335,12 @@ export default function InvitePage() {
         <div><p style={{ fontSize: '48px' }}>😊</p><h2 style={{ fontSize: '24px', fontWeight: 800, marginTop: '16px' }}>Anladık!</h2><p style={{ color: '#999', marginTop: '8px' }}>Belki başka bir zaman.</p></div>
       </div>
     )
-    return <DateCard card={card} username={username!} />
+    return (
+      <>
+        <DateCard card={card} username={username!} />
+        <CommunityBanner />
+      </>
+    )
   }
 
   const themeColors: Record<string, { bg: string; accent: string }> = {
