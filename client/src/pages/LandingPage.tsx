@@ -51,7 +51,7 @@ export default function LandingPage() {
 
       {/* NAV */}
       <nav style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1A1A1A', position: 'sticky', top: 0, background: '#0D0D0D', zIndex: 100 }}>
-        <Link to="/" style={{ color: '#00F680', fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '15px', textDecoration: 'none', flexShrink: 0, letterSpacing: '-0.3px' }}>
+        <Link to="/" style={{ color: '#00F680', fontWeight: 800, fontSize: '18px', textDecoration: 'none', letterSpacing: '-0.5px', flexShrink: 0 }}>
           getdatewith.me
         </Link>
         <div className="desktop-nav-links" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>

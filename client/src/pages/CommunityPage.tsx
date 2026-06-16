@@ -74,7 +74,7 @@ export default function CommunityPage() {
 
       {/* NAV */}
       <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 32px', borderBottom: '1px solid #1A1A1A' }}>
-        <Link to="/" style={{ fontWeight: 800, fontSize: '20px', color: '#00F680', textDecoration: 'none', letterSpacing: '-0.5px' }}>
+        <Link to="/" style={{ color: '#00F680', fontWeight: 800, fontSize: '18px', textDecoration: 'none', letterSpacing: '-0.5px' }}>
           getdatewith.me
         </Link>
         <div className="desktop-nav-links" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>

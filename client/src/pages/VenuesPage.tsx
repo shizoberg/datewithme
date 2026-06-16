@@ -145,7 +145,7 @@ export default function VenuesPage() {
     <div style={{ minHeight: '100vh', fontFamily: 'Raleway, sans-serif' }}>
       {/* NAV */}
       <nav style={{ borderBottom: '1px solid #1A1A1A', padding: '18px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, background: '#0D0D0D', zIndex: 50 }}>
-        <Link to="/" style={{ fontSize: '18px', fontWeight: 900, color: '#00F680', textDecoration: 'none', letterSpacing: '-0.5px' }}>
+        <Link to="/" style={{ color: '#00F680', fontWeight: 800, fontSize: '18px', textDecoration: 'none', letterSpacing: '-0.5px' }}>
           getdatewith.me
         </Link>
         <div className="desktop-nav-links" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
