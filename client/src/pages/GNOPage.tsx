@@ -2,6 +2,12 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { api } from '../lib/api'
 
+interface VenueInfo {
+  id: string; name: string; category: string; city: string
+  district: string; address?: string; googleMapsUrl?: string
+  instagramUrl?: string; rating?: number; priceLevel?: number
+}
+
 interface GNOCard {
   id: string
   groupName: string
@@ -12,6 +18,10 @@ interface GNOCard {
   location1Label: string; location2Label: string; location3Label: string
   votes: Vote[]
   user: { name: string; username: string }
+  venueCity?: string
+  venueDistrict?: string
+  suggestedVenueId?: string
+  suggestedVenue?: VenueInfo | null
 }
 
 interface Vote {
@@ -21,6 +31,16 @@ interface Vote {
   selectedTime: string
   selectedLocation: string
   pickupChoice: string
+  selectedVenueId?: string
+}
+
+const CAT: Record<string, { emoji: string }> = {
+  cafe:       { emoji: '☕' },
+  restaurant: { emoji: '🍽️' },
+  bar:        { emoji: '🍸' },
+  park:       { emoji: '🌿' },
+  rooftop:    { emoji: '🌆' },
+  cultural:   { emoji: '🎨' },
 }
 
 const TS = {
@@ -57,7 +77,6 @@ function leader(t: Record<string, number>) {
   return Object.entries(t).sort((a, b) => b[1] - a[1])[0]?.[0] ?? ''
 }
 
-// Pill selector with "custom" option
 function PillSelect({ options, value, onChange, accent, surface2, placeholder }:
   { options: string[]; value: string; onChange: (v: string) => void; accent: string; surface2: string; placeholder: string }) {
   const [custom, setCustom] = useState('')
@@ -96,17 +115,58 @@ function PillSelect({ options, value, onChange, accent, surface2, placeholder }:
   )
 }
 
+function VenueCard({ venue, selected, onSelect, accent }: { venue: VenueInfo; selected: boolean; onSelect: () => void; accent: string }) {
+  const cat = CAT[venue.category] ?? { emoji: '📍' }
+  const price = venue.priceLevel ? '₺'.repeat(venue.priceLevel) : ''
+  const stars = venue.rating ? Math.round(venue.rating) : 0
+
+  return (
+    <div onClick={onSelect} style={{
+      padding: '14px 16px', borderRadius: '12px', cursor: 'pointer', transition: 'all 0.15s',
+      border: `2px solid ${selected ? accent : '#333'}`,
+      background: selected ? `${accent}10` : 'rgba(255,255,255,0.04)',
+      display: 'flex', alignItems: 'center', gap: '12px',
+    }}>
+      <div style={{ fontSize: '24px', flexShrink: 0 }}>{cat.emoji}</div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
+          {selected && <span style={{ fontSize: '10px', fontWeight: 700, color: accent, background: `${accent}20`, border: `1px solid ${accent}40`, borderRadius: '4px', padding: '1px 5px' }}>✓ Seçildi</span>}
+          <span style={{ fontWeight: 700, fontSize: '14px', color: '#fff' }}>{venue.name}</span>
+        </div>
+        <div style={{ fontSize: '12px', color: '#666' }}>{venue.district} · {venue.category}</div>
+      </div>
+      <div style={{ textAlign: 'right', flexShrink: 0 }}>
+        <div style={{ fontSize: '12px', color: accent, marginBottom: '4px' }}>★ {venue.rating?.toFixed(1) ?? '—'}</div>
+        <div style={{ fontSize: '11px', color: '#888' }}>{price}</div>
+      </div>
+      <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
+        <button onClick={e => { e.stopPropagation(); venue.googleMapsUrl && window.open(venue.googleMapsUrl, '_blank') }}
+          style={{ width: '28px', height: '28px', borderRadius: '6px', border: '1px solid #333', background: 'none', color: venue.googleMapsUrl ? '#60A5FA' : '#444', cursor: venue.googleMapsUrl ? 'pointer' : 'not-allowed', fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          🗺️
+        </button>
+        <button onClick={e => { e.stopPropagation(); venue.instagramUrl && window.open(venue.instagramUrl, '_blank') }}
+          style={{ width: '28px', height: '28px', borderRadius: '6px', border: '1px solid #333', background: 'none', color: venue.instagramUrl ? '#F472B6' : '#444', cursor: venue.instagramUrl ? 'pointer' : 'not-allowed', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          @
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export default function GNOPage() {
   const { slug } = useParams<{ slug: string }>()
   const [card, setCard] = useState<GNOCard | null>(null)
   const [loading, setLoading] = useState(true)
-  const [step, setStep] = useState<'name' | 'vote' | 'done'>('name')
+  const [step, setStep] = useState<'name' | 'venue' | 'vote' | 'done'>('name')
   const [voterName, setVoterName] = useState('')
   const [selEvent, setSelEvent]   = useState('')
   const [selTime, setSelTime]     = useState('')
   const [selLoc, setSelLoc]       = useState('')
   const [pickupChoice, setPickupChoice] = useState<'meet' | 'pickup'>('meet')
-  const [saving, setSaving]       = useState(false)
+  const [venueList, setVenueList]       = useState<VenueInfo[]>([])
+  const [venueLoading, setVenueLoading] = useState(false)
+  const [selectedVenueId, setSelectedVenueId] = useState('')
+  const [saving, setSaving] = useState(false)
 
   function refresh() {
     return api.get(`/api/gno/public/${slug}`).then(r => setCard(r.data.card)).catch(() => {})
@@ -125,6 +185,18 @@ export default function GNOPage() {
     return () => clearInterval(interval)
   }, [card, slug])
 
+  // Pre-load venue list when card is available and has venueCity
+  useEffect(() => {
+    if (!card?.venueCity) return
+    setVenueLoading(true)
+    const params = new URLSearchParams({ city: card.venueCity })
+    if (card.venueDistrict) params.set('district', card.venueDistrict)
+    api.get(`/api/venues/suggest?${params}`)
+      .then(r => setVenueList(r.data.venues ?? []))
+      .catch(() => setVenueList([]))
+      .finally(() => setVenueLoading(false))
+  }, [card?.id])
+
   async function submitVote() {
     if (!card || !voterName.trim() || !selEvent || !selTime || !selLoc) return
     setSaving(true)
@@ -135,6 +207,7 @@ export default function GNOPage() {
         selectedTime: selTime,
         selectedLocation: selLoc,
         pickupChoice,
+        selectedVenueId: selectedVenueId || undefined,
       })
       await refresh()
       setStep('done')
@@ -142,6 +215,15 @@ export default function GNOPage() {
       alert(err.response?.data?.error || 'Bir hata oluştu')
     } finally {
       setSaving(false)
+    }
+  }
+
+  function afterName() {
+    // Go to venue step only if card has venueCity
+    if (card?.venueCity) {
+      setStep('venue')
+    } else {
+      setStep('vote')
     }
   }
 
@@ -167,12 +249,16 @@ export default function GNOPage() {
   const locTally        = tally(card.votes, 'selectedLocation')
   const pickupTally     = tally(card.votes, 'pickupChoice')
 
-  // Merge custom options into tally display
   const allEventOpts    = [...new Set([...eventOptions, ...Object.keys(eventTally)])]
   const allTimeOpts     = [...new Set([...timeOptions, ...Object.keys(timeTally)])]
   const allLocOpts      = [...new Set([...locationOptions, ...Object.keys(locTally)])]
 
   const canVote = !!voterName.trim() && !!selEvent && !!selTime && !!selLoc
+
+  // The suggested venue from card creator
+  const suggestedVenue = card.suggestedVenue ?? (venueList.find(v => v.id === card.suggestedVenueId) ?? null)
+  // The venue the current voter selected
+  const chosenVenue = venueList.find(v => v.id === selectedVenueId) ?? (selectedVenueId === card.suggestedVenueId ? suggestedVenue : null)
 
   return (
     <div style={{ minHeight: '100vh', background: ts.bg, color: '#fff', fontFamily: 'Raleway, sans-serif' }}>
@@ -217,9 +303,28 @@ export default function GNOPage() {
               ))}
             </>
           )}
+
+          {/* Suggested venue in poll */}
+          {suggestedVenue && (
+            <>
+              <div style={{ height: '1px', background: `${ts.border}20`, margin: '16px 0' }} />
+              <p style={{ fontSize: '11px', color: '#555', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '10px' }}>📍 Önerilen Mekan</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: `${ts.accent}10`, border: `1px solid ${ts.accent}30`, borderRadius: '10px', padding: '10px 14px' }}>
+                <span style={{ fontSize: '20px' }}>{CAT[suggestedVenue.category]?.emoji ?? '📍'}</span>
+                <div>
+                  <p style={{ fontWeight: 700, fontSize: '14px', color: '#fff' }}>{suggestedVenue.name}</p>
+                  <p style={{ fontSize: '12px', color: ts.muted }}>{suggestedVenue.district}</p>
+                </div>
+                {suggestedVenue.googleMapsUrl && (
+                  <a href={suggestedVenue.googleMapsUrl} target="_blank" rel="noreferrer"
+                    style={{ marginLeft: 'auto', fontSize: '13px', color: '#60A5FA', textDecoration: 'none' }}>🗺️</a>
+                )}
+              </div>
+            </>
+          )}
         </div>
 
-        {/* Voting Card */}
+        {/* Name step */}
         {step === 'name' && (
           <div style={{ background: ts.surface, border: `1px solid ${ts.border}40`, borderRadius: '20px', padding: '24px' }}>
             <h3 style={{ fontWeight: 800, fontSize: '20px', marginBottom: '6px' }}>Oyunu kullan 🗳️</h3>
@@ -230,13 +335,74 @@ export default function GNOPage() {
               placeholder="Zeynep"
               value={voterName}
               onChange={e => setVoterName(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && voterName.trim() && setStep('vote')}
+              onKeyDown={e => e.key === 'Enter' && voterName.trim() && afterName()}
               autoFocus
             />
-            <button onClick={() => setStep('vote')} disabled={!voterName.trim()}
+            <button onClick={afterName} disabled={!voterName.trim()}
               style={{ width: '100%', padding: '14px', borderRadius: '12px', border: 'none', background: voterName.trim() ? ts.accent : '#2A2A2A', color: voterName.trim() ? '#000' : '#555', cursor: voterName.trim() ? 'pointer' : 'default', fontSize: '15px', fontWeight: 800, fontFamily: 'Raleway, sans-serif', transition: 'all 0.15s' }}>
               Devam Et →
             </button>
+          </div>
+        )}
+
+        {/* Venue step */}
+        {step === 'venue' && (
+          <div style={{ background: ts.surface, border: `1px solid ${ts.border}40`, borderRadius: '20px', padding: '24px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: `${ts.accent}22`, border: `1.5px solid ${ts.accent}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px' }}>📍</div>
+              <div>
+                <p style={{ fontWeight: 800, fontSize: '16px' }}>Buluşma Mekanı</p>
+                <p style={{ color: ts.muted, fontSize: '12px' }}>Bir mekan önerildi — onayla veya atla.</p>
+              </div>
+            </div>
+
+            {venueLoading && <p style={{ color: '#666', fontSize: '13px', marginBottom: '16px' }}>Mekanlar yükleniyor…</p>}
+
+            {/* Show suggested venue from card creator first */}
+            {suggestedVenue && (
+              <div style={{ marginBottom: '16px' }}>
+                <p style={{ fontSize: '11px', fontWeight: 700, color: ts.accent, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px' }}>✨ Önerilen Mekan</p>
+                <VenueCard
+                  venue={suggestedVenue}
+                  selected={selectedVenueId === suggestedVenue.id}
+                  onSelect={() => setSelectedVenueId(selectedVenueId === suggestedVenue.id ? '' : suggestedVenue.id)}
+                  accent={ts.accent}
+                />
+              </div>
+            )}
+
+            {/* Other venues in city */}
+            {venueList.filter(v => v.id !== card.suggestedVenueId).length > 0 && (
+              <div style={{ marginBottom: '16px' }}>
+                <p style={{ fontSize: '11px', fontWeight: 700, color: '#555', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px' }}>
+                  {suggestedVenue ? 'Diğer Mekanlar' : 'Mekanlar'}
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {venueList.filter(v => v.id !== card.suggestedVenueId).map(v => (
+                    <VenueCard key={v.id} venue={v}
+                      selected={selectedVenueId === v.id}
+                      onSelect={() => setSelectedVenueId(selectedVenueId === v.id ? '' : v.id)}
+                      accent={ts.accent}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {!venueLoading && venueList.length === 0 && !suggestedVenue && (
+              <p style={{ color: '#555', fontSize: '13px', marginBottom: '16px' }}>Bu şehir için henüz mekan yok.</p>
+            )}
+
+            <div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
+              <button onClick={() => setStep('vote')}
+                style={{ flex: 1, padding: '13px', borderRadius: '12px', border: `1.5px solid ${ts.border}40`, background: 'transparent', color: ts.muted, cursor: 'pointer', fontSize: '14px', fontWeight: 700, fontFamily: 'Raleway, sans-serif' }}>
+                Atla →
+              </button>
+              <button onClick={() => setStep('vote')}
+                style={{ flex: 2, padding: '13px', borderRadius: '12px', border: 'none', background: ts.accent, color: '#000', cursor: 'pointer', fontSize: '14px', fontWeight: 800, fontFamily: 'Raleway, sans-serif' }}>
+                {selectedVenueId ? 'Mekanı Onayla →' : 'Devam Et →'}
+              </button>
+            </div>
           </div>
         )}
 
@@ -249,6 +415,18 @@ export default function GNOPage() {
                 <p style={{ color: ts.muted, fontSize: '12px' }}>Her kategoriden birini seç veya kendin yaz.</p>
               </div>
             </div>
+
+            {/* Show chosen venue summary if selected */}
+            {chosenVenue && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: `${ts.accent}10`, border: `1px solid ${ts.accent}30`, borderRadius: '10px', padding: '10px 14px', marginBottom: '16px' }}>
+                <span>{CAT[chosenVenue.category]?.emoji ?? '📍'}</span>
+                <span style={{ fontSize: '13px', fontWeight: 700, color: ts.accent }}>{chosenVenue.name}</span>
+                <button onClick={() => setStep('venue')}
+                  style={{ marginLeft: 'auto', background: 'none', border: 'none', color: '#666', fontSize: '12px', cursor: 'pointer', fontFamily: 'Raleway, sans-serif' }}>
+                  Değiştir
+                </button>
+              </div>
+            )}
 
             {/* Event */}
             <div style={{ marginBottom: '20px' }}>
@@ -324,6 +502,16 @@ export default function GNOPage() {
                     <span style={{ fontSize: '16px' }}>🚗</span>
                     <span style={{ fontSize: '14px', fontWeight: 600 }}>{(pickupTally['pickup'] || 0) > (pickupTally['meet'] || 0) ? 'Alınmak istiyor' : 'Orada buluşuyor'}</span>
                   </div>
+                  {/* Show selected or suggested venue */}
+                  {(chosenVenue || suggestedVenue) && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', paddingTop: '4px', borderTop: `1px solid ${ts.border}20`, marginTop: '4px' }}>
+                      <span style={{ fontSize: '16px' }}>{CAT[(chosenVenue || suggestedVenue)!.category]?.emoji ?? '📍'}</span>
+                      <div>
+                        <span style={{ fontSize: '14px', fontWeight: 600 }}>{(chosenVenue || suggestedVenue)!.name}</span>
+                        <span style={{ fontSize: '11px', color: ts.muted, marginLeft: '6px' }}>{chosenVenue ? 'Seçilen mekan' : 'Önerilen mekan'}</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

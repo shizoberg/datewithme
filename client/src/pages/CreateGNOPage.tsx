@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { api } from '../lib/api'
@@ -12,6 +12,63 @@ const THEMES = [
 const DEFAULT_OPTIONS  = ['🍕 Pizza', '🍦 Dondurma', '☕ Kahve', '🍸 Kokteyl', '🎨 Workshop', '🍺 Bar']
 const DEFAULT_TIMES    = ['Cuma 20:00', 'Cumartesi 20:00', 'Pazar 18:00']
 const DEFAULT_LOCATIONS = ['Kadıköy', 'Beşiktaş', 'Nişantaşı']
+
+const CAT: Record<string, { emoji: string }> = {
+  cafe:       { emoji: '☕' },
+  restaurant: { emoji: '🍽️' },
+  bar:        { emoji: '🍸' },
+  park:       { emoji: '🌿' },
+  rooftop:    { emoji: '🌆' },
+  cultural:   { emoji: '🎨' },
+}
+
+interface Venue {
+  id: string; name: string; category: string; city: string
+  district: string; address?: string; googleMapsUrl?: string
+  instagramUrl?: string; rating?: number; priceLevel?: number
+}
+
+function VenueCard({ venue, selected, onSelect, accent }: { venue: Venue; selected: boolean; onSelect: () => void; accent: string }) {
+  const cat = CAT[venue.category] ?? { emoji: '📍' }
+  const price = venue.priceLevel ? '₺'.repeat(venue.priceLevel) : ''
+  const stars = venue.rating ? Math.round(venue.rating) : 0
+
+  return (
+    <div onClick={onSelect} style={{
+      padding: '14px 16px', borderRadius: '12px', cursor: 'pointer', transition: 'all 0.15s',
+      border: `2px solid ${selected ? accent : '#2A2A2A'}`,
+      background: selected ? `${accent}10` : '#1A1A1A',
+      display: 'flex', alignItems: 'center', gap: '12px',
+    }}>
+      <div style={{ fontSize: '24px', flexShrink: 0 }}>{cat.emoji}</div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
+          {selected && <span style={{ fontSize: '10px', fontWeight: 700, color: accent, background: `${accent}20`, border: `1px solid ${accent}40`, borderRadius: '4px', padding: '1px 5px' }}>✓ Önerildi</span>}
+          <span style={{ fontWeight: 700, fontSize: '14px', color: '#fff' }}>{venue.name}</span>
+        </div>
+        <div style={{ fontSize: '12px', color: '#666' }}>{venue.district}</div>
+      </div>
+      <div style={{ textAlign: 'right', flexShrink: 0 }}>
+        <div style={{ fontSize: '12px', color: accent, marginBottom: '4px' }}>
+          {'★'.repeat(stars)}{'☆'.repeat(5 - stars)}
+        </div>
+        <div style={{ fontSize: '11px', color: '#888' }}>{price}</div>
+      </div>
+      <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
+        <button
+          onClick={e => { e.stopPropagation(); venue.googleMapsUrl && window.open(venue.googleMapsUrl, '_blank') }}
+          style={{ width: '28px', height: '28px', borderRadius: '6px', border: '1px solid #333', background: 'none', color: venue.googleMapsUrl ? '#60A5FA' : '#444', cursor: venue.googleMapsUrl ? 'pointer' : 'not-allowed', fontSize: '13px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          🗺️
+        </button>
+        <button
+          onClick={e => { e.stopPropagation(); venue.instagramUrl && window.open(venue.instagramUrl, '_blank') }}
+          style={{ width: '28px', height: '28px', borderRadius: '6px', border: '1px solid #333', background: 'none', color: venue.instagramUrl ? '#F472B6' : '#444', cursor: venue.instagramUrl ? 'pointer' : 'not-allowed', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          @
+        </button>
+      </div>
+    </div>
+  )
+}
 
 function slugify(s: string) {
   return s.toLowerCase().trim()
@@ -29,9 +86,32 @@ export default function CreateGNOPage() {
   const [options, setOptions]     = useState([...DEFAULT_OPTIONS])
   const [times, setTimes]         = useState([...DEFAULT_TIMES])
   const [locations, setLocations] = useState([...DEFAULT_LOCATIONS])
+  const [venueCity, setVenueCity]         = useState('')
+  const [venueDistrict, setVenueDistrict] = useState('')
+  const [venues, setVenues]               = useState<Venue[]>([])
+  const [venueLoading, setVenueLoading]   = useState(false)
+  const [suggestedVenueId, setSuggestedVenueId] = useState('')
   const [saving, setSaving]       = useState(false)
   const [done, setDone]           = useState<{ link: string } | null>(null)
   const [copied, setCopied]       = useState(false)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const accent = '#FF8FAB'
+
+  useEffect(() => {
+    if (venueCity.length < 2) { setVenues([]); return }
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(async () => {
+      setVenueLoading(true)
+      try {
+        const params = new URLSearchParams({ city: venueCity })
+        if (venueDistrict) params.set('district', venueDistrict)
+        const r = await api.get(`/api/venues/suggest?${params}`)
+        setVenues(r.data.venues)
+      } catch { setVenues([]) }
+      finally { setVenueLoading(false) }
+    }, 600)
+  }, [venueCity, venueDistrict])
 
   async function publish() {
     setSaving(true)
@@ -44,6 +124,9 @@ export default function CreateGNOPage() {
         option5Label: options[4], option6Label: options[5],
         time1Label: times[0], time2Label: times[1], time3Label: times[2],
         location1Label: locations[0], location2Label: locations[1], location3Label: locations[2],
+        venueCity:       venueCity       || undefined,
+        venueDistrict:   venueDistrict   || undefined,
+        suggestedVenueId: suggestedVenueId || undefined,
       })
       const slug = r.data.card.slug
       const link = `${window.location.origin}/girlsnightout/${slug}`
@@ -86,10 +169,10 @@ export default function CreateGNOPage() {
         <Link to="/dashboard" style={{ color: '#999', fontSize: '14px', textDecoration: 'none', display: 'block', marginBottom: '32px' }}>← Dashboard</Link>
 
         <div style={{ display: 'flex', gap: '6px', marginBottom: '32px' }}>
-          {[1,2,3].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: i === 1 ? '#FF8FAB' : '#2A2A2A' }} />)}
+          {[1,2,3].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: i === 1 ? accent : '#2A2A2A' }} />)}
         </div>
 
-        <div style={{ display: 'inline-block', background: '#2D1520', border: '1px solid #C06080', borderRadius: '9999px', padding: '4px 14px', fontSize: '12px', color: '#FF8FAB', fontWeight: 700, marginBottom: '16px', letterSpacing: '1px' }}>
+        <div style={{ display: 'inline-block', background: '#2D1520', border: '1px solid #C06080', borderRadius: '9999px', padding: '4px 14px', fontSize: '12px', color: accent, fontWeight: 700, marginBottom: '16px', letterSpacing: '1px' }}>
           👯‍♀️ GIRLS NIGHT OUT
         </div>
 
@@ -102,18 +185,18 @@ export default function CreateGNOPage() {
             onChange={e => setGroupName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && groupName.trim() && setStep(2)} autoFocus />
           {groupName && (
-            <p style={{ marginTop: '8px', fontSize: '13px', color: '#FF8FAB' }}>
+            <p style={{ marginTop: '8px', fontSize: '13px', color: accent }}>
               getdatewith.me/girlsnightout/{slugify(groupName)}
             </p>
           )}
         </div>
 
-        <div style={{ marginBottom: '32px' }}>
+        <div style={{ marginBottom: '24px' }}>
           <label className="label" style={{ marginBottom: '12px' }}>Tema</label>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
             {THEMES.map(t => (
               <button key={t.id} onClick={() => setTheme(t.id)}
-                style={{ padding: '16px 12px', borderRadius: '12px', border: `2px solid ${theme === t.id ? '#FF8FAB' : '#2A2A2A'}`, background: t.preview.bg, cursor: 'pointer', textAlign: 'center', transition: 'border-color 0.15s' }}>
+                style={{ padding: '16px 12px', borderRadius: '12px', border: `2px solid ${theme === t.id ? accent : '#2A2A2A'}`, background: t.preview.bg, cursor: 'pointer', textAlign: 'center', transition: 'border-color 0.15s' }}>
                 <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: t.preview.dot, margin: '0 auto 8px' }} />
                 <p style={{ fontWeight: 700, fontSize: '13px', color: '#fff' }}>{t.label}</p>
                 <p style={{ fontSize: '11px', color: '#888', marginTop: '2px' }}>{t.desc}</p>
@@ -122,8 +205,47 @@ export default function CreateGNOPage() {
           </div>
         </div>
 
+        {/* Venue section */}
+        <div style={{ borderTop: '1px solid #2A2A2A', paddingTop: '20px', marginBottom: '28px' }}>
+          <label className="label" style={{ marginBottom: '6px' }}>📍 Buluşma şehri <span style={{ color: '#555', fontWeight: 400 }}>(opsiyonel)</span></label>
+          <input className="input" placeholder="İstanbul, İzmir, Ankara..." value={venueCity}
+            onChange={e => setVenueCity(e.target.value)} style={{ marginBottom: '10px' }} />
+
+          {venueCity.length >= 2 && (
+            <>
+              <label className="label" style={{ marginBottom: '6px' }}>İlçe <span style={{ color: '#555', fontWeight: 400 }}>(önerilir)</span></label>
+              <input className="input" placeholder="Kadıköy, Alsancak..." value={venueDistrict}
+                onChange={e => setVenueDistrict(e.target.value)} style={{ marginBottom: '12px' }} />
+            </>
+          )}
+
+          {venueLoading && <p style={{ color: '#666', fontSize: '13px' }}>Mekanlar aranıyor…</p>}
+
+          {!venueLoading && venues.length > 0 && (
+            <>
+              <p style={{ fontSize: '12px', fontWeight: 700, color: '#666', marginBottom: '8px', letterSpacing: '1px', textTransform: 'uppercase' }}>📍 Önerilen Mekanlar</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {venues.map(v => (
+                  <VenueCard key={v.id} venue={v} selected={suggestedVenueId === v.id} accent={accent}
+                    onSelect={() => setSuggestedVenueId(suggestedVenueId === v.id ? '' : v.id)} />
+                ))}
+              </div>
+              {suggestedVenueId && (
+                <button onClick={() => setSuggestedVenueId('')}
+                  style={{ marginTop: '8px', background: 'none', border: 'none', color: '#666', fontSize: '12px', cursor: 'pointer' }}>
+                  × Seçimi kaldır
+                </button>
+              )}
+            </>
+          )}
+
+          {!venueLoading && venueCity.length >= 2 && venues.length === 0 && (
+            <p style={{ color: '#555', fontSize: '13px' }}>Bu şehir için henüz mekan yok.</p>
+          )}
+        </div>
+
         <button className="btn-primary" onClick={() => setStep(2)} disabled={!groupName.trim()}
-          style={{ width: '100%', padding: '14px', fontSize: '16px', background: '#FF8FAB', color: '#000' }}>
+          style={{ width: '100%', padding: '14px', fontSize: '16px', background: accent, color: '#000' }}>
           İlerle →
         </button>
       </div>
@@ -137,7 +259,7 @@ export default function CreateGNOPage() {
         <button onClick={() => setStep(1)} style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', fontSize: '14px', marginBottom: '32px', display: 'block' }}>← Geri</button>
 
         <div style={{ display: 'flex', gap: '6px', marginBottom: '32px' }}>
-          {[1,2,3].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: i <= 2 ? '#FF8FAB' : '#2A2A2A' }} />)}
+          {[1,2,3].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: i <= 2 ? accent : '#2A2A2A' }} />)}
         </div>
 
         <h2 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '6px' }}>Seçenekleri ayarla ✏️</h2>
@@ -177,7 +299,7 @@ export default function CreateGNOPage() {
         </div>
 
         <button className="btn-primary" onClick={() => setStep(3)}
-          style={{ width: '100%', padding: '14px', fontSize: '16px', background: '#FF8FAB', color: '#000' }}>
+          style={{ width: '100%', padding: '14px', fontSize: '16px', background: accent, color: '#000' }}>
           İlerle →
         </button>
       </div>
@@ -191,24 +313,29 @@ export default function CreateGNOPage() {
         <button onClick={() => setStep(2)} style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', fontSize: '14px', marginBottom: '32px', display: 'block' }}>← Geri</button>
 
         <div style={{ display: 'flex', gap: '6px', marginBottom: '32px' }}>
-          {[1,2,3].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: '#FF8FAB' }} />)}
+          {[1,2,3].map(i => <div key={i} style={{ flex: 1, height: '3px', borderRadius: '9999px', background: accent }} />)}
         </div>
 
         <h2 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '6px' }}>Hazır! 🎉</h2>
         <p style={{ color: '#999', marginBottom: '28px' }}>Her şey doğru görünüyor mu?</p>
 
         <div className="card" style={{ padding: '20px', marginBottom: '24px' }}>
-          <p style={{ fontSize: '12px', color: '#FF8FAB', fontWeight: 700, letterSpacing: '1px', marginBottom: '12px' }}>👯‍♀️ GIRLS NIGHT OUT</p>
+          <p style={{ fontSize: '12px', color: accent, fontWeight: 700, letterSpacing: '1px', marginBottom: '12px' }}>👯‍♀️ GIRLS NIGHT OUT</p>
           <p style={{ fontSize: '18px', fontWeight: 800, marginBottom: '16px' }}>{groupName}</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <p style={{ fontSize: '13px', color: '#888' }}>🎯 {options.filter(Boolean).join(' · ')}</p>
             <p style={{ fontSize: '13px', color: '#888' }}>📅 {times.filter(Boolean).join(' · ')}</p>
             <p style={{ fontSize: '13px', color: '#888' }}>📍 {locations.filter(Boolean).join(' · ')}</p>
+            {suggestedVenueId && venues.find(v => v.id === suggestedVenueId) && (
+              <p style={{ fontSize: '13px', color: accent }}>
+                📍 Önerilen mekan: {venues.find(v => v.id === suggestedVenueId)?.name}
+              </p>
+            )}
           </div>
         </div>
 
         <button className="btn-primary" onClick={publish} disabled={saving}
-          style={{ width: '100%', padding: '14px', fontSize: '16px', background: '#FF8FAB', color: '#000' }}>
+          style={{ width: '100%', padding: '14px', fontSize: '16px', background: accent, color: '#000' }}>
           {saving ? 'Oluşturuluyor…' : '🚀 Oylama Linkini Oluştur'}
         </button>
       </div>

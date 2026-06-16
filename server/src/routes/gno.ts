@@ -12,6 +12,11 @@ function toSlug(name: string): string {
     .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
 }
 
+const VENUE_SELECT = {
+  id: true, name: true, category: true, city: true, district: true,
+  address: true, googleMapsUrl: true, instagramUrl: true, rating: true, priceLevel: true,
+}
+
 // GET /api/gno — list mine
 router.get('/', requireAuth, async (req: AuthRequest, res: Response) => {
   const cards = await prisma.gNOCard.findMany({
@@ -25,20 +30,23 @@ router.get('/', requireAuth, async (req: AuthRequest, res: Response) => {
 // POST /api/gno — create
 router.post('/', requireAuth, async (req: AuthRequest, res: Response) => {
   const schema = z.object({
-    groupName:      z.string().min(1).max(50),
-    theme:          z.enum(['minimal', 'rosy', 'emoji']).default('rosy'),
-    option1Label:   z.string().max(40).default('🍕 Pizza'),
-    option2Label:   z.string().max(40).default('🍦 Dondurma'),
-    option3Label:   z.string().max(40).default('☕ Kahve'),
-    option4Label:   z.string().max(40).default('🍸 Kokteyl'),
-    option5Label:   z.string().max(40).default('🎨 Workshop'),
-    option6Label:   z.string().max(40).default('🍺 Bar'),
-    time1Label:     z.string().max(50).default('Cuma 20:00'),
-    time2Label:     z.string().max(50).default('Cumartesi 20:00'),
-    time3Label:     z.string().max(50).default('Pazar 18:00'),
-    location1Label: z.string().max(50).default('Kadıköy'),
-    location2Label: z.string().max(50).default('Beşiktaş'),
-    location3Label: z.string().max(50).default('Nişantaşı'),
+    groupName:       z.string().min(1).max(50),
+    theme:           z.enum(['minimal', 'rosy', 'emoji']).default('rosy'),
+    option1Label:    z.string().max(40).default('🍕 Pizza'),
+    option2Label:    z.string().max(40).default('🍦 Dondurma'),
+    option3Label:    z.string().max(40).default('☕ Kahve'),
+    option4Label:    z.string().max(40).default('🍸 Kokteyl'),
+    option5Label:    z.string().max(40).default('🎨 Workshop'),
+    option6Label:    z.string().max(40).default('🍺 Bar'),
+    time1Label:      z.string().max(50).default('Cuma 20:00'),
+    time2Label:      z.string().max(50).default('Cumartesi 20:00'),
+    time3Label:      z.string().max(50).default('Pazar 18:00'),
+    location1Label:  z.string().max(50).default('Kadıköy'),
+    location2Label:  z.string().max(50).default('Beşiktaş'),
+    location3Label:  z.string().max(50).default('Nişantaşı'),
+    venueCity:        z.string().max(60).optional(),
+    venueDistrict:    z.string().max(60).optional(),
+    suggestedVenueId: z.string().optional(),
   })
   const parsed = schema.safeParse(req.body)
   if (!parsed.success) {
@@ -69,7 +77,16 @@ router.get('/public/:slug', async (req: Request, res: Response) => {
     },
   })
   if (!card) { res.status(404).json({ error: 'Grup bulunamadı' }); return }
-  res.json({ card })
+
+  let suggestedVenue = null
+  if (card.suggestedVenueId) {
+    suggestedVenue = await prisma.venue.findUnique({
+      where: { id: card.suggestedVenueId },
+      select: VENUE_SELECT,
+    })
+  }
+
+  res.json({ card: { ...card, suggestedVenue } })
 })
 
 // POST /api/gno/:id/vote — submit vote
@@ -80,6 +97,7 @@ router.post('/:id/vote', async (req: Request, res: Response) => {
     selectedTime:     z.string().min(1).max(100),
     selectedLocation: z.string().min(1).max(100),
     pickupChoice:     z.enum(['meet', 'pickup']).default('meet'),
+    selectedVenueId:  z.string().optional(),
   })
   const parsed = schema.safeParse(req.body)
   if (!parsed.success) {
