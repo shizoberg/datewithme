@@ -53,7 +53,10 @@ export default function LandingPage() {
         <span style={{ fontWeight: 800, fontSize: '20px', color: '#00F680', letterSpacing: '-0.5px' }}>
           getdatewith.me
         </span>
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <Link to="/topluluk" style={{ color: '#666', textDecoration: 'none', fontSize: '13px', padding: '8px 12px' }}>
+            🌿 Topluluk
+          </Link>
           <Link to="/login" style={{ color: '#999', textDecoration: 'none', fontSize: '14px', padding: '8px 16px' }}>
             Giriş Yap
           </Link>

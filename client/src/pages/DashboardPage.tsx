@@ -168,7 +168,7 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <main style={{ maxWidth: '720px', margin: '0 auto', padding: '40px 24px' }}>
+      <main style={{ maxWidth: '720px', margin: '0 auto', padding: '40px 24px 80px' }}>
         <div style={{ marginBottom: '40px' }}>
           <h2 style={{ fontSize: '28px', fontWeight: 800 }}>Merhaba {user?.name} 👋</h2>
           <p style={{ color: '#999', marginTop: '6px', fontSize: '15px' }}>Kartlarını ve gruplarını buradan yönet.</p>
@@ -220,6 +220,13 @@ export default function DashboardPage() {
           ) : (
             gnoCards.map(c => <GNOCardRow key={c.id} card={c} />)
           )}
+        </div>
+
+        {/* Footer community link */}
+        <div style={{ textAlign: 'center', marginTop: '40px' }}>
+          <Link to="/topluluk" style={{ color: '#555', fontSize: '13px', textDecoration: 'none' }}>
+            Harika bir mekan biliyor musun? → <span style={{ color: '#00F680' }}>Ekle</span>
+          </Link>
         </div>
       </main>
     </div>

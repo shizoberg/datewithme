@@ -8,6 +8,14 @@ interface Venue {
   rating?: number; priceLevel?: number; isActive: boolean; createdAt: string
 }
 
+interface Submission {
+  id: string; name: string; category: string; city: string; district: string
+  address?: string; googleMapsUrl?: string; instagramUrl?: string
+  rating?: number; priceLevel?: number; description?: string
+  submitterName?: string; submitterEmail?: string
+  status: string; adminNote?: string; createdAt: string
+}
+
 const CATEGORIES = ['cafe', 'restaurant', 'bar', 'park', 'rooftop', 'cultural']
 const CAT_EMOJI: Record<string, string> = {
   cafe: '☕', restaurant: '🍽️', bar: '🍸', park: '🌿', rooftop: '🌆', cultural: '🎨',
@@ -20,7 +28,9 @@ const EMPTY_FORM = {
 }
 
 export default function AdminPage() {
-  const [tab, setTab] = useState<'venues'>('venues')
+  const [tab, setTab] = useState<'venues' | 'submissions'>('venues')
+
+  // Venues state
   const [venues, setVenues] = useState<Venue[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
@@ -28,6 +38,16 @@ export default function AdminPage() {
   const [editId, setEditId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [deleteId, setDeleteId] = useState<string | null>(null)
+
+  // Submissions state
+  const [subFilter, setSubFilter] = useState<'pending' | 'approved' | 'rejected'>('pending')
+  const [submissions, setSubmissions] = useState<Submission[]>([])
+  const [subLoading, setSubLoading] = useState(false)
+  const [pendingCount, setPendingCount] = useState(0)
+  const [approveModal, setApproveModal] = useState<Submission | null>(null)
+  const [rejectModal, setRejectModal] = useState<Submission | null>(null)
+  const [rejectNote, setRejectNote] = useState('')
+  const [actionLoading, setActionLoading] = useState(false)
 
   async function load() {
     setLoading(true)
@@ -38,7 +58,28 @@ export default function AdminPage() {
     finally { setLoading(false) }
   }
 
+  async function loadSubmissions(status = subFilter) {
+    setSubLoading(true)
+    try {
+      const r = await api.get(`/api/admin/venue-submissions/admin?status=${status}`)
+      setSubmissions(r.data.submissions)
+      setPendingCount(r.data.pendingCount)
+    } catch {}
+    finally { setSubLoading(false) }
+  }
+
   useEffect(() => { load() }, [])
+  useEffect(() => { if (tab === 'submissions') loadSubmissions() }, [tab, subFilter])
+
+  // Auto-refresh pending count every 30s
+  useEffect(() => {
+    const t = setInterval(() => {
+      api.get('/api/admin/venue-submissions/admin?status=pending')
+        .then(r => setPendingCount(r.data.pendingCount))
+        .catch(() => {})
+    }, 30000)
+    return () => clearInterval(t)
+  }, [])
 
   function startEdit(v: Venue) {
     setForm({
@@ -97,6 +138,33 @@ export default function AdminPage() {
     await load()
   }
 
+  async function approveSubmission() {
+    if (!approveModal) return
+    setActionLoading(true)
+    try {
+      await api.patch(`/api/admin/venue-submissions/admin/${approveModal.id}/approve`)
+      setSubmissions(prev => prev.filter(s => s.id !== approveModal.id))
+      setPendingCount(p => Math.max(0, p - 1))
+      setApproveModal(null)
+    } catch (err: any) {
+      alert(err?.response?.data?.error || 'Hata')
+    } finally { setActionLoading(false) }
+  }
+
+  async function rejectSubmission() {
+    if (!rejectModal) return
+    setActionLoading(true)
+    try {
+      await api.patch(`/api/admin/venue-submissions/admin/${rejectModal.id}/reject`, { adminNote: rejectNote })
+      setSubmissions(prev => prev.filter(s => s.id !== rejectModal.id))
+      setPendingCount(p => Math.max(0, p - 1))
+      setRejectModal(null)
+      setRejectNote('')
+    } catch (err: any) {
+      alert(err?.response?.data?.error || 'Hata')
+    } finally { setActionLoading(false) }
+  }
+
   const f = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setForm(p => ({ ...p, [k]: e.target.value }))
 
@@ -112,125 +180,209 @@ export default function AdminPage() {
           style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'venues' ? '#00F680' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'venues' ? '2px solid #00F680' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
           📍 Mekanlar
         </button>
+        <button onClick={() => setTab('submissions')}
+          style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'submissions' ? '#00F680' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'submissions' ? '2px solid #00F680' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
+          📬 Mekan Önerileri {pendingCount > 0 && <span style={{ background: '#00F680', color: '#000', borderRadius: '9999px', padding: '1px 7px', fontSize: '11px', marginLeft: '6px' }}>{pendingCount}</span>}
+        </button>
       </div>
 
-      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 24px' }}>
-
-        {/* Form */}
-        <div style={{ marginBottom: '24px' }}>
-          {!showForm ? (
-            <button onClick={() => setShowForm(true)} className="btn-primary" style={{ padding: '10px 20px', fontSize: '14px' }}>
-              + Yeni Mekan Ekle
-            </button>
-          ) : (
-            <div className="card" style={{ padding: '24px' }}>
-              <h3 style={{ fontWeight: 700, marginBottom: '20px' }}>{editId ? '✏️ Mekanı Düzenle' : '+ Yeni Mekan'}</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                <div style={{ gridColumn: '1/-1' }}>
-                  <label className="label">İsim *</label>
-                  <input className="input" value={form.name} onChange={f('name')} placeholder="Manda Cafe" />
-                </div>
-                <div>
-                  <label className="label">Kategori *</label>
-                  <select className="input" value={form.category} onChange={f('category')} style={{ cursor: 'pointer' }}>
-                    {CATEGORIES.map(c => <option key={c} value={c}>{CAT_EMOJI[c]} {c}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label className="label">Fiyat Seviyesi</label>
-                  <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
-                    {[1,2,3].map(n => (
-                      <button key={n} onClick={() => setForm(p => ({ ...p, priceLevel: String(n) }))}
-                        style={{ flex: 1, padding: '10px', borderRadius: '8px', border: `2px solid ${form.priceLevel === String(n) ? '#00F680' : '#2A2A2A'}`, background: form.priceLevel === String(n) ? '#00F68018' : '#1A1A1A', color: '#fff', cursor: 'pointer', fontWeight: 700, fontSize: '14px', fontFamily: 'inherit' }}>
-                        {'₺'.repeat(n)}
-                      </button>
-                    ))}
+      {/* ── VENUES TAB ── */}
+      {tab === 'venues' && (
+        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 24px' }}>
+          <div style={{ marginBottom: '24px' }}>
+            {!showForm ? (
+              <button onClick={() => setShowForm(true)} className="btn-primary" style={{ padding: '10px 20px', fontSize: '14px' }}>
+                + Yeni Mekan Ekle
+              </button>
+            ) : (
+              <div className="card" style={{ padding: '24px' }}>
+                <h3 style={{ fontWeight: 700, marginBottom: '20px' }}>{editId ? '✏️ Mekanı Düzenle' : '+ Yeni Mekan'}</h3>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div style={{ gridColumn: '1/-1' }}>
+                    <label className="label">İsim *</label>
+                    <input className="input" value={form.name} onChange={f('name')} placeholder="Manda Cafe" />
+                  </div>
+                  <div>
+                    <label className="label">Kategori *</label>
+                    <select className="input" value={form.category} onChange={f('category')} style={{ cursor: 'pointer' }}>
+                      {CATEGORIES.map(c => <option key={c} value={c}>{CAT_EMOJI[c]} {c}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="label">Fiyat Seviyesi</label>
+                    <div style={{ display: 'flex', gap: '8px', marginTop: '4px' }}>
+                      {[1,2,3].map(n => (
+                        <button key={n} onClick={() => setForm(p => ({ ...p, priceLevel: String(n) }))}
+                          style={{ flex: 1, padding: '10px', borderRadius: '8px', border: `2px solid ${form.priceLevel === String(n) ? '#00F680' : '#2A2A2A'}`, background: form.priceLevel === String(n) ? '#00F68018' : '#1A1A1A', color: '#fff', cursor: 'pointer', fontWeight: 700, fontSize: '14px', fontFamily: 'inherit' }}>
+                          {'₺'.repeat(n)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="label">Şehir *</label>
+                    <input className="input" value={form.city} onChange={f('city')} placeholder="İstanbul" />
+                  </div>
+                  <div>
+                    <label className="label">İlçe *</label>
+                    <input className="input" value={form.district} onChange={f('district')} placeholder="Kadıköy" />
+                  </div>
+                  <div>
+                    <label className="label">Rating (1-5)</label>
+                    <input className="input" type="number" min="1" max="5" step="0.1" value={form.rating} onChange={f('rating')} placeholder="4.5" />
+                  </div>
+                  <div>
+                    <label className="label">Adres</label>
+                    <input className="input" value={form.address} onChange={f('address')} placeholder="Moda Cad. No:1" />
+                  </div>
+                  <div style={{ gridColumn: '1/-1' }}>
+                    <label className="label">Google Maps URL</label>
+                    <input className="input" value={form.googleMapsUrl} onChange={f('googleMapsUrl')} placeholder="https://maps.google.com/..." />
+                  </div>
+                  <div style={{ gridColumn: '1/-1' }}>
+                    <label className="label">Instagram (@kullanıcıadı veya tam URL)</label>
+                    <input className="input" value={form.instagramUrl} onChange={f('instagramUrl')} placeholder="@mandacafe" />
                   </div>
                 </div>
-                <div>
-                  <label className="label">Şehir *</label>
-                  <input className="input" value={form.city} onChange={f('city')} placeholder="İstanbul" />
-                </div>
-                <div>
-                  <label className="label">İlçe *</label>
-                  <input className="input" value={form.district} onChange={f('district')} placeholder="Kadıköy" />
-                </div>
-                <div>
-                  <label className="label">Rating (1-5)</label>
-                  <input className="input" type="number" min="1" max="5" step="0.1" value={form.rating} onChange={f('rating')} placeholder="4.5" />
-                </div>
-                <div>
-                  <label className="label">Adres</label>
-                  <input className="input" value={form.address} onChange={f('address')} placeholder="Moda Cad. No:1" />
-                </div>
-                <div style={{ gridColumn: '1/-1' }}>
-                  <label className="label">Google Maps URL</label>
-                  <input className="input" value={form.googleMapsUrl} onChange={f('googleMapsUrl')} placeholder="https://maps.google.com/..." />
-                </div>
-                <div style={{ gridColumn: '1/-1' }}>
-                  <label className="label">Instagram (@kullanıcıadı veya tam URL)</label>
-                  <input className="input" value={form.instagramUrl} onChange={f('instagramUrl')} placeholder="@mandacafe" />
+                <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                  <button onClick={save} disabled={saving || !form.name || !form.city || !form.district} className="btn-primary" style={{ padding: '10px 24px' }}>
+                    {saving ? 'Kaydediliyor…' : editId ? '💾 Güncelle' : '💾 Kaydet'}
+                  </button>
+                  <button onClick={cancelForm} className="btn-secondary" style={{ padding: '10px 20px' }}>İptal</button>
                 </div>
               </div>
-              <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-                <button onClick={save} disabled={saving || !form.name || !form.city || !form.district} className="btn-primary" style={{ padding: '10px 24px' }}>
-                  {saving ? 'Kaydediliyor…' : editId ? '💾 Güncelle' : '💾 Kaydet'}
-                </button>
-                <button onClick={cancelForm} className="btn-secondary" style={{ padding: '10px 20px' }}>İptal</button>
+            )}
+          </div>
+
+          {loading ? (
+            <p style={{ color: '#666' }}>Yükleniyor…</p>
+          ) : (
+            <div className="card" style={{ overflow: 'hidden' }}>
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid #2A2A2A' }}>
+                      {['İsim','Kategori','Şehir','İlçe','Rating','Fiyat','IG','Maps','Aktif',''].map(h => (
+                        <th key={h} style={{ padding: '10px 12px', textAlign: 'left', color: '#666', fontWeight: 700, whiteSpace: 'nowrap' }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {venues.map(v => (
+                      <tr key={v.id} style={{ borderBottom: '1px solid #1A1A1A', opacity: v.isActive ? 1 : 0.4 }}>
+                        <td style={{ padding: '10px 12px', fontWeight: 600 }}>{v.name}</td>
+                        <td style={{ padding: '10px 12px' }}>{CAT_EMOJI[v.category]} {v.category}</td>
+                        <td style={{ padding: '10px 12px' }}>{v.city}</td>
+                        <td style={{ padding: '10px 12px' }}>{v.district}</td>
+                        <td style={{ padding: '10px 12px' }}>{v.rating ? `★ ${v.rating}` : '—'}</td>
+                        <td style={{ padding: '10px 12px' }}>{v.priceLevel ? PRICE_LABEL[v.priceLevel] : '—'}</td>
+                        <td style={{ padding: '10px 12px' }}>
+                          {v.instagramUrl ? <a href={v.instagramUrl} target="_blank" rel="noreferrer" style={{ color: '#F472B6' }}>@</a> : <span style={{ color: '#444' }}>—</span>}
+                        </td>
+                        <td style={{ padding: '10px 12px' }}>
+                          {v.googleMapsUrl ? <a href={v.googleMapsUrl} target="_blank" rel="noreferrer" style={{ color: '#60A5FA' }}>🗺️</a> : <span style={{ color: '#444' }}>—</span>}
+                        </td>
+                        <td style={{ padding: '10px 12px' }}>
+                          <button onClick={() => toggleActive(v)}
+                            style={{ width: '36px', height: '20px', borderRadius: '9999px', background: v.isActive ? '#00F680' : '#2A2A2A', border: 'none', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }}>
+                            <span style={{ position: 'absolute', top: '2px', left: v.isActive ? '18px' : '2px', width: '16px', height: '16px', borderRadius: '50%', background: '#fff', transition: 'left 0.2s' }} />
+                          </button>
+                        </td>
+                        <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
+                          <button onClick={() => startEdit(v)} style={{ background: 'none', border: 'none', color: '#00F680', cursor: 'pointer', fontSize: '14px', marginRight: '8px' }}>✏️</button>
+                          <button onClick={() => setDeleteId(v.id)} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', fontSize: '14px' }}>🗑️</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           )}
         </div>
+      )}
 
-        {/* Table */}
-        {loading ? (
-          <p style={{ color: '#666' }}>Yükleniyor…</p>
-        ) : (
-          <div className="card" style={{ overflow: 'hidden' }}>
-            <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
-                <thead>
-                  <tr style={{ borderBottom: '1px solid #2A2A2A' }}>
-                    {['İsim','Kategori','Şehir','İlçe','Rating','Fiyat','IG','Maps','Aktif',''].map(h => (
-                      <th key={h} style={{ padding: '10px 12px', textAlign: 'left', color: '#666', fontWeight: 700, whiteSpace: 'nowrap' }}>{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {venues.map(v => (
-                    <tr key={v.id} style={{ borderBottom: '1px solid #1A1A1A', opacity: v.isActive ? 1 : 0.4 }}>
-                      <td style={{ padding: '10px 12px', fontWeight: 600 }}>{v.name}</td>
-                      <td style={{ padding: '10px 12px' }}>{CAT_EMOJI[v.category]} {v.category}</td>
-                      <td style={{ padding: '10px 12px' }}>{v.city}</td>
-                      <td style={{ padding: '10px 12px' }}>{v.district}</td>
-                      <td style={{ padding: '10px 12px' }}>{v.rating ? `★ ${v.rating}` : '—'}</td>
-                      <td style={{ padding: '10px 12px' }}>{v.priceLevel ? PRICE_LABEL[v.priceLevel] : '—'}</td>
-                      <td style={{ padding: '10px 12px' }}>
-                        {v.instagramUrl ? <a href={v.instagramUrl} target="_blank" rel="noreferrer" style={{ color: '#F472B6' }}>@</a> : <span style={{ color: '#444' }}>—</span>}
-                      </td>
-                      <td style={{ padding: '10px 12px' }}>
-                        {v.googleMapsUrl ? <a href={v.googleMapsUrl} target="_blank" rel="noreferrer" style={{ color: '#60A5FA' }}>🗺️</a> : <span style={{ color: '#444' }}>—</span>}
-                      </td>
-                      <td style={{ padding: '10px 12px' }}>
-                        <button onClick={() => toggleActive(v)}
-                          style={{ width: '36px', height: '20px', borderRadius: '9999px', background: v.isActive ? '#00F680' : '#2A2A2A', border: 'none', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }}>
-                          <span style={{ position: 'absolute', top: '2px', left: v.isActive ? '18px' : '2px', width: '16px', height: '16px', borderRadius: '50%', background: '#fff', transition: 'left 0.2s' }} />
-                        </button>
-                      </td>
-                      <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
-                        <button onClick={() => startEdit(v)} style={{ background: 'none', border: 'none', color: '#00F680', cursor: 'pointer', fontSize: '14px', marginRight: '8px' }}>✏️</button>
-                        <button onClick={() => setDeleteId(v.id)} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', fontSize: '14px' }}>🗑️</button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+      {/* ── SUBMISSIONS TAB ── */}
+      {tab === 'submissions' && (
+        <div style={{ maxWidth: '960px', margin: '0 auto', padding: '32px 24px' }}>
+          {/* Filter tabs */}
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
+            {(['pending', 'approved', 'rejected'] as const).map(s => (
+              <button key={s} onClick={() => setSubFilter(s)}
+                style={{ padding: '8px 18px', borderRadius: '9999px', border: `1.5px solid ${subFilter === s ? '#00F680' : '#2A2A2A'}`, background: subFilter === s ? '#00F68018' : 'transparent', color: subFilter === s ? '#00F680' : '#666', cursor: 'pointer', fontWeight: 700, fontSize: '13px', fontFamily: 'inherit' }}>
+                {s === 'pending' ? `Bekleyenler${pendingCount > 0 ? ` (${pendingCount})` : ''}` : s === 'approved' ? 'Onaylananlar' : 'Reddedilenler'}
+              </button>
+            ))}
           </div>
-        )}
-      </div>
 
-      {/* Delete confirm */}
+          {subLoading ? (
+            <p style={{ color: '#666' }}>Yükleniyor…</p>
+          ) : submissions.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '48px 0', color: '#444' }}>
+              <p style={{ fontSize: '32px', marginBottom: '8px' }}>📭</p>
+              <p>Bu kategoride öneri yok.</p>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {submissions.map(s => (
+                <div key={s.id} className="card" style={{ padding: '18px 20px' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '14px', flexWrap: 'wrap' }}>
+                    <div style={{ flex: 1, minWidth: '200px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <span style={{ fontSize: '18px' }}>{CAT_EMOJI[s.category] ?? '📍'}</span>
+                        <span style={{ fontWeight: 700, fontSize: '15px' }}>{s.name}</span>
+                        <span style={{ fontSize: '11px', background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '4px', padding: '1px 6px', color: '#888' }}>{s.category}</span>
+                      </div>
+                      <p style={{ fontSize: '13px', color: '#666', marginBottom: '4px' }}>
+                        📍 {s.city}, {s.district}{s.address ? ` · ${s.address}` : ''}
+                      </p>
+                      {s.description && (
+                        <p style={{ fontSize: '12px', color: '#555', marginBottom: '4px', maxWidth: '480px' }}>"{s.description}"</p>
+                      )}
+                      <div style={{ display: 'flex', gap: '12px', fontSize: '12px', color: '#555', flexWrap: 'wrap' }}>
+                        {s.rating && <span>★ {s.rating}</span>}
+                        {s.priceLevel && <span>{PRICE_LABEL[s.priceLevel]}</span>}
+                        {s.googleMapsUrl && <a href={s.googleMapsUrl} target="_blank" rel="noreferrer" style={{ color: '#60A5FA', textDecoration: 'none' }}>🗺️ Harita</a>}
+                        {s.instagramUrl && <a href={s.instagramUrl.startsWith('http') ? s.instagramUrl : `https://instagram.com/${s.instagramUrl.replace(/^@/, '')}`} target="_blank" rel="noreferrer" style={{ color: '#F472B6', textDecoration: 'none' }}>@ Instagram</a>}
+                      </div>
+                      {s.submitterName && (
+                        <p style={{ fontSize: '12px', color: '#444', marginTop: '6px' }}>
+                          Öneren: {s.submitterName}{s.submitterEmail ? ` · ${s.submitterEmail}` : ''}
+                        </p>
+                      )}
+                      {s.adminNote && (
+                        <p style={{ fontSize: '12px', color: '#EF4444', marginTop: '4px' }}>Red notu: {s.adminNote}</p>
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-end', flexShrink: 0 }}>
+                      <p style={{ fontSize: '11px', color: '#444' }}>{new Date(s.createdAt).toLocaleDateString('tr-TR')}</p>
+                      {subFilter === 'pending' && (
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <button onClick={() => setApproveModal(s)}
+                            style={{ padding: '7px 14px', borderRadius: '8px', border: 'none', background: '#00F680', color: '#000', fontWeight: 700, fontSize: '13px', cursor: 'pointer', fontFamily: 'inherit' }}>
+                            ✓ Onayla
+                          </button>
+                          <button onClick={() => { setRejectModal(s); setRejectNote('') }}
+                            style={{ padding: '7px 14px', borderRadius: '8px', border: '1.5px solid #EF444440', background: 'transparent', color: '#EF4444', fontWeight: 700, fontSize: '13px', cursor: 'pointer', fontFamily: 'inherit' }}>
+                            ✗ Reddet
+                          </button>
+                        </div>
+                      )}
+                      {subFilter !== 'pending' && (
+                        <span style={{ fontSize: '12px', color: subFilter === 'approved' ? '#00F680' : '#EF4444', fontWeight: 700 }}>
+                          {subFilter === 'approved' ? '✓ Onaylandı' : '✗ Reddedildi'}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Delete confirm modal */}
       {deleteId && (
         <div style={{ position: 'fixed', inset: 0, background: '#00000080', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
           <div className="card" style={{ padding: '32px', maxWidth: '360px', textAlign: 'center' }}>
@@ -240,6 +392,52 @@ export default function AdminPage() {
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
               <button onClick={() => setDeleteId(null)} className="btn-secondary">İptal</button>
               <button onClick={confirmDelete} style={{ padding: '10px 20px', background: '#EF4444', color: '#fff', border: 'none', borderRadius: '9999px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Sil</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Approve confirm modal */}
+      {approveModal && (
+        <div style={{ position: 'fixed', inset: 0, background: '#00000080', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+          <div className="card" style={{ padding: '32px', maxWidth: '400px', width: '90%' }}>
+            <p style={{ fontSize: '28px', marginBottom: '12px' }}>✓</p>
+            <h3 style={{ fontWeight: 800, marginBottom: '8px' }}>{approveModal.name}</h3>
+            <p style={{ color: '#999', fontSize: '14px', marginBottom: '20px' }}>
+              Bu mekan Venue tablosuna eklenecek ve kullanıcılara önerilecek.
+            </p>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={() => setApproveModal(null)} className="btn-secondary" style={{ flex: 1 }}>İptal</button>
+              <button onClick={approveSubmission} disabled={actionLoading}
+                style={{ flex: 2, padding: '10px 20px', background: '#00F680', color: '#000', border: 'none', borderRadius: '9999px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+                {actionLoading ? 'İşleniyor…' : 'Onayla'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reject confirm modal */}
+      {rejectModal && (
+        <div style={{ position: 'fixed', inset: 0, background: '#00000080', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+          <div className="card" style={{ padding: '32px', maxWidth: '400px', width: '90%' }}>
+            <p style={{ fontSize: '28px', marginBottom: '12px' }}>✗</p>
+            <h3 style={{ fontWeight: 800, marginBottom: '8px' }}>{rejectModal.name}</h3>
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#888', marginBottom: '6px' }}>Red sebebi (opsiyonel)</label>
+              <textarea
+                style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #2A2A2A', background: '#111', color: '#fff', fontSize: '14px', outline: 'none', fontFamily: 'inherit', resize: 'vertical', minHeight: '80px', boxSizing: 'border-box' }}
+                placeholder="Sahte içerik, spam, ticari tanıtım..."
+                value={rejectNote}
+                onChange={e => setRejectNote(e.target.value)}
+              />
+            </div>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button onClick={() => setRejectModal(null)} className="btn-secondary" style={{ flex: 1 }}>İptal</button>
+              <button onClick={rejectSubmission} disabled={actionLoading}
+                style={{ flex: 2, padding: '10px 20px', background: '#EF4444', color: '#fff', border: 'none', borderRadius: '9999px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+                {actionLoading ? 'İşleniyor…' : 'Reddet'}
+              </button>
             </div>
           </div>
         </div>

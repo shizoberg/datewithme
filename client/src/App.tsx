@@ -12,6 +12,7 @@ import GNOPage from './pages/GNOPage'
 import LandingPage from './pages/LandingPage'
 import KVKKPage from './pages/KVKKPage'
 import AdminPage from './pages/AdminPage'
+import CommunityPage from './pages/CommunityPage'
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/create" element={<ProtectedRoute><CreateCardPage /></ProtectedRoute>} />
           <Route path="/create-gno" element={<ProtectedRoute><CreateGNOPage /></ProtectedRoute>} />
           <Route path="/girlsnightout/:slug" element={<GNOPage />} />
+          <Route path="/topluluk" element={<CommunityPage />} />
           <Route path="/:username/:slug" element={<InvitePage />} />
         </Routes>
       </BrowserRouter>

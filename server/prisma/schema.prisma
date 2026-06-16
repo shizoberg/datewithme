@@ -120,3 +120,23 @@ model GNOVote {
   selectedVenueId  String?
   createdAt        DateTime @default(now())
 }
+
+model VenueSubmission {
+  id             String    @id @default(uuid())
+  name           String
+  category       String
+  city           String
+  district       String
+  address        String?
+  googleMapsUrl  String?
+  instagramUrl   String?
+  rating         Float?
+  priceLevel     Int?
+  description    String?
+  submitterName  String?
+  submitterEmail String?
+  status         String    @default("pending")
+  adminNote      String?
+  createdAt      DateTime  @default(now())
+  reviewedAt     DateTime?
+}
