@@ -90,12 +90,12 @@ export default function CommunityPage() {
           🌿 Community Built
         </div>
         <h1 style={{ fontWeight: 900, fontSize: 'clamp(32px, 7vw, 56px)', lineHeight: 1.05, letterSpacing: '-1.5px', marginBottom: '20px' }}>
-          Bir yerini biliyorsun,<br />
-          <span style={{ color: '#00F680' }}>Topluluğu birlikte büyütelim.</span>
+          Mekan işi<br />
+          <span style={{ color: '#00F680' }}>ciddi bir iştir.</span>
         </h1>
         <p style={{ fontSize: '16px', color: '#888', lineHeight: 1.7, maxWidth: '480px', margin: '0 auto' }}>
-          getdatewith.me'ye katkıda bulun. Şehrindeki en iyi mekanları ekle,
-          herkes kaliteli vakit geçirsin.
+          Şehrinin en iyi mekanını biliyor musun? Ekle, herkes senin gibi
+          kaliteli vakit geçirsin.
         </p>
       </section>
 

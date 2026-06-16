@@ -13,6 +13,7 @@ import LandingPage from './pages/LandingPage'
 import KVKKPage from './pages/KVKKPage'
 import AdminPage from './pages/AdminPage'
 import CommunityPage from './pages/CommunityPage'
+import VenuesPage from './pages/VenuesPage'
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="/create-gno" element={<ProtectedRoute><CreateGNOPage /></ProtectedRoute>} />
           <Route path="/girlsnightout/:slug" element={<GNOPage />} />
           <Route path="/topluluk" element={<CommunityPage />} />
+          <Route path="/bulusma-mekanlari" element={<VenuesPage />} />
           <Route path="/:username/:slug" element={<InvitePage />} />
         </Routes>
       </BrowserRouter>

@@ -164,6 +164,14 @@ export default function DashboardPage() {
       <header style={{ borderBottom: '1px solid #2A2A2A', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <h1 style={{ fontSize: '20px', fontWeight: 800, color: '#00F680' }}>getdatewith.me</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <Link to="/bulusma-mekanlari" style={{ color: '#999', textDecoration: 'none', fontSize: '13px', padding: '8px 12px' }}>Mekanlar</Link>
+          <Link to="/topluluk" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#00F680', textDecoration: 'none', fontSize: '13px', fontWeight: 600, padding: '7px 14px', border: '1px solid rgba(0,246,128,0.3)', borderRadius: '9999px', background: 'rgba(0,246,128,0.06)' }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            Topluluk
+          </Link>
           <span style={{ color: '#999', fontSize: '14px' }}>@{user?.username}</span>
           <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#999', cursor: 'pointer', fontSize: '14px' }}>Çıkış</button>
         </div>

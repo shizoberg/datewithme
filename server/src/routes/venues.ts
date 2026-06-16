@@ -33,6 +33,22 @@ router.get('/suggest', async (req: Request, res: Response) => {
   res.json({ venues: venues.slice(0, 8) })
 })
 
+// GET /api/venues/all
+router.get('/all', async (req: Request, res: Response) => {
+  const { city, category, limit = '50' } = req.query as Record<string, string>
+  const where: Record<string, unknown> = { isActive: true }
+  if (city) where.city = { equals: city, mode: 'insensitive' }
+  if (category) where.category = category
+
+  const venues = await prisma.venue.findMany({
+    where,
+    select: { ...VENUE_SELECT, district: true, city: true, description: true },
+    orderBy: [{ rating: 'desc' }, { name: 'asc' }],
+    take: Math.min(parseInt(limit) || 50, 200),
+  })
+  res.json({ venues })
+})
+
 // GET /api/admin/venues
 router.get('/admin', requireAuth, async (_req: AuthRequest, res: Response) => {
   const venues = await prisma.venue.findMany({ orderBy: [{ city: 'asc' }, { district: 'asc' }, { name: 'asc' }] })

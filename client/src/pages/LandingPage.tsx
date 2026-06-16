@@ -55,8 +55,15 @@ export default function LandingPage() {
           getdatewith.me
         </span>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <Link to="/topluluk" style={{ color: '#666', textDecoration: 'none', fontSize: '13px', padding: '8px 12px' }}>
-            🌿 Topluluk
+          <Link to="/bulusma-mekanlari" style={{ color: '#999', textDecoration: 'none', fontSize: '13px', padding: '8px 12px' }}>
+            Mekanlar
+          </Link>
+          <Link to="/topluluk" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#00F680', textDecoration: 'none', fontSize: '13px', fontWeight: 600, padding: '7px 14px', border: '1px solid rgba(0,246,128,0.3)', borderRadius: '9999px', background: 'rgba(0,246,128,0.06)' }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+            Topluluk
           </Link>
           <Link to="/login" style={{ color: '#999', textDecoration: 'none', fontSize: '14px', padding: '8px 16px' }}>
             Giriş Yap
@@ -73,12 +80,12 @@ export default function LandingPage() {
           ✨ Date & Girls Night Out için
         </div>
         <h1 style={{ fontWeight: 900, fontSize: 'clamp(42px, 8vw, 72px)', lineHeight: 1.05, marginBottom: '24px', letterSpacing: '-2px' }}>
-          Çıkma teklifi<br />
-          <span style={{ color: '#00F680' }}>geri geldi.</span>
+          Buluşma işi<br />
+          <span style={{ color: '#00F680' }}>ciddi bir iştir.</span>
         </h1>
         <p style={{ fontSize: '18px', color: '#888', lineHeight: 1.6, maxWidth: '480px', margin: '0 auto 40px' }}>
-          İster bire bir date, ister kız grubu gecesi —<br />
-          planlama tartışması bitti, link gönder yeter.
+          Date planla, GNO organize et, şehrinin en iyi<br />
+          mekanlarını keşfet. Link gönder, gerisini bırak bize.
         </p>
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link to="/register" style={{ background: '#00F680', color: '#000', textDecoration: 'none', fontSize: '16px', fontWeight: 800, padding: '14px 32px', borderRadius: '9999px' }}>
