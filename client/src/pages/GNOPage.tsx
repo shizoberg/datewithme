@@ -189,8 +189,8 @@ export default function GNOPage() {
   useEffect(() => {
     if (!card?.venueCity) return
     setVenueLoading(true)
-    const params = new URLSearchParams({ city: card.venueCity })
-    if (card.venueDistrict) params.set('district', card.venueDistrict)
+    const params = new URLSearchParams({ city: card.venueCity.trim() })
+    if (card.venueDistrict?.trim()) params.set('district', card.venueDistrict.trim())
     api.get(`/api/venues/suggest?${params}`)
       .then(r => setVenueList(r.data.venues ?? []))
       .catch(() => setVenueList([]))

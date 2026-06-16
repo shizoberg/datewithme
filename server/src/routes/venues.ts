@@ -16,27 +16,21 @@ router.get('/suggest', async (req: Request, res: Response) => {
   const { city, district, category } = req.query as Record<string, string>
   if (!city) { res.status(400).json({ error: 'city gerekli' }); return }
 
-  const allActive = await prisma.venue.findMany({
+  const cityTrimmed = city.trim()
+  const districtTrimmed = district?.trim() ?? ''
+
+  const venues = await prisma.venue.findMany({
     where: {
+      city: { equals: cityTrimmed, mode: 'insensitive' },
       isActive: true,
       ...(category ? { category } : {}),
+      ...(districtTrimmed ? { district: { contains: districtTrimmed, mode: 'insensitive' } } : {}),
     },
     select: { ...VENUE_SELECT, district: true, city: true },
+    orderBy: [{ rating: 'desc' }],
   })
 
-  const cityLower = city.toLowerCase().trim()
-  const districtLower = district?.toLowerCase().trim() ?? ''
-
-  const cityMatch = allActive.filter(v => v.city.toLowerCase() === cityLower)
-
-  // sort: district match first
-  const sorted = [...cityMatch].sort((a, b) => {
-    const aMatch = a.district.toLowerCase() === districtLower ? 0 : 1
-    const bMatch = b.district.toLowerCase() === districtLower ? 0 : 1
-    return aMatch - bMatch
-  })
-
-  res.json({ venues: sorted.slice(0, 5) })
+  res.json({ venues: venues.slice(0, 8) })
 })
 
 // GET /api/admin/venues

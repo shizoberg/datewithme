@@ -94,8 +94,8 @@ export default function CreateCardPage() {
     debounceRef.current = setTimeout(async () => {
       setVenueLoading(true)
       try {
-        const params = new URLSearchParams({ city: venueCity })
-        if (venueDistrict) params.set('district', venueDistrict)
+        const params = new URLSearchParams({ city: venueCity.trim() })
+        if (venueDistrict.trim()) params.set('district', venueDistrict.trim())
         const r = await api.get(`/api/venues/suggest?${params}`)
         setVenues(r.data.venues)
       } catch { setVenues([]) }
