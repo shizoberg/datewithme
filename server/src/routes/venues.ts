@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express'
 import { z } from 'zod'
 import { prisma } from '../lib/prisma'
-import { requireAuth, AuthRequest } from '../middleware/auth'
+import { adminAuth, AuthRequest } from '../middleware/auth'
 
 const router = Router()
 
@@ -50,13 +50,13 @@ router.get('/all', async (req: Request, res: Response) => {
 })
 
 // GET /api/admin/venues
-router.get('/admin', requireAuth, async (_req: AuthRequest, res: Response) => {
+router.get('/admin', adminAuth, async (_req: AuthRequest, res: Response) => {
   const venues = await prisma.venue.findMany({ orderBy: [{ city: 'asc' }, { district: 'asc' }, { name: 'asc' }] })
   res.json({ venues })
 })
 
 // POST /api/admin/venues
-router.post('/admin', requireAuth, async (req: AuthRequest, res: Response) => {
+router.post('/admin', adminAuth, async (req: AuthRequest, res: Response) => {
   const schema = z.object({
     name:          z.string().min(1).max(100),
     category:      z.enum(['cafe', 'restaurant', 'bar', 'park', 'rooftop', 'cultural']),
@@ -81,7 +81,7 @@ router.post('/admin', requireAuth, async (req: AuthRequest, res: Response) => {
 })
 
 // PATCH /api/admin/venues/:id
-router.patch('/admin/:id', requireAuth, async (req: AuthRequest, res: Response) => {
+router.patch('/admin/:id', adminAuth, async (req: AuthRequest, res: Response) => {
   const schema = z.object({
     name:          z.string().min(1).max(100).optional(),
     category:      z.enum(['cafe', 'restaurant', 'bar', 'park', 'rooftop', 'cultural']).optional(),
@@ -102,7 +102,7 @@ router.patch('/admin/:id', requireAuth, async (req: AuthRequest, res: Response) 
 })
 
 // DELETE /api/admin/venues/:id
-router.delete('/admin/:id', requireAuth, async (req: AuthRequest, res: Response) => {
+router.delete('/admin/:id', adminAuth, async (req: AuthRequest, res: Response) => {
   await prisma.venue.delete({ where: { id: req.params.id } })
   res.json({ ok: true })
 })

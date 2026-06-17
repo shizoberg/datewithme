@@ -15,3 +15,16 @@ api.interceptors.request.use((config) => {
   }
   return config
 })
+
+export const adminApi = axios.create({
+  baseURL: BASE,
+  withCredentials: true,
+})
+
+adminApi.interceptors.request.use((config) => {
+  const token = localStorage.getItem('admin_token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { api } from '../lib/api'
+import { adminApi } from '../lib/api'
 
 interface Venue {
   id: string; name: string; category: string; city: string; district: string
@@ -28,9 +28,16 @@ const EMPTY_FORM = {
 }
 
 export default function AdminPage() {
-  const [tab, setTab] = useState<'venues' | 'submissions'>('venues')
+  // Auth state — all hooks must come first, before any conditional returns
+  const [adminToken, setAdminToken] = useState<string | null>(
+    localStorage.getItem('admin_token')
+  )
+  const [password, setPassword] = useState('')
+  const [loginError, setLoginError] = useState('')
+  const [loginLoading, setLoginLoading] = useState(false)
 
   // Venues state
+  const [tab, setTab] = useState<'venues' | 'submissions'>('venues')
   const [venues, setVenues] = useState<Venue[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
@@ -52,34 +59,104 @@ export default function AdminPage() {
   async function load() {
     setLoading(true)
     try {
-      const r = await api.get('/api/venues/admin')
+      const r = await adminApi.get('/api/venues/admin')
       setVenues(r.data.venues)
-    } catch { alert('Yüklenemedi') }
-    finally { setLoading(false) }
+    } catch (err: any) {
+      if (err?.response?.status === 401) { localStorage.removeItem('admin_token'); setAdminToken(null) }
+      else alert('Yüklenemedi')
+    } finally { setLoading(false) }
   }
 
   async function loadSubmissions(status = subFilter) {
     setSubLoading(true)
     try {
-      const r = await api.get(`/api/admin/venue-submissions/admin?status=${status}`)
+      const r = await adminApi.get(`/api/admin/venue-submissions/admin?status=${status}`)
       setSubmissions(r.data.submissions)
       setPendingCount(r.data.pendingCount)
-    } catch {}
-    finally { setSubLoading(false) }
+    } catch (err: any) {
+      if (err?.response?.status === 401) { localStorage.removeItem('admin_token'); setAdminToken(null) }
+    } finally { setSubLoading(false) }
   }
 
-  useEffect(() => { load() }, [])
-  useEffect(() => { if (tab === 'submissions') loadSubmissions() }, [tab, subFilter])
+  useEffect(() => { if (adminToken) load() }, [adminToken])
+  useEffect(() => { if (adminToken && tab === 'submissions') loadSubmissions() }, [tab, subFilter, adminToken])
 
   // Auto-refresh pending count every 30s
   useEffect(() => {
+    if (!adminToken) return
     const t = setInterval(() => {
-      api.get('/api/admin/venue-submissions/admin?status=pending')
+      adminApi.get('/api/admin/venue-submissions/admin?status=pending')
         .then(r => setPendingCount(r.data.pendingCount))
         .catch(() => {})
     }, 30000)
     return () => clearInterval(t)
-  }, [])
+  }, [adminToken])
+
+  const handleLogin = async () => {
+    setLoginLoading(true)
+    setLoginError('')
+    try {
+      const base = import.meta.env.VITE_API_URL || ''
+      const res = await fetch(`${base}/api/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.message || 'Hatalı şifre')
+      localStorage.setItem('admin_token', data.token)
+      setAdminToken(data.token)
+    } catch (err: any) {
+      setLoginError(err.message || 'Hatalı şifre')
+    } finally {
+      setLoginLoading(false)
+    }
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('admin_token')
+    setAdminToken(null)
+  }
+
+  if (!adminToken) {
+    return (
+      <div style={{ background: '#0D0D0D', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+        <div style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '360px' }}>
+          <div style={{ fontFamily: 'Syne, sans-serif', fontSize: '20px', fontWeight: 700, color: '#fff', marginBottom: '6px' }}>Admin Paneli</div>
+          <div style={{ fontSize: '13px', color: '#666', marginBottom: '24px' }}>getdatewith.me yönetim paneli</div>
+          <input
+            type="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleLogin()}
+            placeholder="Admin şifresi"
+            autoFocus
+            style={{
+              width: '100%', background: '#111', border: `1px solid ${loginError ? '#ff4444' : '#2A2A2A'}`,
+              borderRadius: '10px', padding: '12px 14px', color: '#fff', fontSize: '14px',
+              marginBottom: '12px', outline: 'none', boxSizing: 'border-box',
+              fontFamily: 'DM Sans, sans-serif',
+            }}
+          />
+          {loginError && (
+            <div style={{ color: '#ff6b6b', fontSize: '13px', marginBottom: '12px' }}>{loginError}</div>
+          )}
+          <button
+            onClick={handleLogin}
+            disabled={loginLoading || !password}
+            style={{
+              width: '100%', background: '#00F680', color: '#0D0D0D', border: 'none',
+              borderRadius: '100px', padding: '13px', fontSize: '14px', fontWeight: 700,
+              cursor: loginLoading || !password ? 'not-allowed' : 'pointer',
+              opacity: loginLoading || !password ? 0.6 : 1, fontFamily: 'Syne, sans-serif',
+            }}
+          >
+            {loginLoading ? 'Giriş yapılıyor...' : 'Giriş Yap →'}
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   function startEdit(v: Venue) {
     setForm({
@@ -115,9 +192,9 @@ export default function AdminPage() {
         priceLevel: form.priceLevel ? parseInt(form.priceLevel) : undefined,
       }
       if (editId) {
-        await api.patch(`/api/venues/admin/${editId}`, payload)
+        await adminApi.patch(`/api/venues/admin/${editId}`, payload)
       } else {
-        await api.post('/api/venues/admin', payload)
+        await adminApi.post('/api/venues/admin', payload)
       }
       cancelForm()
       await load()
@@ -127,13 +204,13 @@ export default function AdminPage() {
   }
 
   async function toggleActive(v: Venue) {
-    await api.patch(`/api/venues/admin/${v.id}`, { isActive: !v.isActive })
+    await adminApi.patch(`/api/venues/admin/${v.id}`, { isActive: !v.isActive })
     setVenues(prev => prev.map(x => x.id === v.id ? { ...x, isActive: !v.isActive } : x))
   }
 
   async function confirmDelete() {
     if (!deleteId) return
-    await api.delete(`/api/venues/admin/${deleteId}`)
+    await adminApi.delete(`/api/venues/admin/${deleteId}`)
     setDeleteId(null)
     await load()
   }
@@ -142,7 +219,7 @@ export default function AdminPage() {
     if (!approveModal) return
     setActionLoading(true)
     try {
-      await api.patch(`/api/admin/venue-submissions/admin/${approveModal.id}/approve`)
+      await adminApi.patch(`/api/admin/venue-submissions/admin/${approveModal.id}/approve`)
       setSubmissions(prev => prev.filter(s => s.id !== approveModal.id))
       setPendingCount(p => Math.max(0, p - 1))
       setApproveModal(null)
@@ -155,7 +232,7 @@ export default function AdminPage() {
     if (!rejectModal) return
     setActionLoading(true)
     try {
-      await api.patch(`/api/admin/venue-submissions/admin/${rejectModal.id}/reject`, { adminNote: rejectNote })
+      await adminApi.patch(`/api/admin/venue-submissions/admin/${rejectModal.id}/reject`, { adminNote: rejectNote })
       setSubmissions(prev => prev.filter(s => s.id !== rejectModal.id))
       setPendingCount(p => Math.max(0, p - 1))
       setRejectModal(null)
@@ -172,7 +249,10 @@ export default function AdminPage() {
     <div style={{ minHeight: '100vh', background: '#0D0D0D', color: '#fff', fontFamily: 'Syne, sans-serif' }}>
       <header style={{ borderBottom: '1px solid #2A2A2A', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <h1 style={{ fontSize: '18px', fontWeight: 800, color: '#00F680' }}>Admin Panel</h1>
-        <Link to="/dashboard" style={{ color: '#999', fontSize: '14px', textDecoration: 'none' }}>← Dashboard</Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <Link to="/dashboard" style={{ color: '#999', fontSize: '14px', textDecoration: 'none' }}>← Dashboard</Link>
+          <button onClick={handleLogout} style={{ background: 'none', border: '1px solid #2A2A2A', borderRadius: '100px', padding: '6px 14px', color: '#666', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit' }}>Çıkış</button>
+        </div>
       </header>
 
       <div style={{ display: 'flex', borderBottom: '1px solid #2A2A2A' }}>

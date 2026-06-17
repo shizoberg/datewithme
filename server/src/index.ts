@@ -7,6 +7,7 @@ import publicRouter from './routes/public'
 import gnoRouter from './routes/gno'
 import venueRouter from './routes/venues'
 import venueSubmissionRouter from './routes/venueSubmissions'
+import adminRouter from './routes/admin'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -22,6 +23,7 @@ app.use(cookieParser())
 app.get('/health', (_req, res) => res.json({ ok: true }))
 
 app.use('/api/auth', authRouter)
+app.use('/api/admin', adminRouter)
 app.use('/api/cards', cardsRouter)
 app.use('/api/public', publicRouter)
 app.use('/api/gno', gnoRouter)

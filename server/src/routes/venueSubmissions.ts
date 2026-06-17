@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express'
 import { z } from 'zod'
 import { prisma } from '../lib/prisma'
-import { requireAuth, AuthRequest } from '../middleware/auth'
+import { adminAuth, AuthRequest } from '../middleware/auth'
 
 const router = Router()
 
@@ -47,7 +47,7 @@ router.post('/', async (req: Request, res: Response) => {
 })
 
 // GET /api/admin/venue-submissions — admin only
-router.get('/admin', requireAuth, async (_req: AuthRequest, res: Response) => {
+router.get('/admin', adminAuth, async (_req: AuthRequest, res: Response) => {
   const status = ((_req as any).query?.status as string) || 'pending'
   const submissions = await prisma.venueSubmission.findMany({
     where: { status },
@@ -58,7 +58,7 @@ router.get('/admin', requireAuth, async (_req: AuthRequest, res: Response) => {
 })
 
 // PATCH /api/admin/venue-submissions/:id/approve — admin only
-router.patch('/admin/:id/approve', requireAuth, async (req: AuthRequest, res: Response) => {
+router.patch('/admin/:id/approve', adminAuth, async (req: AuthRequest, res: Response) => {
   const sub = await prisma.venueSubmission.findUnique({ where: { id: req.params.id } })
   if (!sub) { res.status(404).json({ error: 'Bulunamadı' }); return }
 
@@ -92,7 +92,7 @@ router.patch('/admin/:id/approve', requireAuth, async (req: AuthRequest, res: Re
 })
 
 // PATCH /api/admin/venue-submissions/:id/reject — admin only
-router.patch('/admin/:id/reject', requireAuth, async (req: AuthRequest, res: Response) => {
+router.patch('/admin/:id/reject', adminAuth, async (req: AuthRequest, res: Response) => {
   const { adminNote } = req.body
   const sub = await prisma.venueSubmission.findUnique({ where: { id: req.params.id } })
   if (!sub) { res.status(404).json({ error: 'Bulunamadı' }); return }
