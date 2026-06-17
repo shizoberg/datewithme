@@ -3,11 +3,16 @@ import { Link } from 'react-router-dom'
 import AppHeader from '../components/AppHeader'
 import CommunityBanner from '../components/CommunityBanner'
 
+const DateIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F680" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+const LinkIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F680" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+const CheckIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F680" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+const StarIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F680" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+
 const DATE_STEPS = [
-  { num: '01', icon: '✏️', title: 'Kartını oluştur', desc: 'Kime göndereceğini yaz, 6 date seçeneğini özelleştir.' },
-  { num: '02', icon: '🔗', title: 'Linki gönder',    desc: 'Benzersiz linki WhatsApp\'tan veya Instagram\'dan ilet.' },
-  { num: '03', icon: '💌', title: 'O seçsin',        desc: 'Karşındaki tarih, mekan ve karşılama tercihini seçer.' },
-  { num: '04', icon: '🎉', title: 'Date confirmed!', desc: 'Sen dashboarddan tüm detayları görürsün.' },
+  { icon: <DateIcon />, title: 'Kartını oluştur', desc: 'Kime göndereceğini yaz, 6 date seçeneğini özelleştir.' },
+  { icon: <LinkIcon />, title: 'Linki gönder',    desc: 'Benzersiz linki WhatsApp\'tan veya Instagram\'dan ilet.' },
+  { icon: <CheckIcon />, title: 'O seçsin',       desc: 'Karşındaki tarih, mekan ve karşılama tercihini seçer.' },
+  { icon: <StarIcon />, title: 'Date confirmed!', desc: 'Sen dashboarddan tüm detayları görürsün.' },
 ]
 
 const GNO_STEPS = [
@@ -59,11 +64,11 @@ export default function LandingPage() {
       } />
 
       {/* HERO */}
-      <section style={{ textAlign: 'center', padding: '100px 24px 80px', maxWidth: '720px', margin: '0 auto' }}>
+      <div className="page-content" style={{ textAlign: 'center', paddingTop: '48px' }}>
         <div style={{ display: 'inline-block', background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '9999px', padding: '6px 16px', fontSize: '12px', color: '#00F680', letterSpacing: '2px', fontWeight: 700, marginBottom: '32px', textTransform: 'uppercase' }}>
-          ✨ Date & Girls Night Out için
+          ✦ Date & Girls Night Out için
         </div>
-        <h1 className="hero-h1" style={{ fontWeight: 900, fontSize: 'clamp(42px, 8vw, 72px)', lineHeight: 1.05, marginBottom: '24px', letterSpacing: '-2px' }}>
+        <h1 className="hero-h1 page-h1" style={{ fontWeight: 900, fontSize: 'clamp(42px, 8vw, 72px)', lineHeight: 1.05, marginBottom: '24px', letterSpacing: '-2px' }}>
           Buluşma işi<br />
           <span style={{ color: '#00F680' }}>ciddi bir iştir.</span>
         </h1>
@@ -79,7 +84,7 @@ export default function LandingPage() {
             Giriş Yap
           </Link>
         </div>
-      </section>
+      </div>
 
       {/* COMMUNITY TINY BANNER */}
       <div style={{ textAlign: 'center', padding: '0 24px 32px', fontSize: '13px', color: '#555' }}>
@@ -157,13 +162,15 @@ export default function LandingPage() {
             <p style={{ color: '#666', fontSize: '14px', lineHeight: 1.6, marginBottom: '20px' }}>
               Karşına özel kart oluştur, seçenekleri sun — o seçsin, sen sadece orada ol.
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {DATE_STEPS.map(s => (
-                <div key={s.num} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                  <span style={{ fontSize: '18px', flexShrink: 0 }}>{s.icon}</span>
+                <div key={s.title} style={{ display: 'flex', alignItems: 'flex-start', gap: '14px', padding: '14px', background: '#161616', border: '1px solid #2A2A2A', borderRadius: '12px', textAlign: 'left' }}>
+                  <div style={{ width: '34px', height: '34px', borderRadius: '10px', background: 'rgba(0,246,128,0.1)', border: '1px solid rgba(0,246,128,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    {s.icon}
+                  </div>
                   <div>
-                    <p style={{ fontWeight: 700, fontSize: '13px', marginBottom: '2px' }}>{s.title}</p>
-                    <p style={{ fontSize: '12px', color: '#666', lineHeight: 1.4 }}>{s.desc}</p>
+                    <div style={{ fontWeight: 600, fontSize: '13px', color: '#fff', marginBottom: '3px' }}>{s.title}</div>
+                    <div style={{ fontSize: '12px', color: '#666', lineHeight: 1.5 }}>{s.desc}</div>
                   </div>
                 </div>
               ))}

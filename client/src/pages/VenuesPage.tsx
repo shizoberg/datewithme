@@ -147,18 +147,18 @@ export default function VenuesPage() {
       <AppHeader rightContent={<Link to="/topluluk" style={{ color: '#00F680', textDecoration: 'none', fontSize: '13px', fontWeight: 600 }}>+ Mekan Ekle</Link>} />
 
       {/* HERO */}
-      <section style={{ textAlign: 'center', padding: '64px 24px 48px', maxWidth: '680px', margin: '0 auto' }}>
-        <div style={{ display: 'inline-block', background: '#111', border: '1px solid #2A2A2A', borderRadius: '9999px', padding: '6px 16px', fontSize: '12px', color: '#00F680', letterSpacing: '2px', fontWeight: 700, marginBottom: '28px', textTransform: 'uppercase' }}>
+      <div className="page-content" style={{ textAlign: 'center', paddingTop: '48px', paddingBottom: '32px' }}>
+        <div style={{ display: 'inline-block', background: '#111', border: '1px solid #2A2A2A', borderRadius: '9999px', padding: '6px 16px', fontSize: '12px', color: '#00F680', letterSpacing: '2px', fontWeight: 700, marginBottom: '24px', textTransform: 'uppercase' }}>
           ✦ Mekan Rehberi
         </div>
-        <h1 style={{ fontWeight: 900, fontSize: 'clamp(32px, 7vw, 52px)', lineHeight: 1.05, letterSpacing: '-1.5px', marginBottom: '16px' }}>
+        <h1 className="page-h1" style={{ fontSize: 'clamp(28px, 7vw, 42px)', letterSpacing: '-1px', marginBottom: '12px' }}>
           Şehrinin en iyi<br />
           <span style={{ color: '#00F680' }}>buluşma mekanları.</span>
         </h1>
-        <p style={{ fontSize: '16px', color: '#888', lineHeight: 1.6, maxWidth: '440px', margin: '0 auto' }}>
-          Topluluk tarafından derlendi. Date için, GNO için, her türlü buluşma için.
+        <p style={{ fontSize: '15px', color: '#888', lineHeight: 1.6, maxWidth: '380px', margin: '0 auto' }}>
+          Topluluk tarafından derlendi. Date için, GNO için.
         </p>
-      </section>
+      </div>
 
       {/* FILTERS */}
       <div style={{ maxWidth: '960px', margin: '0 auto', padding: '0 20px 32px', boxSizing: 'border-box' }}>

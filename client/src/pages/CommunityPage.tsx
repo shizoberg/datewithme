@@ -76,19 +76,18 @@ export default function CommunityPage() {
       <AppHeader rightContent={<Link to="/bulusma-mekanlari" style={{ color: '#666', textDecoration: 'none', fontSize: '13px' }}>← Mekanlar</Link>} />
 
       {/* HERO */}
-      <section style={{ textAlign: 'center', padding: '80px 24px 60px', maxWidth: '680px', margin: '0 auto' }}>
-        <div style={{ display: 'inline-block', background: '#111', border: '1px solid #2A2A2A', borderRadius: '9999px', padding: '6px 16px', fontSize: '12px', color: '#00F680', letterSpacing: '2px', fontWeight: 700, marginBottom: '28px', textTransform: 'uppercase' }}>
-          🌿 Community Built
+      <div className="page-content" style={{ textAlign: 'center', paddingTop: '48px', paddingBottom: '32px' }}>
+        <div style={{ display: 'inline-block', background: '#111', border: '1px solid #2A2A2A', borderRadius: '9999px', padding: '6px 16px', fontSize: '12px', color: '#00F680', letterSpacing: '2px', fontWeight: 700, marginBottom: '24px', textTransform: 'uppercase' }}>
+          ✦ Community Built
         </div>
-        <h1 style={{ fontWeight: 900, fontSize: 'clamp(32px, 7vw, 56px)', lineHeight: 1.05, letterSpacing: '-1.5px', marginBottom: '20px' }}>
+        <h1 className="page-h1" style={{ fontSize: 'clamp(28px, 7vw, 42px)', letterSpacing: '-1px', marginBottom: '12px' }}>
           Mekan işi<br />
           <span style={{ color: '#00F680' }}>ciddi bir iştir.</span>
         </h1>
-        <p style={{ fontSize: '16px', color: '#888', lineHeight: 1.7, maxWidth: '480px', margin: '0 auto' }}>
-          Şehrinin en iyi mekanını biliyor musun? Ekle, herkes senin gibi
-          kaliteli vakit geçirsin.
+        <p style={{ fontSize: '15px', color: '#888', lineHeight: 1.7, maxWidth: '380px', margin: '0 auto' }}>
+          Şehrinin en iyi mekanını biliyor musun? Ekle, herkes senin gibi kaliteli vakit geçirsin.
         </p>
-      </section>
+      </div>
 
       {/* STATS */}
       <section style={{ padding: '0 20px 60px', maxWidth: '640px', margin: '0 auto', boxSizing: 'border-box' }}>

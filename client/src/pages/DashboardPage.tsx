@@ -169,10 +169,13 @@ export default function DashboardPage() {
         </div>
       } />
 
-      <main style={{ maxWidth: '720px', margin: '0 auto', padding: '40px var(--page-padding) 100px' }}>
-        <div style={{ marginBottom: '40px' }}>
-          <h2 style={{ fontSize: '28px', fontWeight: 800 }}>Merhaba {user?.name} 👋</h2>
-          <p style={{ color: '#999', marginTop: '6px', fontSize: '15px' }}>Kartlarını ve gruplarını buradan yönet.</p>
+      <main className="page-content">
+        <div style={{ marginBottom: '32px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00F680" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <h1 className="page-h1" style={{ fontSize: '24px', margin: 0 }}>Merhaba, {user?.name || user?.username}</h1>
+          </div>
+          <p style={{ color: '#999', marginTop: '6px', fontSize: '14px' }}>Kartlarını ve gruplarını buradan yönet.</p>
         </div>
 
         {/* CTA Buttons */}
