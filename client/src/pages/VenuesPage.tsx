@@ -144,7 +144,7 @@ export default function VenuesPage() {
 
   return (
     <div style={{ minHeight: '100vh', fontFamily: 'Raleway, sans-serif' }}>
-      <AppHeader showBack backTo="/" backLabel="Ana Sayfa" />
+      <AppHeader rightContent={<Link to="/topluluk" style={{ color: '#00F680', textDecoration: 'none', fontSize: '13px', fontWeight: 600 }}>+ Mekan Ekle</Link>} />
 
       {/* HERO */}
       <section style={{ textAlign: 'center', padding: '64px 24px 48px', maxWidth: '680px', margin: '0 auto' }}>

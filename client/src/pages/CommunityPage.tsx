@@ -73,7 +73,7 @@ export default function CommunityPage() {
   return (
     <div style={{ minHeight: '100vh', background: '#0D0D0D', color: '#fff', fontFamily: 'Raleway, sans-serif' }}>
 
-      <AppHeader showBack backTo="/bulusma-mekanlari" backLabel="← Mekanlar" />
+      <AppHeader rightContent={<Link to="/bulusma-mekanlari" style={{ color: '#666', textDecoration: 'none', fontSize: '13px' }}>← Mekanlar</Link>} />
 
       {/* HERO */}
       <section style={{ textAlign: 'center', padding: '80px 24px 60px', maxWidth: '680px', margin: '0 auto' }}>
@@ -93,16 +93,18 @@ export default function CommunityPage() {
       {/* STATS */}
       <section style={{ padding: '0 20px 60px', maxWidth: '640px', margin: '0 auto', boxSizing: 'border-box' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
-          {[
-            { value: '75+', label: 'Mekan' },
-            { value: '3',   label: 'Şehir' },
-          ].map(s => (
-            <div key={s.label} style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: '12px', padding: '20px', textAlign: 'center' }}>
-              <p style={{ fontSize: '28px', fontWeight: 900, color: '#00F680', marginBottom: '4px' }}>{s.value}</p>
-              <p style={{ fontSize: '13px', color: '#666' }}>{s.label}</p>
-            </div>
-          ))}
+          <div style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: '12px', padding: '20px', textAlign: 'center' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F680" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '8px' }}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <p style={{ fontSize: '28px', fontWeight: 900, color: '#00F680', marginBottom: '4px' }}>75+</p>
+            <p style={{ fontSize: '13px', color: '#666' }}>Mekan</p>
+          </div>
+          <div style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: '12px', padding: '20px', textAlign: 'center' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F680" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '8px' }}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <p style={{ fontSize: '28px', fontWeight: 900, color: '#00F680', marginBottom: '4px' }}>3</p>
+            <p style={{ fontSize: '13px', color: '#666' }}>Şehir</p>
+          </div>
           <div style={{ gridColumn: '1 / -1', background: '#1A1A1A', border: '1px solid rgba(0,246,128,0.2)', borderRadius: '12px', padding: '16px', textAlign: 'center' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00F680" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '8px' }}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             <div style={{ fontSize: '18px', fontWeight: 700, color: '#00F680' }}>∞</div>
             <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>Toplulukla Büyüyor</div>
           </div>

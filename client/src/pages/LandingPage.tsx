@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import AppHeader from '../components/AppHeader'
 import CommunityBanner from '../components/CommunityBanner'
 
 const DATE_STEPS = [
@@ -49,30 +50,13 @@ export default function LandingPage() {
   return (
     <div style={{ minHeight: '100vh', background: '#0D0D0D', color: '#fff', fontFamily: 'Raleway, sans-serif' }}>
 
-      {/* NAV */}
-      <nav style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1A1A1A', position: 'sticky', top: 0, background: '#0D0D0D', zIndex: 100 }}>
-        <Link to="/" style={{ color: '#00F680', fontWeight: 800, fontSize: '18px', textDecoration: 'none', letterSpacing: '-0.5px', flexShrink: 0 }}>
-          getdatewith.me
-        </Link>
-        <div className="desktop-nav-links" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          <Link to="/bulusma-mekanlari" className="nav-mekanlar" style={{ color: '#999', fontSize: '13px', textDecoration: 'none' }}>
-            Mekanlar
-          </Link>
-          <Link to="/topluluk" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', color: '#00F680', textDecoration: 'none', fontSize: '12px', fontWeight: 600, padding: '6px 12px', border: '1px solid rgba(0,246,128,0.3)', borderRadius: '100px', background: 'rgba(0,246,128,0.06)', whiteSpace: 'nowrap', flexShrink: 0 }}>
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-            Topluluk
-          </Link>
-          <Link to="/login" className="nav-giris" style={{ color: '#999', fontSize: '13px', textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0 }}>
-            Giriş Yap
-          </Link>
-          <Link to="/register" style={{ background: '#00F680', color: '#0D0D0D', textDecoration: 'none', borderRadius: '100px', padding: '8px 16px', fontSize: '13px', fontWeight: 700, whiteSpace: 'nowrap', flexShrink: 0 }}>
-            Başla
-          </Link>
+      <AppHeader rightContent={
+        <div className="desktop-nav" style={{ gap: '16px', alignItems: 'center' }}>
+          <Link to="/bulusma-mekanlari" style={{ color: '#999', textDecoration: 'none', fontSize: '13px' }}>Mekanlar</Link>
+          <Link to="/login" style={{ color: '#999', textDecoration: 'none', fontSize: '13px' }}>Giriş Yap</Link>
+          <Link to="/register" style={{ background: '#00F680', color: '#0D0D0D', textDecoration: 'none', borderRadius: '100px', padding: '8px 18px', fontSize: '13px', fontWeight: 700 }}>Başla</Link>
         </div>
-      </nav>
+      } />
 
       {/* HERO */}
       <section style={{ textAlign: 'center', padding: '100px 24px 80px', maxWidth: '720px', margin: '0 auto' }}>

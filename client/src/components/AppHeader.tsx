@@ -1,45 +1,38 @@
 import { Link } from 'react-router-dom'
 
-interface AppHeaderProps {
-  showBack?: boolean
-  backTo?: string
-  backLabel?: string
+interface Props {
+  rightContent?: React.ReactNode
 }
 
-export default function AppHeader({ showBack, backTo = '/', backLabel = '← Geri' }: AppHeaderProps) {
+export default function AppHeader({ rightContent }: Props) {
   return (
     <header style={{
-      padding: '16px 20px',
+      height: 'var(--header-height)',
+      padding: '0 var(--page-padding)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'space-between',
-      borderBottom: '1px solid #1A1A1A',
-      background: '#0D0D0D',
+      borderBottom: '1px solid var(--border)',
+      background: 'var(--bg)',
       position: 'sticky',
       top: 0,
       zIndex: 100,
-      boxSizing: 'border-box',
       width: '100%',
     }}>
       <Link to="/" style={{
-        color: '#00F680',
+        color: 'var(--green)',
         fontWeight: 800,
-        fontSize: '16px',
+        fontSize: '15px',
         textDecoration: 'none',
         letterSpacing: '-0.3px',
         flexShrink: 0,
       }}>
         getdatewith.me
       </Link>
-
-      {showBack && (
-        <Link to={backTo} style={{
-          color: '#666',
-          fontSize: '13px',
-          textDecoration: 'none',
-        }}>
-          {backLabel}
-        </Link>
+      {rightContent && (
+        <div style={{ fontSize: '13px', color: 'var(--text-tertiary)' }}>
+          {rightContent}
+        </div>
       )}
     </header>
   )

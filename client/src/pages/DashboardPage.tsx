@@ -162,13 +162,14 @@ export default function DashboardPage() {
 
   return (
     <div style={{ minHeight: '100vh' }}>
-      <AppHeader />
-      <div style={{ borderBottom: '1px solid #1A1A1A', padding: '10px 20px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '12px' }}>
-        <span style={{ color: '#666', fontSize: '13px' }}>@{user?.username}</span>
-        <button onClick={handleLogout} style={{ background: 'none', border: 'none', color: '#666', cursor: 'pointer', fontSize: '13px', fontFamily: 'Raleway, sans-serif' }}>Çıkış</button>
-      </div>
+      <AppHeader rightContent={
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <span style={{ color: '#666', fontSize: '13px' }}>@{user?.username}</span>
+          <button onClick={handleLogout} style={{ background: 'none', border: '1px solid #2A2A2A', borderRadius: '100px', padding: '5px 12px', color: '#666', fontSize: '12px', cursor: 'pointer', fontFamily: 'Raleway, sans-serif' }}>Çıkış</button>
+        </div>
+      } />
 
-      <main style={{ maxWidth: '720px', margin: '0 auto', padding: '40px 24px 80px' }}>
+      <main style={{ maxWidth: '720px', margin: '0 auto', padding: '40px var(--page-padding) 100px' }}>
         <div style={{ marginBottom: '40px' }}>
           <h2 style={{ fontSize: '28px', fontWeight: 800 }}>Merhaba {user?.name} 👋</h2>
           <p style={{ color: '#999', marginTop: '6px', fontSize: '15px' }}>Kartlarını ve gruplarını buradan yönet.</p>
@@ -177,11 +178,15 @@ export default function DashboardPage() {
         {/* CTA Buttons */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '32px', flexWrap: 'wrap' }}>
           <Link to="/create" style={{ textDecoration: 'none' }}>
-            <button className="btn-primary">✨ Yeni Kart Oluştur</button>
+            <button className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '7px' }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Yeni Kart Oluştur
+            </button>
           </Link>
           <Link to="/create-gno" style={{ textDecoration: 'none' }}>
-            <button style={{ padding: '10px 20px', borderRadius: '9999px', border: '1.5px solid #C06080', background: '#2D1520', color: '#FF8FAB', cursor: 'pointer', fontWeight: 700, fontSize: '14px', fontFamily: 'Raleway, sans-serif' }}>
-              👯‍♀️ Girls Night Out Oluştur
+            <button style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '10px 20px', borderRadius: '9999px', border: '1.5px solid #C06080', background: '#2D1520', color: '#FF8FAB', cursor: 'pointer', fontWeight: 700, fontSize: '14px', fontFamily: 'Raleway, sans-serif' }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              Girls Night Out Oluştur
             </button>
           </Link>
         </div>
@@ -189,7 +194,10 @@ export default function DashboardPage() {
         {/* Date Cards */}
         <div className="card" style={{ overflow: 'hidden', marginBottom: '24px' }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid #2A2A2A' }}>
-            <h3 style={{ fontWeight: 700, fontSize: '16px' }}>💌 Date Teklifleri</h3>
+            <h3 style={{ fontWeight: 700, fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              Date Teklifleri
+            </h3>
             <p style={{ color: '#666', fontSize: '13px', marginTop: '2px' }}>Kabul edilenlere tıklayınca detaylar açılır</p>
           </div>
           {loading ? (
