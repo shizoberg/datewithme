@@ -28,6 +28,9 @@ const CATEGORIES = [
   { value: 'park',      label: 'Park / Açık Alan', emoji: '🌿' },
   { value: 'rooftop',   label: 'Rooftop',          emoji: '🌆' },
   { value: 'cultural',  label: 'Kültürel',         emoji: '🎨' },
+  { value: 'koy',       label: 'Koy & Plaj',       emoji: '🏖️' },
+  { value: 'antik',     label: 'Kültür & Tarihi',  emoji: '🏛️' },
+  { value: 'doga',      label: 'Doğa',             emoji: '🌿' },
 ]
 
 const CITIES = ['', 'İstanbul', 'Ankara', 'İzmir']

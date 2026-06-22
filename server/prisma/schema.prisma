@@ -64,20 +64,41 @@ model Card {
 }
 
 model Venue {
-  id            String   @id @default(uuid())
-  name          String
-  category      String
-  city          String
-  district      String
-  address       String?
-  googleMapsUrl String?
-  instagramUrl  String?
-  rating        Float?
-  priceLevel    Int?
-  imageUrl      String?
-  description   String?
-  isActive      Boolean  @default(true)
-  createdAt     DateTime @default(now())
+  id              String   @id @default(uuid())
+  name            String
+  category        String
+  city            String
+  district        String
+  address         String?
+  googleMapsUrl   String?
+  instagramUrl    String?
+  instagramSearch String?
+  rating          Float?
+  priceLevel      Int?
+  imageUrl        String?
+  description     String?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  googlePlaceId   String?  @unique
+  googleRating    Float?
+  totalRatings    Int?
+  reviewsJson     String?
+  photosJson      String?
+  openingHours    String?
+  phone           String?
+  website         String?
+  googleMapsUri   String?
+  aiAnalysis      String?
+  dateSkor        Float?
+  gnoSkor         Float?
+  atmosfer        String?
+  aiTags          String?
+
+  venueType     String?  @default("mekan")
+  isNature      Boolean  @default(false)
+  beachType     String?
+  swimSuitable  Boolean?
 }
 
 model GNOCard {
