@@ -65,16 +65,15 @@ export default function LandingPage() {
       {/* HERO */}
       <div className="page-content" style={{ textAlign: 'center', paddingTop: '48px' }}>
         <div style={{ display: 'inline-block', background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '9999px', padding: '6px 16px', fontSize: '12px', color: '#00F680', letterSpacing: '2px', fontWeight: 700, marginBottom: '32px', textTransform: 'uppercase' }}>
-          ✦ Date & Girls Night Out için
+          ✦ HIZLI VE KALİTELİ PLANLAR
         </div>
         <h1 className="hero-h1 page-h1" style={{ fontWeight: 900, fontSize: 'clamp(42px, 8vw, 72px)', lineHeight: 1.05, marginBottom: '24px', letterSpacing: '-2px' }}>
-          Planı yap. Linki at.<br />
-          <span style={{ color: '#00F680' }}>Geriye gece kalsın.</span>
+          Planı yap. <span style={{ color: '#00F680' }}>Linki at.</span><br />
+          Geriye gece kalsın.
         </h1>
-        <p className="hero-subtitle" style={{ fontSize: '18px', color: '#888', lineHeight: 1.6, maxWidth: '480px', margin: '0 auto 40px' }}>
-          Date, arkadaş buluşması ve kız gecesi planlarını<br />
-          kolayca yap, arkadaşlarınla paylaş.<br />
-          Nereye gitsek sorusunun cevabı.
+        <p style={{ color: '#888', fontSize: '14px', lineHeight: 1.7, margin: '0 auto 28px', maxWidth: '420px', textAlign: 'center' }}>
+          Date, Girls Night Out ve tüm planlarını yap,<br />
+          linki at — planı topluca takip edip organize edin.
         </p>
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link to={isLoggedIn ? '/dashboard' : '/register'} style={{ background: '#00F680', color: '#000', textDecoration: 'none', fontSize: '16px', fontWeight: 800, padding: '14px 32px', borderRadius: '9999px' }}>

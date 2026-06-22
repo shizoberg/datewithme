@@ -18,6 +18,16 @@ import CommunityPage from './pages/CommunityPage'
 import VenuesPage from './pages/VenuesPage'
 import ProfilePage from './pages/ProfilePage'
 
+const PlanCreatePage = () => (
+  <div style={{ background: '#0D0D0D', minHeight: '100vh', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ textAlign: 'center' }}>
+      <div style={{ fontSize: '32px', marginBottom: '12px' }}>🗺️</div>
+      <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '20px', marginBottom: '8px' }}>Plan sistemi geliyor</div>
+      <div style={{ color: '#666', fontSize: '14px' }}>Yakında aktif olacak</div>
+    </div>
+  </div>
+)
+
 export default function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
 
@@ -44,6 +54,8 @@ export default function App() {
           <Route path="/topluluk" element={<CommunityPage />} />
           <Route path="/bulusma-mekanlari" element={<VenuesPage />} />
           <Route path="/profil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+          <Route path="/plan/yeni" element={<ProtectedRoute><PlanCreatePage /></ProtectedRoute>} />
+          <Route path="/plan/:id" element={<ProtectedRoute><PlanCreatePage /></ProtectedRoute>} />
           <Route path="/:username/:slug" element={<InvitePage />} />
         </Routes>
         {isMobile && <MobileNav />}
