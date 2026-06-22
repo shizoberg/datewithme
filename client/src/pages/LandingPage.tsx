@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import AppHeader from '../components/AppHeader'
 import CommunityBanner from '../components/CommunityBanner'
-import { PlanIcon, ShareIcon, PinIcon, RouteIcon, JoinIcon } from '../components/icons'
+import { PlanIcon, ShareIcon, PinIcon, RouteIcon, JoinIcon, GnoGroupIcon, GnoLinkIcon, GnoVoteIcon, GnoTrophyIcon } from '../components/icons'
 
 const DATE_STEPS = [
   { icon: <PlanIcon />, title: 'Kartını oluştur', desc: 'Kime göndereceğini yaz, seçenekleri özelleştir.' },
@@ -13,10 +13,10 @@ const DATE_STEPS = [
 ]
 
 const GNO_STEPS = [
-  { num: '01', icon: '👯‍♀️', title: 'Grup oluştur',    desc: 'Grubun adını ver, etkinlik, zaman ve mekan seçeneklerini belirle.' },
-  { num: '02', icon: '🔗', title: 'Linki at gruba',  desc: 'WhatsApp grubuna at, herkes oylamasını yapsın.' },
-  { num: '03', icon: '🗳️', title: 'Kızlar oylasın',  desc: 'Herkes kendi tercihini seçer ya da kendisi yazar.' },
-  { num: '04', icon: '🏆', title: 'Sonuç belli!',    desc: 'Canlı anket sonuçlarına göre kazanan seçenek netleşir.' },
+  { icon: <GnoGroupIcon />, title: 'Grup oluştur',   desc: 'Grubun adını ver, etkinlik, zaman ve mekan seçeneklerini belirle.' },
+  { icon: <GnoLinkIcon />, title: 'Linki at gruba',  desc: 'WhatsApp grubuna at, herkes oylamasını yapsın.' },
+  { icon: <GnoVoteIcon />, title: 'Kızlar oylasın',  desc: 'Herkes kendi tercihini seçer ya da kendisi yazar.' },
+  { icon: <GnoTrophyIcon />, title: 'Sonuç belli!',  desc: 'Canlı anket sonuçlarına göre kazanan seçenek netleşir.' },
 ]
 
 export default function LandingPage() {
@@ -55,10 +55,10 @@ export default function LandingPage() {
     <div style={{ minHeight: '100vh', background: '#0D0D0D', color: '#fff', fontFamily: 'Raleway, sans-serif' }}>
 
       <AppHeader rightContent={
-        <div className="desktop-nav" style={{ gap: '16px', alignItems: 'center' }}>
-          <Link to="/bulusma-mekanlari" style={{ color: '#999', textDecoration: 'none', fontSize: '13px' }}>Mekanlar</Link>
-          <Link to="/login" style={{ color: '#999', textDecoration: 'none', fontSize: '13px' }}>Giriş Yap</Link>
-          <Link to="/register" style={{ background: '#00F680', color: '#0D0D0D', textDecoration: 'none', borderRadius: '100px', padding: '8px 18px', fontSize: '13px', fontWeight: 700 }}>Başla</Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+          <Link to="/bulusma-mekanlari" style={{ color: '#999', textDecoration: 'none', fontSize: '14px', whiteSpace: 'nowrap' }}>Mekanlar</Link>
+          <Link to="/login" style={{ color: '#999', textDecoration: 'none', fontSize: '14px', whiteSpace: 'nowrap' }}>Giriş Yap</Link>
+          <Link to="/register" style={{ background: '#00F680', color: '#0D0D0D', textDecoration: 'none', borderRadius: '100px', padding: '9px 20px', fontSize: '14px', fontWeight: 700, whiteSpace: 'nowrap' }}>Başla</Link>
         </div>
       } />
 
@@ -191,13 +191,15 @@ export default function LandingPage() {
             <p style={{ color: '#a06070', fontSize: '14px', lineHeight: 1.6, marginBottom: '20px' }}>
               Nereye? Ne zaman? Canlı anketle kızlar oylasın, en çok oy alan kazansın.
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {GNO_STEPS.map(s => (
-                <div key={s.num} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
-                  <span style={{ fontSize: '18px', flexShrink: 0 }}>{s.icon}</span>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              {GNO_STEPS.map(item => (
+                <div key={item.title} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '12px 0', borderBottom: '1px solid rgba(255,111,174,0.1)' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255,111,174,0.1)', border: '1px solid rgba(255,111,174,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    {item.icon}
+                  </div>
                   <div>
-                    <p style={{ fontWeight: 700, fontSize: '13px', marginBottom: '2px' }}>{s.title}</p>
-                    <p style={{ fontSize: '12px', color: '#a06070', lineHeight: 1.4 }}>{s.desc}</p>
+                    <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: '13px', color: '#fff', marginBottom: '2px' }}>{item.title}</div>
+                    <div style={{ fontSize: '12px', color: '#888', lineHeight: 1.4 }}>{item.desc}</div>
                   </div>
                 </div>
               ))}
