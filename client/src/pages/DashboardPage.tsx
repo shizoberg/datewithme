@@ -183,7 +183,7 @@ export default function DashboardPage() {
           <div style={{ fontSize: '12px', color: '#555', marginBottom: '12px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
             Ne yapmak istiyorsun?
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' } as React.CSSProperties}>
             <button onClick={() => navigate('/create')} style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '14px', padding: '16px 12px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
               <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(0,246,128,0.1)', border: '1px solid rgba(0,246,128,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00F680" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
