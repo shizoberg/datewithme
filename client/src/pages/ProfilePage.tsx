@@ -77,17 +77,45 @@ export default function ProfilePage() {
 
       <div className="page-content">
         {/* Profil kartı */}
-        <div style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '16px', padding: '24px', marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: '#00F680', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '22px', color: '#0D0D0D', flexShrink: 0 }}>
-            {user.name?.[0]?.toUpperCase() || user.username?.[0]?.toUpperCase()}
+        <div style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '16px', padding: '24px', marginBottom: '24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: user.bio || user.city || user.personalityTags ? '16px' : '0' }}>
+            {user.photoUrl ? (
+              <img src={user.photoUrl} alt={user.name} style={{ width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+            ) : (
+              <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: '#00F680', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '22px', color: '#0D0D0D', flexShrink: 0 }}>
+                {user.name?.[0]?.toUpperCase() || user.username?.[0]?.toUpperCase()}
+              </div>
+            )}
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '18px', color: '#fff' }}>{user.name}</div>
+              <div style={{ fontSize: '13px', color: '#666', marginTop: '2px' }}>@{user.username}</div>
+              {user.city && (
+                <div style={{ fontSize: '12px', color: '#555', marginTop: '4px' }}>
+                  📍 {user.district ? `${user.district}, ` : ''}{user.city}
+                </div>
+              )}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flexShrink: 0 }}>
+              <Link to="/dashboard" style={{ background: 'none', border: '1px solid #00F680', borderRadius: '100px', padding: '7px 16px', color: '#00F680', fontSize: '13px', fontWeight: 500, textDecoration: 'none', textAlign: 'center' }}>
+                Planlarım
+              </Link>
+              <button onClick={handleLogout} style={{ background: 'none', border: '1px solid #2A2A2A', borderRadius: '100px', padding: '7px 16px', color: '#666', fontSize: '12px', cursor: 'pointer', fontFamily: 'Raleway, sans-serif' }}>
+                Çıkış
+              </button>
+            </div>
           </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '18px', color: '#fff' }}>{user.name}</div>
-            <div style={{ fontSize: '13px', color: '#666', marginTop: '2px' }}>@{user.username}</div>
-          </div>
-          <Link to="/dashboard" style={{ background: 'none', border: '1px solid #00F680', borderRadius: '100px', padding: '7px 16px', color: '#00F680', fontSize: '13px', fontWeight: 500, textDecoration: 'none' }}>
-            Planlarım
-          </Link>
+          {user.bio && (
+            <p style={{ fontSize: '14px', color: '#888', lineHeight: 1.6, margin: '0 0 12px' }}>{user.bio}</p>
+          )}
+          {user.personalityTags && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {user.personalityTags.split(',').map(tag => (
+                <span key={tag} style={{ background: 'rgba(0,246,128,0.08)', border: '1px solid rgba(0,246,128,0.2)', borderRadius: '100px', padding: '4px 12px', fontSize: '12px', color: '#00F680', fontWeight: 500 }}>
+                  {tag.trim()}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Sekmeler */}

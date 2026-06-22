@@ -20,7 +20,7 @@ export default function RegisterPage() {
     setLoading(true)
     try {
       await register(form)
-      navigate('/dashboard')
+      navigate('/onboarding')
     } catch (err: any) {
       setError(err.response?.data?.error || 'Kayıt başarısız')
     } finally {

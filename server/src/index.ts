@@ -8,6 +8,7 @@ import gnoRouter from './routes/gno'
 import venueRouter from './routes/venues'
 import venueSubmissionRouter from './routes/venueSubmissions'
 import adminRouter from './routes/admin'
+import profileRouter from './routes/profile'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -27,6 +28,7 @@ app.use('/api/admin', adminRouter)
 app.use('/api/cards', cardsRouter)
 app.use('/api/public', publicRouter)
 app.use('/api/gno', gnoRouter)
+app.use('/api/profile', profileRouter)
 app.use('/api/venues', venueRouter)
 app.use('/api/venue-submissions', venueSubmissionRouter)
 app.use('/api/admin/venue-submissions', venueSubmissionRouter)
