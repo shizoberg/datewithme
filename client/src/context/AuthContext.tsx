@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react"
 import type { ReactNode } from 'react'
 import { api } from '../lib/api'
 
-interface User { id: string; name: string; email: string; username: string; bio?: string; city?: string; district?: string; photoUrl?: string; personalityTags?: string; onboardingDone?: boolean }
+interface User { id: string; name: string; email: string; username: string; avatarId?: string; bio?: string; city?: string; district?: string; photoUrl?: string; personalityTags?: string; onboardingDone?: boolean }
 interface AuthCtx {
   user: User | null
   loading: boolean

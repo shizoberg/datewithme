@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import AppHeader from '../components/AppHeader'
 import { useAuth } from '../context/AuthContext'
 import { PlanIcon, BookmarkIcon, RouteIcon } from '../components/icons'
+import { AvatarDisplay } from '../components/avatars'
 
 interface SavedVenue {
   id: string; name: string; category: string; city: string; district: string
@@ -79,11 +80,11 @@ export default function ProfilePage() {
         {/* Profil kartı */}
         <div style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '16px', padding: '24px', marginBottom: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: user.bio || user.city || user.personalityTags ? '16px' : '0' }}>
-            {user.photoUrl ? (
-              <img src={user.photoUrl} alt={user.name} style={{ width: '60px', height: '60px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+            {user.avatarId ? (
+              <AvatarDisplay avatarId={user.avatarId} size={64} />
             ) : (
-              <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: '#00F680', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '22px', color: '#0D0D0D', flexShrink: 0 }}>
-                {user.name?.[0]?.toUpperCase() || user.username?.[0]?.toUpperCase()}
+              <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#00F680', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '24px', color: '#0D0D0D', flexShrink: 0 }}>
+                {user.name?.[0]?.toUpperCase()}
               </div>
             )}
             <div style={{ flex: 1 }}>

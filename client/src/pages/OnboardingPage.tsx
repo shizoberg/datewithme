@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AppHeader from '../components/AppHeader'
+import { avatars, AvatarDisplay } from '../components/avatars'
 
 const PERSONALITY_TAGS = [
   { id: 'gece_insani', label: 'Gece İnsanı', emoji: '🌙' },
@@ -22,11 +23,11 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(1)
   const [saving, setSaving] = useState(false)
   const [form, setForm] = useState({
+    selectedAvatar: '',
     bio: '',
     city: '',
     district: '',
     selectedTags: [] as string[],
-    photoUrl: '',
   })
 
   const token = localStorage.getItem('token')
@@ -44,7 +45,7 @@ export default function OnboardingPage() {
     })
   }
 
-  const finish = async (skip = false) => {
+  const finish = async () => {
     setSaving(true)
     try {
       await fetch(`${import.meta.env.VITE_API_URL}/api/profile/me`, {
@@ -54,10 +55,10 @@ export default function OnboardingPage() {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
+          avatarId: form.selectedAvatar || 'kedi',
           bio: form.bio,
           city: form.city,
           district: form.district,
-          photoUrl: form.photoUrl,
           personalityTags: form.selectedTags.join(','),
           onboardingDone: true,
         }),
@@ -78,13 +79,13 @@ export default function OnboardingPage() {
     color: '#fff',
     fontSize: '14px',
     outline: 'none',
-    fontFamily: 'DM Sans, sans-serif',
+    fontFamily: 'Raleway, sans-serif',
     boxSizing: 'border-box' as const,
   }
 
   const ProgressDots = () => (
     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '32px' }}>
-      {[1,2,3,4].map(i => (
+      {[1, 2, 3, 4].map(i => (
         <div key={i} style={{
           width: i === step ? '24px' : '8px',
           height: '8px',
@@ -107,7 +108,7 @@ export default function OnboardingPage() {
   )
 
   const NavButtons = ({ onNext, nextLabel = 'İlerle →', nextDisabled = false, showSkip = true }: {
-    onNext: () => void, nextLabel?: string, nextDisabled?: boolean, showSkip?: boolean
+    onNext: () => void; nextLabel?: string; nextDisabled?: boolean; showSkip?: boolean
   }) => (
     <div style={{ marginTop: '28px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
       <button
@@ -126,50 +127,85 @@ export default function OnboardingPage() {
         {nextLabel}
       </button>
       {step > 1 && (
-        <button onClick={back} style={{
-          background: 'none', border: 'none', color: '#555',
-          fontSize: '13px', cursor: 'pointer', padding: '8px',
-        }}>
+        <button onClick={back} style={{ background: 'none', border: 'none', color: '#555', fontSize: '13px', cursor: 'pointer', padding: '8px' }}>
           ← Geri
         </button>
       )}
       {showSkip && (
-        <button onClick={() => step === 4 ? finish(true) : next()} style={{
-          background: 'none', border: 'none', color: '#444',
-          fontSize: '13px', cursor: 'pointer', padding: '8px',
-        }}>
+        <button onClick={finish} style={{ background: 'none', border: 'none', color: '#444', fontSize: '13px', cursor: 'pointer', padding: '8px' }}>
           Şimdi değil, atla
         </button>
       )}
     </div>
   )
 
+  // ADIM 1 — Avatar seç
   if (step === 1) return (
     <Wrapper>
       <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>
-        Seni tanıyalım 👋
+        Avatarını seç ✨
+      </h1>
+      <p style={{ color: '#666', fontSize: '14px', marginBottom: '28px', lineHeight: 1.6 }}>
+        Seni temsil edecek karakteri seç.
+      </p>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '12px', marginBottom: '8px' }}>
+        {avatars.map(avatar => (
+          <button
+            key={avatar.id}
+            onClick={() => setForm(f => ({ ...f, selectedAvatar: avatar.id }))}
+            style={{
+              background: 'none',
+              border: `2px solid ${form.selectedAvatar === avatar.id ? '#00F680' : 'transparent'}`,
+              borderRadius: '50%',
+              padding: '4px',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              transform: form.selectedAvatar === avatar.id ? 'scale(1.12)' : 'scale(1)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >
+            <AvatarDisplay avatarId={avatar.id} size={52} />
+          </button>
+        ))}
+      </div>
+      {form.selectedAvatar && (
+        <p style={{ textAlign: 'center', color: '#00F680', fontSize: '13px', fontWeight: 600, marginTop: '12px' }}>
+          {avatars.find(a => a.id === form.selectedAvatar)?.label} seçildi ✓
+        </p>
+      )}
+      <NavButtons onNext={next} nextDisabled={!form.selectedAvatar} showSkip={true} />
+    </Wrapper>
+  )
+
+  // ADIM 2 — Bio
+  if (step === 2) return (
+    <Wrapper>
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+        <AvatarDisplay avatarId={form.selectedAvatar} size={72} />
+      </div>
+      <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>
+        Kendini tanıt 👋
       </h1>
       <p style={{ color: '#666', fontSize: '14px', marginBottom: '24px', lineHeight: 1.6 }}>
-        Sana özel deneyim için birkaç şey soracağız. İstersen atlayabilirsin.
+        Kısa bir bio — ne kadar samimi olursa o kadar iyi.
       </p>
       <label style={{ fontSize: '13px', color: '#888', display: 'block', marginBottom: '8px' }}>
-        Kendini kısaca anlat (opsiyonel)
+        Bio (opsiyonel)
       </label>
       <textarea
         value={form.bio}
-        onChange={e => setForm(f => ({...f, bio: e.target.value}))}
+        onChange={e => setForm(f => ({ ...f, bio: e.target.value }))}
         placeholder="Gece çıkmaları seven, yeni mekanlar keşfetmekten keyif alan biri..."
         maxLength={160}
         style={{ ...inp, resize: 'none', height: '100px' }}
       />
-      <div style={{ fontSize: '11px', color: '#555', textAlign: 'right', marginTop: '4px' }}>
-        {form.bio.length}/160
-      </div>
+      <div style={{ fontSize: '11px', color: '#555', textAlign: 'right', marginTop: '4px' }}>{form.bio.length}/160</div>
       <NavButtons onNext={next} />
     </Wrapper>
   )
 
-  if (step === 2) return (
+  // ADIM 3 — Şehir
+  if (step === 3) return (
     <Wrapper>
       <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>
         Nerelisin? 📍
@@ -180,7 +216,7 @@ export default function OnboardingPage() {
       <label style={{ fontSize: '13px', color: '#888', display: 'block', marginBottom: '8px' }}>Şehir</label>
       <select
         value={form.city}
-        onChange={e => setForm(f => ({...f, city: e.target.value}))}
+        onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
         style={{ ...inp, cursor: 'pointer', marginBottom: '14px' }}
       >
         <option value="">Şehir seç...</option>
@@ -193,12 +229,10 @@ export default function OnboardingPage() {
       </select>
       {form.city && (
         <>
-          <label style={{ fontSize: '13px', color: '#888', display: 'block', marginBottom: '8px' }}>
-            İlçe (opsiyonel)
-          </label>
+          <label style={{ fontSize: '13px', color: '#888', display: 'block', marginBottom: '8px' }}>İlçe (opsiyonel)</label>
           <input
             value={form.district}
-            onChange={e => setForm(f => ({...f, district: e.target.value}))}
+            onChange={e => setForm(f => ({ ...f, district: e.target.value }))}
             placeholder="Kadıköy, Alsancak, Çankaya..."
             style={inp}
           />
@@ -208,7 +242,8 @@ export default function OnboardingPage() {
     </Wrapper>
   )
 
-  if (step === 3) return (
+  // ADIM 4 — Kişilik etiketleri
+  return (
     <Wrapper>
       <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>
         Sen nasıl birisin? ✨
@@ -217,7 +252,7 @@ export default function OnboardingPage() {
         Seni en iyi tanımlayan etiketleri seç.
       </p>
       <p style={{ color: '#555', fontSize: '12px', marginBottom: '20px' }}>
-        En az 1, en fazla 5 seç · {form.selectedTags.length}/5
+        En az 1, en fazla 5 · {form.selectedTags.length}/5
       </p>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
         {PERSONALITY_TAGS.map(tag => {
@@ -246,48 +281,10 @@ export default function OnboardingPage() {
           )
         })}
       </div>
-      <NavButtons onNext={next} nextDisabled={form.selectedTags.length === 0} />
-    </Wrapper>
-  )
-
-  return (
-    <Wrapper>
-      <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>
-        Son adım 🎉
-      </h1>
-      <p style={{ color: '#666', fontSize: '14px', marginBottom: '24px', lineHeight: 1.6 }}>
-        İsteğe bağlı — profil fotoğrafı ekle.
-      </p>
-
-      {form.photoUrl && (
-        <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-          <img
-            src={form.photoUrl}
-            alt="Profil"
-            style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #00F680' }}
-            onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
-          />
-        </div>
-      )}
-
-      <label style={{ fontSize: '13px', color: '#888', display: 'block', marginBottom: '8px' }}>
-        Fotoğraf URL'si (opsiyonel)
-      </label>
-      <input
-        type="url"
-        value={form.photoUrl}
-        onChange={e => setForm(f => ({...f, photoUrl: e.target.value}))}
-        placeholder="https://..."
-        style={inp}
-      />
-      <p style={{ fontSize: '12px', color: '#444', marginTop: '8px' }}>
-        Instagram profilinden veya herhangi bir fotoğraf linkini yapıştırabilirsin.
-      </p>
-
       <NavButtons
-        onNext={() => finish()}
-        nextLabel={saving ? 'Kaydediliyor...' : 'Profili Tamamla →'}
-        nextDisabled={saving}
+        onNext={finish}
+        nextLabel={saving ? 'Kaydediliyor...' : 'Profili Tamamla 🎉'}
+        nextDisabled={saving || form.selectedTags.length === 0}
         showSkip={!saving}
       />
     </Wrapper>

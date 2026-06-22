@@ -6,11 +6,12 @@ const router = Router()
 const prisma = new PrismaClient()
 
 router.patch('/me', requireAuth, async (req: AuthRequest, res: Response): Promise<void> => {
-  const { bio, city, district, photoUrl, personalityTags, onboardingDone } = req.body
+  const { bio, city, district, photoUrl, personalityTags, onboardingDone, avatarId } = req.body
   try {
     const user = await prisma.user.update({
       where: { id: req.userId! },
       data: {
+        ...(avatarId !== undefined && { avatarId }),
         ...(bio !== undefined && { bio }),
         ...(city !== undefined && { city }),
         ...(district !== undefined && { district }),
@@ -18,7 +19,7 @@ router.patch('/me', requireAuth, async (req: AuthRequest, res: Response): Promis
         ...(personalityTags !== undefined && { personalityTags }),
         ...(onboardingDone !== undefined && { onboardingDone }),
       },
-      select: { id: true, name: true, email: true, username: true, bio: true, city: true, district: true, photoUrl: true, personalityTags: true, onboardingDone: true },
+      select: { id: true, name: true, email: true, username: true, avatarId: true, bio: true, city: true, district: true, photoUrl: true, personalityTags: true, onboardingDone: true },
     })
     res.json({ user })
   } catch {
