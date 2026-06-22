@@ -178,6 +178,49 @@ export default function DashboardPage() {
           <p style={{ color: '#999', marginTop: '6px', fontSize: '14px' }}>Kartlarını ve gruplarını buradan yönet.</p>
         </div>
 
+        {/* 3 Seçenek */}
+        <div style={{ marginBottom: '24px' }}>
+          <div style={{ fontSize: '12px', color: '#555', marginBottom: '12px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+            Ne yapmak istiyorsun?
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
+            <button onClick={() => navigate('/create')} style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '14px', padding: '16px 12px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(0,246,128,0.1)', border: '1px solid rgba(0,246,128,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00F680" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                </svg>
+              </div>
+              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: '12px', color: '#fff' }}>Date Kartı</div>
+              <div style={{ fontSize: '10px', color: '#555', lineHeight: 1.3 }}>Kişiye özel teklif</div>
+            </button>
+            <button onClick={() => navigate('/create-gno')} style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '14px', padding: '16px 12px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,111,174,0.1)', border: '1px solid rgba(255,111,174,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6FAE" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: '12px', color: '#fff' }}>Girls Night Out</div>
+              <div style={{ fontSize: '10px', color: '#555', lineHeight: 1.3 }}>Grup gecesi planla</div>
+            </button>
+            <button onClick={() => navigate('/plan/yeni')} style={{ background: '#1A1A1A', border: '1px solid rgba(255,214,0,0.25)', borderRadius: '14px', padding: '16px 12px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,214,0,0.1)', border: '1px solid rgba(255,214,0,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD600" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 17 C6 17 6 7 12 7 S18 17 21 17"/>
+                  <circle cx="3" cy="17" r="2" fill="#FFD600" stroke="none"/>
+                  <circle cx="12" cy="7" r="2" fill="#FFD600" stroke="none"/>
+                  <circle cx="21" cy="17" r="2" fill="#FFD600" stroke="none"/>
+                </svg>
+              </div>
+              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: '12px', color: '#fff' }}>
+                Plan Oluştur
+                <span style={{ display: 'block', fontSize: '9px', background: 'rgba(255,214,0,0.15)', color: '#FFD600', padding: '1px 5px', borderRadius: '100px', marginTop: '2px' }}>YENİ</span>
+              </div>
+              <div style={{ fontSize: '10px', color: '#555', lineHeight: 1.3 }}>Aşamalı rota</div>
+            </button>
+          </div>
+        </div>
+
         {/* CTA Buttons */}
         <div style={{ display: 'flex', gap: '12px', marginBottom: '32px', flexWrap: 'wrap' }}>
           <Link to="/create" style={{ textDecoration: 'none' }}>

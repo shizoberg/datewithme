@@ -83,7 +83,7 @@ router.post('/logout', (_req: Request, res: Response) => {
 router.get('/me', requireAuth, async (req: AuthRequest, res: Response) => {
   const user = await prisma.user.findUnique({ where: { id: req.userId } })
   if (!user) { res.status(401).json({ error: 'Kullanıcı bulunamadı' }); return }
-  res.json({ user: { id: user.id, name: user.name, email: user.email, username: user.username } })
+  res.json({ user: { id: user.id, name: user.name, email: user.email, username: user.username, bio: user.bio, city: user.city, district: user.district, photoUrl: user.photoUrl, personalityTags: user.personalityTags, onboardingDone: user.onboardingDone } })
 })
 
 export default router

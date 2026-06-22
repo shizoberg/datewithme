@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { HomeIcon, MapPinIcon, UsersIcon, UserIcon, LogInIcon, PlusIcon } from './icons'
 
@@ -6,8 +6,13 @@ export default function MobileNav() {
   const location = useLocation()
   const navigate = useNavigate()
   const path = location.pathname
-  const isLoggedIn = !!localStorage.getItem('token')
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'))
   const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem('token'))
+    setMenuOpen(false)
+  }, [location.pathname])
 
   const isActive = (to: string) => {
     if (to === '/') return path === '/'
