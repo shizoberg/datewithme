@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import AppHeader from '../components/AppHeader'
 import CommunityBanner from '../components/CommunityBanner'
+import { BookmarkIcon } from '../components/icons'
 import { api } from '../lib/api'
 
 interface Venue {
@@ -60,13 +61,13 @@ function StarRating({ rating }: { rating: number | null }) {
   )
 }
 
-function VenueCard({ venue }: { venue: Venue }) {
+function VenueCard({ venue, saved, onToggle }: { venue: Venue; saved: boolean; onToggle: (id: string) => void }) {
   const cat = CATEGORIES.find(c => c.value === venue.category)
   const mapsUrl = isRealUrl(venue.googleMapsUrl) ? venue.googleMapsUrl : null
   const igLink = igUrl(venue.instagramUrl)
 
   return (
-    <div style={{ background: '#111', border: '1px solid #1E1E1E', borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ background: '#111', border: '1px solid #1E1E1E', borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative' }}>
       {venue.imageUrl ? (
         <div style={{ height: '160px', background: '#1A1A1A', overflow: 'hidden' }}>
           <img src={venue.imageUrl} alt={venue.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -76,6 +77,13 @@ function VenueCard({ venue }: { venue: Venue }) {
           {cat?.emoji ?? '📍'}
         </div>
       )}
+      <button
+        onClick={e => { e.stopPropagation(); onToggle(venue.id) }}
+        style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(13,13,13,0.75)', border: 'none', borderRadius: '8px', cursor: 'pointer', padding: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        title={saved ? 'Kaydedildi' : 'Kaydet'}
+      >
+        <BookmarkIcon filled={saved} />
+      </button>
       <div style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px' }}>
           <div style={{ fontWeight: 700, fontSize: '15px', color: '#fff', lineHeight: 1.3 }}>{venue.name}</div>
@@ -117,12 +125,23 @@ function VenueCard({ venue }: { venue: Venue }) {
   )
 }
 
+const getSaved = (): string[] => {
+  try { return JSON.parse(localStorage.getItem('savedVenues') || '[]') } catch { return [] }
+}
+const toggleSave = (id: string): string[] => {
+  const saved = getSaved()
+  const next = saved.includes(id) ? saved.filter(s => s !== id) : [...saved, id]
+  localStorage.setItem('savedVenues', JSON.stringify(next))
+  return next
+}
+
 export default function VenuesPage() {
   const [venues, setVenues] = useState<Venue[]>([])
   const [loading, setLoading] = useState(true)
   const [city, setCity] = useState('')
   const [category, setCategory] = useState('')
   const [search, setSearch] = useState('')
+  const [savedIds, setSavedIds] = useState<string[]>(getSaved)
 
   useEffect(() => { document.title = 'Buluşma Mekanları — getdatewith.me' }, [])
 
@@ -198,7 +217,14 @@ export default function VenuesPage() {
           </div>
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
-            {filtered.map(v => <VenueCard key={v.id} venue={v} />)}
+            {filtered.map(v => (
+              <VenueCard
+                key={v.id}
+                venue={v}
+                saved={savedIds.includes(v.id)}
+                onToggle={id => setSavedIds(toggleSave(id))}
+              />
+            ))}
           </div>
         )}
         <div style={{ textAlign: 'center', marginTop: '48px' }}>

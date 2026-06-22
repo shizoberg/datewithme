@@ -16,6 +16,7 @@ import KVKKPage from './pages/KVKKPage'
 import AdminPage from './pages/AdminPage'
 import CommunityPage from './pages/CommunityPage'
 import VenuesPage from './pages/VenuesPage'
+import ProfilePage from './pages/ProfilePage'
 
 export default function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
@@ -42,6 +43,7 @@ export default function App() {
           <Route path="/girlsnightout/:slug" element={<GNOPage />} />
           <Route path="/topluluk" element={<CommunityPage />} />
           <Route path="/bulusma-mekanlari" element={<VenuesPage />} />
+          <Route path="/profil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route path="/:username/:slug" element={<InvitePage />} />
         </Routes>
         {isMobile && <MobileNav />}
