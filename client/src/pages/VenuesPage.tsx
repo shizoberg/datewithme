@@ -304,7 +304,7 @@ export default function VenuesPage() {
             <p style={{ fontSize: '13px', color: '#444' }}>Filtreni değiştir veya <Link to="/topluluk" style={{ color: '#00F680' }}>sen öner!</Link></p>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
+          <div className="venue-grid">
             {filtered.map(v => (
               <VenueCard
                 key={v.id}
