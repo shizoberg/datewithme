@@ -8,7 +8,7 @@ const router = Router()
 const VENUE_SELECT = {
   id: true, name: true, category: true, city: true, district: true,
   address: true, googleMapsUrl: true, instagramUrl: true, rating: true,
-  priceLevel: true, imageUrl: true,
+  priceLevel: true, imageUrl: true, aiTags: true, dateSkor: true, gnoSkor: true, atmosfer: true,
 }
 
 // GET /api/venues/suggest?city=...&district=...&category=...
@@ -44,7 +44,7 @@ router.get('/all', async (req: Request, res: Response) => {
     where,
     select: { ...VENUE_SELECT, district: true, city: true, description: true },
     orderBy: [{ rating: 'desc' }, { name: 'asc' }],
-    take: Math.min(parseInt(limit) || 50, 200),
+    take: Math.min(parseInt(limit) || 100, 500),
   })
   res.json({ venues })
 })

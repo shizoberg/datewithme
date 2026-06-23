@@ -1,6 +1,6 @@
 """
 Venue tablosundaki yorumları Claude API ile analiz eder.
-Kullanım: python scripts/analyze_venues.py [--limit 20]
+Kullanım: python scripts/analyze_venues.py [--limit=20] [--reanalyze]
 """
 
 import os
@@ -18,25 +18,43 @@ ANTHROPIC_KEY = os.environ['ANTHROPIC_API_KEY']
 
 client = anthropic.Anthropic(api_key=ANTHROPIC_KEY)
 
+GETDATE_BADGES = [
+    'sessiz_date',
+    'romantik_mekan',
+    'sabah_date',
+    'late_night',
+    'kizlarin_kahvesi',
+    'gno_gece',
+    'dogada_bulus',
+    'sahil_keyfi',
+    'kultur_sanat',
+    'brunch_club',
+    'manzara_nefes',
+    'koy_kacamak',
+    'sarap_aksami',
+    'aktif_date',
+]
+
 
 def get_conn():
     return psycopg2.connect(DATABASE_URL)
 
 
-def fetch_unanalyzed(conn, limit: int) -> list[dict]:
+def fetch_venues(conn, limit: int, reanalyze: bool) -> list[dict]:
     with conn.cursor() as cur:
-        cur.execute("""
-            SELECT id, name, rating, description, "reviewsJson", city, category
+        where = '' if reanalyze else 'WHERE "aiAnalysis" IS NULL'
+        cur.execute(f"""
+            SELECT id, name, rating, description, "reviewsJson", city, district, category, "venueType", "isNature"
             FROM "Venue"
-            WHERE "aiAnalysis" IS NULL
-              AND ("reviewsJson" IS NOT NULL OR description IS NOT NULL)
+            {where}
             ORDER BY rating DESC NULLS LAST
             LIMIT %s
         """, (limit,))
         rows = cur.fetchall()
     return [
         {'id': r[0], 'name': r[1], 'rating': r[2], 'description': r[3],
-         'reviewsJson': r[4], 'city': r[5], 'category': r[6]}
+         'reviewsJson': r[4], 'city': r[5], 'district': r[6],
+         'category': r[7], 'venueType': r[8], 'isNature': r[9]}
         for r in rows
     ]
 
@@ -56,7 +74,7 @@ def save_analysis(conn, venue_id: str, analysis: dict):
             analysis.get('dateSkor'),
             analysis.get('gnoSkor'),
             analysis.get('atmosfer'),
-            ','.join(analysis.get('tags', [])),
+            ','.join(analysis.get('badges', [])),
             venue_id,
         ))
     conn.commit()
@@ -70,30 +88,36 @@ def analyze_venue(venue: dict) -> dict | None:
         reviews = []
 
     reviews_text = '\n'.join(
-        f'- {r["author"]} ({r.get("rating", "?")}★): {r["text"]}'
-        for r in reviews if r.get('text')
+        f'- {r.get("author","?")} ({r.get("rating","?")}★): {r["text"]}'
+        for r in reviews[:3] if r.get('text')
     ) or '(yorum yok)'
 
-    prompt = f"""Sen bir İstanbul/İzmir/Ankara mekan uzmanısın.
-Bu mekan için kısa bir analiz yap ve aşağıdaki JSON formatında döndür.
+    badges_list = '\n'.join(f'- {b}' for b in GETDATE_BADGES)
+
+    prompt = f"""Sen getdatewith.me uygulaması için mekan analiz uzmanısın.
+Bu uygulama Türkiye'de çift buluşmaları ve kız grupları için mekan önerir.
 Sadece JSON döndür, başka hiçbir şey yazma.
 
 Mekan: {venue["name"]}
-Şehir: {venue["city"]}
-Kategori: {venue["category"]}
+Şehir: {venue["city"]} / {venue["district"]}
+Kategori: {venue["category"]} / venueType: {venue.get("venueType")}
+Doğal alan: {venue.get("isNature")}
 Puan: {venue.get("rating") or "bilinmiyor"}
 Açıklama: {venue.get("description") or "yok"}
-Kullanıcı yorumları:
+Yorumlar:
 {reviews_text}
+
+Rozet seçenekleri (max 3, sadece gerçekten uyan):
+{badges_list}
 
 JSON:
 {{
-  "dateSkor": <1-10 arası sayı, romantik date için uygunluk>,
-  "gnoSkor": <1-10 arası sayı, kız grubu gecesi için uygunluk>,
-  "atmosfer": "<romantik|eğlenceli|sakin|enerjik|kültürel|doğal>",
-  "fiyatYorum": "<uygun|orta|pahalı>",
-  "enIyiYorum": "<en etkileyici yorumu Türkçe özetle, max 100 karakter>",
-  "tags": [<max 5 Türkçe tag, örn: "manzara", "kahvaltı", "gece", "doğa">]
+  "dateSkor": <1-10 çift buluşması uygunluğu>,
+  "gnoSkor": <1-10 kız grubu gecesi uygunluğu>,
+  "atmosfer": "<romantik|eğlenceli|sakin|enerjik|kültürel|doğal|hareketli>",
+  "badges": [<max 3 rozet listeden>],
+  "enIyiYorum": "<en çarpıcı yorum max 80 karakter, yoksa boş>",
+  "fiyatYorum": "<uygun|orta|pahalı>"
 }}"""
 
     try:
@@ -103,31 +127,33 @@ JSON:
             messages=[{'role': 'user', 'content': prompt}],
         )
         text = msg.content[0].text.strip()
-        # JSON bloğunu temizle
         if text.startswith('```'):
             text = text.split('```')[1]
             if text.startswith('json'):
                 text = text[4:]
         return json.loads(text.strip())
     except Exception as e:
-        print(f'  ✗ Claude hatası: {e}')
+        print(f'  x Claude hatasi: {e}')
         return None
 
 
 def main():
-    limit = 50
+    limit = 100
+    reanalyze = False
     for arg in sys.argv[1:]:
         if arg.startswith('--limit='):
             limit = int(arg.split('=')[1])
+        if arg == '--reanalyze':
+            reanalyze = True
 
     print(f'\n{"─"*60}')
     print(f'  getdatewith.me — AI Venue Analyzer')
-    print(f'  Limit: {limit} mekan')
+    print(f'  Limit: {limit} | Reanalyze: {reanalyze}')
     print(f'{"─"*60}\n')
 
     conn = get_conn()
-    venues = fetch_unanalyzed(conn, limit)
-    print(f'{len(venues)} analiz edilmemiş mekan bulundu\n')
+    venues = fetch_venues(conn, limit, reanalyze)
+    print(f'{len(venues)} mekan analiz edilecek\n')
 
     success = 0
     for i, venue in enumerate(venues, 1):
@@ -135,16 +161,18 @@ def main():
         analysis = analyze_venue(venue)
         if analysis:
             save_analysis(conn, venue['id'], analysis)
-            print(f'  ✓ dateSkor={analysis.get("dateSkor")} gnoSkor={analysis.get("gnoSkor")} atmosfer={analysis.get("atmosfer")}')
+            badges = ', '.join(analysis.get('badges', [])) or '-'
+            print(f'  OK date={analysis.get("dateSkor")} gno={analysis.get("gnoSkor")} '
+                  f'atm={analysis.get("atmosfer")} | {badges}')
             success += 1
-        time.sleep(0.3)
+        time.sleep(0.2)
 
     conn.close()
 
-    print(f'\n{"═"*60}')
-    print(f'  TAMAMLANDI: {success}/{len(venues)} mekan analiz edildi')
+    print(f'\n{"="*60}')
+    print(f'  TAMAMLANDI: {success}/{len(venues)} analiz edildi')
     print(f'  Tahmini maliyet: ~${success * 0.0003:.2f} (Haiku)')
-    print(f'{"═"*60}\n')
+    print(f'{"="*60}\n')
 
 
 if __name__ == '__main__':

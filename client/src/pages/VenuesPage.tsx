@@ -18,6 +18,10 @@ interface Venue {
   priceLevel: number | null
   imageUrl: string | null
   description: string | null
+  aiTags: string | null
+  dateSkor: number | null
+  gnoSkor: number | null
+  atmosfer: string | null
 }
 
 const CATEGORIES = [
@@ -25,12 +29,29 @@ const CATEGORIES = [
   { value: 'cafe',      label: 'Kafe',             emoji: '☕' },
   { value: 'restaurant',label: 'Restoran',          emoji: '🍽️' },
   { value: 'bar',       label: 'Bar',              emoji: '🍸' },
-  { value: 'park',      label: 'Park / Açık Alan', emoji: '🌿' },
+  { value: 'park',      label: 'Park / Açık Alan', emoji: '🌳' },
   { value: 'rooftop',   label: 'Rooftop',          emoji: '🌆' },
   { value: 'cultural',  label: 'Kültürel',         emoji: '🎨' },
   { value: 'koy',       label: 'Koy & Plaj',       emoji: '🏖️' },
-  { value: 'antik',     label: 'Kültür & Tarihi',  emoji: '🏛️' },
+  { value: 'antik',     label: 'Tarihi',           emoji: '🏛️' },
   { value: 'doga',      label: 'Doğa',             emoji: '🌿' },
+]
+
+const GETDATE_FILTERS = [
+  { value: 'sessiz_date',     label: 'Sessiz Date',       emoji: '🕯️',  color: '#C084FC' },
+  { value: 'romantik_mekan',  label: 'Romantik',          emoji: '💫',  color: '#F472B6' },
+  { value: 'late_night',      label: 'Late Night',        emoji: '🌙',  color: '#818CF8' },
+  { value: 'sabah_date',      label: 'Sabah Buluşması',   emoji: '☀️',  color: '#FB923C' },
+  { value: 'kizlarin_kahvesi',label: 'Kızların Kahvesi',  emoji: '☕',  color: '#00F680' },
+  { value: 'gno_gece',        label: 'GNO Gecesi',        emoji: '👯',  color: '#F59E0B' },
+  { value: 'brunch_club',     label: 'Brunch Club',       emoji: '🥂',  color: '#34D399' },
+  { value: 'manzara_nefes',   label: 'Manzara',           emoji: '🌅',  color: '#38BDF8' },
+  { value: 'sahil_keyfi',     label: 'Sahil',             emoji: '🌊',  color: '#06B6D4' },
+  { value: 'dogada_bulus',    label: 'Doğada Buluş',      emoji: '🌲',  color: '#4ADE80' },
+  { value: 'koy_kacamak',     label: 'Koy Kaçamak',       emoji: '⛵',  color: '#22D3EE' },
+  { value: 'sarap_aksami',    label: 'Şarap Akşamı',      emoji: '🍷',  color: '#E879F9' },
+  { value: 'kultur_sanat',    label: 'Kültür & Sanat',    emoji: '🖼️',  color: '#A78BFA' },
+  { value: 'aktif_date',      label: 'Aktif Date',        emoji: '🥾',  color: '#86EFAC' },
 ]
 
 const CITIES = ['', 'İstanbul', 'Ankara', 'İzmir']
@@ -64,10 +85,26 @@ function StarRating({ rating }: { rating: number | null }) {
   )
 }
 
+function BadgePill({ badgeKey }: { badgeKey: string }) {
+  const b = GETDATE_FILTERS.find(f => f.value === badgeKey)
+  if (!b) return null
+  return (
+    <span style={{
+      display: 'inline-flex', alignItems: 'center', gap: '4px',
+      background: `${b.color}18`, border: `1px solid ${b.color}40`,
+      borderRadius: '9999px', padding: '3px 9px', fontSize: '11px',
+      color: b.color, fontWeight: 700, flexShrink: 0,
+    }}>
+      {b.emoji} {b.label}
+    </span>
+  )
+}
+
 function VenueCard({ venue, saved, onToggle }: { venue: Venue; saved: boolean; onToggle: (id: string) => void }) {
   const cat = CATEGORIES.find(c => c.value === venue.category)
   const mapsUrl = isRealUrl(venue.googleMapsUrl) ? venue.googleMapsUrl : null
   const igLink = igUrl(venue.instagramUrl)
+  const badges = venue.aiTags ? venue.aiTags.split(',').filter(Boolean).slice(0, 3) : []
 
   return (
     <div style={{ background: '#111', border: '1px solid #1E1E1E', borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative' }}>
@@ -99,8 +136,27 @@ function VenueCard({ venue, saved, onToggle }: { venue: Venue; saved: boolean; o
           <span style={{ fontSize: '12px', color: '#555' }}>{venue.district}, {venue.city}</span>
           <PriceDots level={venue.priceLevel} />
         </div>
+        {badges.length > 0 && (
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            {badges.map(b => <BadgePill key={b} badgeKey={b} />)}
+          </div>
+        )}
         {venue.description && (
           <p style={{ fontSize: '13px', color: '#666', lineHeight: 1.5, margin: 0 }}>{venue.description}</p>
+        )}
+        {(venue.dateSkor || venue.gnoSkor) && (
+          <div style={{ display: 'flex', gap: '12px', paddingTop: '4px' }}>
+            {venue.dateSkor && (
+              <span style={{ fontSize: '12px', color: '#888' }}>
+                💑 Date <span style={{ color: '#00F680', fontWeight: 700 }}>{venue.dateSkor}/10</span>
+              </span>
+            )}
+            {venue.gnoSkor && (
+              <span style={{ fontSize: '12px', color: '#888' }}>
+                👯 GNO <span style={{ color: '#F472B6', fontWeight: 700 }}>{venue.gnoSkor}/10</span>
+              </span>
+            )}
+          </div>
         )}
         <div style={{ display: 'flex', gap: '8px', marginTop: 'auto', paddingTop: '8px' }}>
           {mapsUrl && (
@@ -143,6 +199,7 @@ export default function VenuesPage() {
   const [loading, setLoading] = useState(true)
   const [city, setCity] = useState('')
   const [category, setCategory] = useState('')
+  const [badge, setBadge] = useState('')
   const [search, setSearch] = useState('')
   const [savedIds, setSavedIds] = useState<string[]>(getSaved)
 
@@ -159,10 +216,12 @@ export default function VenuesPage() {
       .finally(() => setLoading(false))
   }, [city, category])
 
-  const filtered = venues.filter(v =>
-    !search || v.name.toLowerCase().includes(search.toLowerCase()) ||
-    v.district.toLowerCase().includes(search.toLowerCase())
-  )
+  const filtered = venues.filter(v => {
+    if (search && !v.name.toLowerCase().includes(search.toLowerCase()) &&
+        !v.district.toLowerCase().includes(search.toLowerCase())) return false
+    if (badge && !(v.aiTags || '').split(',').includes(badge)) return false
+    return true
+  })
 
   return (
     <div style={{ minHeight: '100vh', fontFamily: 'Raleway, sans-serif' }}>
@@ -191,14 +250,40 @@ export default function VenuesPage() {
           <option value="İzmir">İzmir</option>
           <option value="Ankara">Ankara</option>
         </select>
+        {/* Kategori filtreleri */}
         <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'none', msOverflowStyle: 'none', marginBottom: '12px' } as React.CSSProperties}>
           {CATEGORIES.map(cat => (
-            <button key={cat.value} onClick={() => setCategory(cat.value)}
-              style={{ background: category === cat.value ? 'rgba(0,246,128,0.12)' : '#111', border: `1px solid ${category === cat.value ? 'rgba(0,246,128,0.4)' : '#2A2A2A'}`, borderRadius: '9999px', padding: '8px 14px', color: category === cat.value ? '#00F680' : '#888', fontSize: '13px', fontWeight: category === cat.value ? 700 : 400, cursor: 'pointer', fontFamily: 'Raleway, sans-serif', flexShrink: 0 }}>
+            <button key={cat.value} onClick={() => { setCategory(cat.value); setBadge('') }}
+              style={{ background: category === cat.value && !badge ? 'rgba(0,246,128,0.12)' : '#111', border: `1px solid ${category === cat.value && !badge ? 'rgba(0,246,128,0.4)' : '#2A2A2A'}`, borderRadius: '9999px', padding: '8px 14px', color: category === cat.value && !badge ? '#00F680' : '#888', fontSize: '13px', fontWeight: category === cat.value && !badge ? 700 : 400, cursor: 'pointer', fontFamily: 'Raleway, sans-serif', flexShrink: 0 }}>
               {cat.emoji} {cat.label}
             </button>
           ))}
         </div>
+
+        {/* Getdate özel rozetler */}
+        <div style={{ marginBottom: '16px' }}>
+          <div style={{ fontSize: '11px', color: '#555', fontWeight: 700, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '10px' }}>✦ Getdate Filtreleri</div>
+          <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'none' } as React.CSSProperties}>
+            {GETDATE_FILTERS.map(f => {
+              const active = badge === f.value
+              return (
+                <button key={f.value} onClick={() => { setBadge(active ? '' : f.value); setCategory('') }}
+                  style={{
+                    background: active ? `${f.color}18` : '#111',
+                    border: `1px solid ${active ? f.color + '60' : '#2A2A2A'}`,
+                    borderRadius: '9999px', padding: '7px 14px',
+                    color: active ? f.color : '#666',
+                    fontSize: '12px', fontWeight: active ? 700 : 400,
+                    cursor: 'pointer', fontFamily: 'Raleway, sans-serif', flexShrink: 0,
+                    transition: 'all 0.15s',
+                  }}>
+                  {f.emoji} {f.label}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
         <input
           type="text"
           placeholder="Mekan veya semt ara…"
