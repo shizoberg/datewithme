@@ -33,12 +33,21 @@ router.get('/suggest', async (req: Request, res: Response) => {
   res.json({ venues: venues.slice(0, 8) })
 })
 
+// venueType olarak saklanan kategoriler
+const VENUE_TYPE_CATEGORIES = ['koy', 'doga', 'antik', 'plaj']
+
 // GET /api/venues/all
 router.get('/all', async (req: Request, res: Response) => {
-  const { city, category, limit = '50' } = req.query as Record<string, string>
+  const { city, category, limit = '100' } = req.query as Record<string, string>
   const where: Record<string, unknown> = { isActive: true }
   if (city) where.city = { equals: city, mode: 'insensitive' }
-  if (category) where.category = category
+  if (category) {
+    if (VENUE_TYPE_CATEGORIES.includes(category)) {
+      where.venueType = category
+    } else {
+      where.category = category
+    }
+  }
 
   const venues = await prisma.venue.findMany({
     where,
