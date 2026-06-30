@@ -2,6 +2,20 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { adminApi } from '../lib/api'
 
+interface BusinessLead {
+  id: string; businessName: string; contactName: string; email: string
+  phone?: string; package: string; message?: string; status: string; createdAt: string
+}
+
+const INFLUENCERS = [
+  { name: 'Ayşe K.', city: 'İstanbul', followers: '24K', engagement: '%8.2', niche: 'Yemek & Kafe', ig: '', color: '#00C060' },
+  { name: 'Mert D.', city: 'İstanbul', followers: '18K', engagement: '%6.9', niche: 'Date & Lifestyle', ig: '', color: '#4A90E2' },
+  { name: 'Zeynep A.', city: 'Ankara', followers: '31K', engagement: '%9.1', niche: 'Gece Hayatı & Bar', ig: '', color: '#D46080' },
+  { name: 'Can B.', city: 'İzmir', followers: '12K', engagement: '%11.4', niche: 'Outdoor & Doğa', ig: '', color: '#F59E0B' },
+  { name: 'Selin T.', city: 'İstanbul', followers: '42K', engagement: '%7.3', niche: 'Etkinlik & Sanat', ig: '', color: '#8B5CF6' },
+  { name: 'Burak Y.', city: 'Antalya', followers: '9K', engagement: '%14.2', niche: 'Plaj & Yaz', ig: '', color: '#06B6D4' },
+]
+
 interface Venue {
   id: string; name: string; category: string; city: string; district: string
   address?: string; googleMapsUrl?: string; instagramUrl?: string
@@ -37,7 +51,9 @@ export default function AdminPage() {
   const [loginLoading, setLoginLoading] = useState(false)
 
   // Venues state
-  const [tab, setTab] = useState<'venues' | 'submissions' | 'triplists'>('venues')
+  const [tab, setTab] = useState<'venues' | 'submissions' | 'triplists' | 'leads' | 'influencers'>('venues')
+  const [leads, setLeads] = useState<BusinessLead[]>([])
+  const [leadsLoading, setLeadsLoading] = useState(false)
   const [triplists, setTriplists] = useState<any[]>([])
   const [triplistLoading, setTriplistLoading] = useState(false)
   const [venues, setVenues] = useState<Venue[]>([])
@@ -82,6 +98,12 @@ export default function AdminPage() {
 
   useEffect(() => { if (adminToken) load() }, [adminToken])
   useEffect(() => { if (adminToken && tab === 'submissions') loadSubmissions() }, [tab, subFilter, adminToken])
+  useEffect(() => {
+    if (adminToken && tab === 'leads') {
+      setLeadsLoading(true)
+      adminApi.get('/api/leads').then(r => setLeads(r.data)).catch(() => {}).finally(() => setLeadsLoading(false))
+    }
+  }, [tab, adminToken])
   useEffect(() => {
     if (adminToken && tab === 'triplists') {
       setTriplistLoading(true)
@@ -275,6 +297,14 @@ export default function AdminPage() {
         <button onClick={() => setTab('triplists')}
           style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'triplists' ? '#00F680' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'triplists' ? '2px solid #00F680' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
           🗺️ Triplistler
+        </button>
+        <button onClick={() => setTab('leads')}
+          style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'leads' ? '#00F680' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'leads' ? '2px solid #00F680' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
+          💼 Başvurular {leads.length > 0 && <span style={{ background: '#00F680', color: '#000', borderRadius: '9999px', padding: '1px 7px', fontSize: '11px', marginLeft: '6px' }}>{leads.length}</span>}
+        </button>
+        <button onClick={() => setTab('influencers')}
+          style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'influencers' ? '#00F680' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'influencers' ? '2px solid #00F680' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
+          ⭐ Influencerlar
         </button>
       </div>
 
@@ -514,6 +544,81 @@ export default function AdminPage() {
               ))}
             </div>
           )}
+        </div>
+      )}
+
+      {/* ── BAŞVURULAR TAB ── */}
+      {tab === 'leads' && (
+        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 24px' }}>
+          <div style={{ marginBottom: '16px', color: '#555', fontSize: '13px' }}>{leads.length} başvuru</div>
+          {leadsLoading ? (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#555' }}>Yükleniyor…</div>
+          ) : leads.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '60px 0', color: '#444' }}>
+              <div style={{ fontSize: '32px', marginBottom: '8px' }}>📭</div>
+              <div>Henüz başvuru yok.</div>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {leads.map(l => (
+                <div key={l.id} style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: '14px', padding: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+                        <div style={{ fontWeight: 700, fontSize: '16px' }}>{l.businessName}</div>
+                        <span style={{ background: l.package === 'triplist' ? '#00F68018' : '#7C3AED20', border: `1px solid ${l.package === 'triplist' ? '#00F68040' : '#7C3AED40'}`, borderRadius: '6px', padding: '2px 10px', fontSize: '11px', color: l.package === 'triplist' ? '#00F680' : '#A78BFA', fontWeight: 700 }}>
+                          {l.package === 'triplist' ? 'Triplist Öne Çıkma' : 'Influencer İşbirliği'}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: '13px', color: '#888', marginBottom: '4px' }}>
+                        👤 {l.contactName} · 📧 <a href={`mailto:${l.email}`} style={{ color: '#60A5FA', textDecoration: 'none' }}>{l.email}</a>
+                        {l.phone && <> · 📞 {l.phone}</>}
+                      </div>
+                      {l.message && (
+                        <div style={{ marginTop: '10px', fontSize: '13px', color: '#666', background: '#1A1A1A', borderRadius: '8px', padding: '10px 14px', lineHeight: 1.5 }}>
+                          "{l.message}"
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ flexShrink: 0, textAlign: 'right' }}>
+                      <div style={{ fontSize: '11px', color: '#444' }}>{new Date(l.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                      <div style={{ marginTop: '8px' }}>
+                        <a href={`mailto:${l.email}?subject=getdatewith.me Kurumsal Başvurunuz`}
+                          style={{ padding: '7px 14px', borderRadius: '8px', background: '#00F680', color: '#000', fontWeight: 700, fontSize: '12px', textDecoration: 'none', display: 'inline-block' }}>
+                          Yanıtla →
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── INFLUENCERLAR TAB ── */}
+      {tab === 'influencers' && (
+        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 24px' }}>
+          <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ color: '#555', fontSize: '13px' }}>{INFLUENCERS.length} influencer — kurumsal sayfada gösteriliyor</div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '14px' }}>
+            {INFLUENCERS.map(inf => (
+              <div key={inf.name} style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: '14px', padding: '20px', display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: inf.color, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '18px', flexShrink: 0 }}>{inf.name[0]}</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700, fontSize: '15px', color: '#fff', marginBottom: '2px' }}>{inf.name}</div>
+                  <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>📍 {inf.city}</div>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    <span style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '100px', padding: '2px 9px', fontSize: '11px', color: '#888', fontWeight: 600 }}>{inf.followers} takipçi</span>
+                    <span style={{ background: '#00F68012', border: '1px solid #00F68030', borderRadius: '100px', padding: '2px 9px', fontSize: '11px', color: '#00F680', fontWeight: 600 }}>{inf.engagement}</span>
+                  </div>
+                  <div style={{ marginTop: '6px', fontSize: '12px', color: '#555' }}>{inf.niche}</div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

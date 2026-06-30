@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 
 interface Props {
@@ -9,6 +9,7 @@ export default function AppHeader({ rightContent }: Props) {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'))
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     const fn = () => setIsMobile(window.innerWidth <= 768)
@@ -18,13 +19,16 @@ export default function AppHeader({ rightContent }: Props) {
 
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem('token'))
-  })
+  }, [location.pathname])
 
-  const navLink = (to: string, label: string) => (
-    <Link to={to} style={{ color: '#555', fontSize: '13px', textDecoration: 'none', fontWeight: 500, padding: '4px 0' }}>
-      {label}
-    </Link>
-  )
+  const navLink = (to: string, label: string) => {
+    const active = location.pathname === to || location.pathname.startsWith(to + '/')
+    return (
+      <Link to={to} style={{ color: active ? '#00C060' : '#555', fontSize: '13px', textDecoration: 'none', fontWeight: active ? 700 : 500, padding: '4px 0', borderBottom: active ? '1.5px solid #00C060' : '1.5px solid transparent' }}>
+        {label}
+      </Link>
+    )
+  }
 
   return (
     <header style={{
