@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import CommunityBanner from '../components/CommunityBanner'
 
 export default function LandingPage() {
   const isLoggedIn = !!localStorage.getItem('token')
@@ -237,7 +236,6 @@ export default function LandingPage() {
         </Link>
       </section>
 
-      <CommunityBanner />
 
       <footer style={{ borderTop: '1px solid #EEEEEE', padding: '32px 24px 28px', background: '#FFFFFF' }}>
         <div style={{ maxWidth: '860px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '24px', marginBottom: '28px' }}>

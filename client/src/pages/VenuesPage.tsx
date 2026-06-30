@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import CommunityBanner from '../components/CommunityBanner'
 import { BookmarkIcon } from '../components/icons'
 import { api } from '../lib/api'
 
@@ -418,7 +417,6 @@ export default function VenuesPage() {
         </div>
       </div>
 
-      <CommunityBanner />
       <div style={{ height: '80px' }} />
     </div>
   )

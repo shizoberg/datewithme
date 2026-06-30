@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { api } from '../lib/api'
-import CommunityBanner from '../components/CommunityBanner'
 
 const isRealUrl = (url?: string | null) => !!url && url.startsWith('https://') && url.length > 35
 
@@ -338,7 +337,6 @@ export default function InvitePage() {
     return (
       <>
         <DateCard card={card} username={username!} />
-        <CommunityBanner />
       </>
     )
   }
