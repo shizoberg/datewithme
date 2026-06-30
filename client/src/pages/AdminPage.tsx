@@ -37,7 +37,9 @@ export default function AdminPage() {
   const [loginLoading, setLoginLoading] = useState(false)
 
   // Venues state
-  const [tab, setTab] = useState<'venues' | 'submissions'>('venues')
+  const [tab, setTab] = useState<'venues' | 'submissions' | 'triplists'>('venues')
+  const [triplists, setTriplists] = useState<any[]>([])
+  const [triplistLoading, setTriplistLoading] = useState(false)
   const [venues, setVenues] = useState<Venue[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
@@ -80,6 +82,12 @@ export default function AdminPage() {
 
   useEffect(() => { if (adminToken) load() }, [adminToken])
   useEffect(() => { if (adminToken && tab === 'submissions') loadSubmissions() }, [tab, subFilter, adminToken])
+  useEffect(() => {
+    if (adminToken && tab === 'triplists') {
+      setTriplistLoading(true)
+      adminApi.get('/api/triplists/public').then(r => setTriplists(r.data)).catch(() => {}).finally(() => setTriplistLoading(false))
+    }
+  }, [tab, adminToken])
 
   // Auto-refresh pending count every 30s
   useEffect(() => {
@@ -264,6 +272,10 @@ export default function AdminPage() {
           style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'submissions' ? '#00F680' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'submissions' ? '2px solid #00F680' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
           📬 Mekan Önerileri {pendingCount > 0 && <span style={{ background: '#00F680', color: '#000', borderRadius: '9999px', padding: '1px 7px', fontSize: '11px', marginLeft: '6px' }}>{pendingCount}</span>}
         </button>
+        <button onClick={() => setTab('triplists')}
+          style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'triplists' ? '#00F680' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'triplists' ? '2px solid #00F680' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
+          🗺️ Triplistler
+        </button>
       </div>
 
       {/* ── VENUES TAB ── */}
@@ -377,6 +389,49 @@ export default function AdminPage() {
                   </tbody>
                 </table>
               </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── TRIPLİSTLER TAB ── */}
+      {tab === 'triplists' && (
+        <div style={{ maxWidth: '960px', margin: '0 auto', padding: '32px 24px' }}>
+          <div style={{ marginBottom: '16px', color: '#555', fontSize: '13px' }}>{triplists.length} public triplist</div>
+          {triplistLoading ? (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#555' }}>Yükleniyor…</div>
+          ) : triplists.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#555' }}>Henüz public triplist yok.</div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {triplists.map((t: any) => (
+                <div key={t.id} style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: '14px', padding: '18px 20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
+                    <div>
+                      <div style={{ fontWeight: 700, fontSize: '15px', marginBottom: '4px' }}>{t.title}</div>
+                      <div style={{ fontSize: '12px', color: '#555' }}>
+                        📍 {t.city}{t.district ? `, ${t.district}` : ''} · 👤 @{t.user?.username} · 👁 {t.viewCount} · {t.stops?.length} durak
+                      </div>
+                      {t.startDate && (
+                        <div style={{ fontSize: '11px', color: '#444', marginTop: '4px' }}>
+                          📅 {new Date(t.startDate).toLocaleDateString('tr-TR')} {t.endDate ? `→ ${new Date(t.endDate).toLocaleDateString('tr-TR')}` : ''}
+                        </div>
+                      )}
+                      <div style={{ marginTop: '10px', display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                        {t.stops?.map((s: any, i: number) => (
+                          <span key={s.id} style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', color: '#888' }}>
+                            {i + 1}. {s.venueName}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <a href={`/${t.user?.username}/triplist/${t.slug}`} target="_blank" rel="noreferrer"
+                      style={{ fontSize: '12px', color: '#00F680', textDecoration: 'none', whiteSpace: 'nowrap' }}>
+                      Görüntüle →
+                    </a>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
