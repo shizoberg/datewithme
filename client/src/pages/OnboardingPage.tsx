@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import AppHeader from '../components/AppHeader'
 import { avatars, AvatarDisplay } from '../components/avatars'
 
 const PERSONALITY_TAGS = [
@@ -99,7 +98,6 @@ export default function OnboardingPage() {
 
   const Wrapper = ({ children }: { children: React.ReactNode }) => (
     <div style={{ background: '#0D0D0D', minHeight: '100vh' }}>
-      <AppHeader />
       <div style={{ maxWidth: '480px', margin: '0 auto', padding: '32px 20px 100px' }}>
         <ProgressDots />
         {children}

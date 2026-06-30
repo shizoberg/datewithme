@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import AppHeader from '../components/AppHeader'
 import { api } from '../lib/api'
 
 interface GuideEntry {
@@ -32,7 +31,6 @@ export default function RehberPage() {
 
   return (
     <div style={{ minHeight: '100vh', fontFamily: 'Raleway, sans-serif', background: '#FFFFFF', color: '#0D0D0D' }}>
-      <AppHeader />
 
       <div className="page-content" style={{ textAlign: 'center', paddingTop: '48px', paddingBottom: '32px' }}>
         <div style={{ display: 'inline-block', background: '#F0F0F0', border: '1px solid #E0E0E0', borderRadius: '9999px', padding: '6px 16px', fontSize: '12px', color: '#00C060', letterSpacing: '2px', fontWeight: 700, marginBottom: '24px', textTransform: 'uppercase' }}>

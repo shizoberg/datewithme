@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import AppHeader from '../components/AppHeader'
 import CommunityBanner from '../components/CommunityBanner'
 import { useAuth } from '../context/AuthContext'
 import { api } from '../lib/api'
@@ -164,12 +163,6 @@ export default function DashboardPage() {
 
   return (
     <div style={{ minHeight: '100vh' }}>
-      <AppHeader rightContent={
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <span style={{ color: '#666', fontSize: '13px' }}>@{user?.username}</span>
-          <button onClick={handleLogout} style={{ background: 'none', border: '1px solid #E0E0E0', borderRadius: '100px', padding: '5px 12px', color: '#666', fontSize: '12px', cursor: 'pointer', fontFamily: 'Raleway, sans-serif' }}>Çıkış</button>
-        </div>
-      } />
 
       <main className="page-content">
         <div style={{ marginBottom: '32px' }}>

@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import AppHeader from '../components/AppHeader'
 import CommunityBanner from '../components/CommunityBanner'
 
 export default function LandingPage() {
@@ -26,13 +25,6 @@ export default function LandingPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#0D0D0D', fontFamily: 'Raleway, sans-serif' }}>
-      <AppHeader rightContent={
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <Link to="/bulusma-mekanlari" style={{ color: '#555', textDecoration: 'none', fontSize: '14px' }}>Mekanlar</Link>
-          <Link to="/login" style={{ color: '#555', textDecoration: 'none', fontSize: '14px' }}>Giriş Yap</Link>
-          <Link to="/register" style={{ background: '#00C060', color: '#fff', textDecoration: 'none', borderRadius: '100px', padding: '9px 20px', fontSize: '14px', fontWeight: 700 }}>Başla</Link>
-        </div>
-      } />
 
       {/* HERO */}
       <div style={{ textAlign: 'center', padding: '64px 24px 48px', maxWidth: '700px', margin: '0 auto' }}>

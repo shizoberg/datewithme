@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import AppHeader from '../components/AppHeader'
 import { api } from '../lib/api'
 
 interface GuideEntry {
@@ -34,7 +33,6 @@ export default function RehberDetailPage() {
   if (notFound || !entry) {
     return (
       <div style={{ minHeight: '100vh', fontFamily: 'Raleway, sans-serif' }}>
-        <AppHeader />
         <div style={{ textAlign: 'center', padding: '100px 20px' }}>
           <p style={{ fontSize: '16px', color: '#555', marginBottom: '12px' }}>Bu yazı bulunamadı.</p>
           <Link to="/rehber" style={{ color: '#00C060', fontWeight: 700, textDecoration: 'none' }}>← Rehber'e dön</Link>
@@ -45,7 +43,6 @@ export default function RehberDetailPage() {
 
   return (
     <div style={{ minHeight: '100vh', fontFamily: 'Raleway, sans-serif', background: '#FFFFFF', color: '#0D0D0D' }}>
-      <AppHeader />
       <div style={{ maxWidth: '680px', margin: '0 auto', padding: '40px 20px 80px' }}>
         <Link to="/rehber" style={{ color: '#00C060', fontSize: '13px', fontWeight: 700, textDecoration: 'none' }}>← Rehber</Link>
 

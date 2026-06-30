@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import AppHeader from '../components/AppHeader'
 import { api } from '../lib/api'
 
 interface VenuePin {
@@ -135,7 +134,6 @@ export default function MapPage() {
 
   return (
     <div style={{ minHeight: '100vh', fontFamily: 'Raleway, sans-serif', background: '#F8F8F8', color: '#0D0D0D', display: 'flex', flexDirection: 'column' }}>
-      <AppHeader />
 
       <div style={{ padding: '16px 20px 0', maxWidth: '1200px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>

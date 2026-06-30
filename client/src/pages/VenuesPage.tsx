@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import AppHeader from '../components/AppHeader'
 import CommunityBanner from '../components/CommunityBanner'
 import { BookmarkIcon } from '../components/icons'
 import { api } from '../lib/api'
@@ -322,7 +321,6 @@ export default function VenuesPage() {
 
   return (
     <div style={{ minHeight: '100vh', fontFamily: 'Raleway, sans-serif', background: '#FFFFFF', color: '#0D0D0D' }}>
-      <AppHeader rightContent={<Link to="/topluluk" style={{ color: '#00C060', textDecoration: 'none', fontSize: '13px', fontWeight: 600 }}>+ Mekan Ekle</Link>} />
 
       {/* HERO */}
       <div className="page-content" style={{ textAlign: 'center', paddingTop: '48px', paddingBottom: '32px' }}>

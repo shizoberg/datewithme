@@ -1,6 +1,5 @@
 import { useState, FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import AppHeader from '../components/AppHeader'
 import { api } from '../lib/api'
 
 export default function InfluencerBasvuruPage() {
@@ -50,7 +49,6 @@ export default function InfluencerBasvuruPage() {
 
   return (
     <div style={{ minHeight: '100vh', fontFamily: 'Raleway, sans-serif', background: '#FFFFFF', color: '#0D0D0D' }}>
-      <AppHeader />
       <div style={{ maxWidth: '480px', margin: '0 auto', padding: '48px 20px 80px' }}>
         <div style={{ display: 'inline-block', background: '#F0F0F0', border: '1px solid #E0E0E0', borderRadius: '9999px', padding: '6px 16px', fontSize: '12px', color: '#7C3AED', letterSpacing: '2px', fontWeight: 700, marginBottom: '20px', textTransform: 'uppercase' }}>
           ✦ Influencer Başvurusu

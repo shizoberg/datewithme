@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import AppHeader from '../components/AppHeader'
 import { api } from '../lib/api'
 
 interface TriplistPreview {
@@ -157,7 +156,6 @@ export default function CommunityPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#FAFAFA', color: '#0D0D0D', fontFamily: 'Raleway, sans-serif' }}>
-      <AppHeader rightContent={<Link to="/bulusma-mekanlari" style={{ color: '#888', textDecoration: 'none', fontSize: '13px' }}>← Mekanlar</Link>} />
 
       <div className="page-content" style={{ textAlign: 'center', paddingTop: '48px', paddingBottom: '24px' }}>
         <div style={{ display: 'inline-block', background: '#E8FFF4', border: '1px solid #00C06030', borderRadius: '9999px', padding: '6px 16px', fontSize: '12px', color: '#00A050', letterSpacing: '2px', fontWeight: 700, marginBottom: '24px', textTransform: 'uppercase' }}>

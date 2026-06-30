@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import AppHeader from '../components/AppHeader'
 import { api } from '../lib/api'
 import { useAuth } from '../context/AuthContext'
 
@@ -108,7 +107,6 @@ export default function CreateTriplistPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#0D0D0D', fontFamily: 'Raleway, sans-serif' }}>
-      <AppHeader />
       <div style={{ maxWidth: 680, margin: '0 auto', padding: '32px 20px 80px' }}>
         <div style={{ marginBottom: '32px' }}>
           <div style={{ fontSize: '11px', fontWeight: 700, color: '#00C060', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '8px' }}>Yeni Triplist</div>

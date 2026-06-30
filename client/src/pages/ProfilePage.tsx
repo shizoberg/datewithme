@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import AppHeader from '../components/AppHeader'
 import { useAuth } from '../context/AuthContext'
 import { PlanIcon, BookmarkIcon, RouteIcon } from '../components/icons'
 import { AvatarDisplay } from '../components/avatars'
@@ -83,9 +82,6 @@ export default function ProfilePage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#0D0D0D', fontFamily: 'Raleway, sans-serif' }}>
-      <AppHeader rightContent={
-        <button onClick={handleLogout} style={{ background: 'none', border: '1px solid #E0E0E0', borderRadius: '100px', padding: '5px 12px', color: '#666', fontSize: '12px', cursor: 'pointer', fontFamily: 'Raleway, sans-serif' }}>Çıkış</button>
-      } />
 
       <div className="page-content">
         {/* Profil kartı */}

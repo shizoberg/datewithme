@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import AppHeader from './components/AppHeader'
 import CookieBanner from './components/CookieBanner'
 import MobileNav from './components/MobileNav'
 import LoginPage from './pages/LoginPage'
@@ -26,15 +27,61 @@ import MapPage from './pages/MapPage'
 import RehberPage from './pages/RehberPage'
 import RehberDetailPage from './pages/RehberDetailPage'
 
+// Bu rotalarda global header gösterilmez (kendi layoutları var)
+const NO_HEADER_PREFIXES = ['/login', '/register', '/admin', '/onboarding', '/girlsnightout/']
+const NO_HEADER_PATTERNS = [/^\/.+\/.+$/] // /:username/:slug invite & triplist sayfaları
+
 const PlanCreatePage = () => (
   <div style={{ background: '#0D0D0D', minHeight: '100vh', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
     <div style={{ textAlign: 'center' }}>
       <div style={{ fontSize: '32px', marginBottom: '12px' }}>🗺️</div>
-      <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '20px', marginBottom: '8px' }}>Plan sistemi geliyor</div>
+      <div style={{ fontWeight: 700, fontSize: '20px', marginBottom: '8px' }}>Plan sistemi geliyor</div>
       <div style={{ color: '#666', fontSize: '14px' }}>Yakında aktif olacak</div>
     </div>
   </div>
 )
+
+function Layout({ isMobile }: { isMobile: boolean }) {
+  const { pathname } = useLocation()
+
+  const showHeader = !NO_HEADER_PREFIXES.some(p => pathname.startsWith(p)) &&
+    !NO_HEADER_PATTERNS.some(r => r.test(pathname))
+
+  return (
+    <>
+      {showHeader && <AppHeader />}
+      {/* 56px spacer for fixed header — only on pages that show the header */}
+      {showHeader && <div style={{ height: '56px', flexShrink: 0 }} />}
+
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/kvkk" element={<KVKKPage />} />
+        <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+        <Route path="/create" element={<ProtectedRoute><CreateCardPage /></ProtectedRoute>} />
+        <Route path="/create-gno" element={<ProtectedRoute><CreateGNOPage /></ProtectedRoute>} />
+        <Route path="/girlsnightout/:slug" element={<GNOPage />} />
+        <Route path="/topluluk" element={<CommunityPage />} />
+        <Route path="/bulusma-mekanlari" element={<VenuesPage />} />
+        <Route path="/profil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+        <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
+        <Route path="/plan/yeni" element={<ProtectedRoute><CreateTriplistPage /></ProtectedRoute>} />
+        <Route path="/plan/:id" element={<ProtectedRoute><PlanCreatePage /></ProtectedRoute>} />
+        <Route path="/kurumsal" element={<KurumsalPage />} />
+        <Route path="/influencer-basvuru" element={<InfluencerBasvuruPage />} />
+        <Route path="/harita" element={<MapPage />} />
+        <Route path="/rehber" element={<RehberPage />} />
+        <Route path="/rehber/:slug" element={<RehberDetailPage />} />
+        <Route path="/:username/triplist/:slug" element={<TriplistPage />} />
+        <Route path="/:username/:slug" element={<InvitePage />} />
+      </Routes>
+
+      {isMobile && showHeader && <MobileNav />}
+    </>
+  )
+}
 
 export default function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
@@ -49,31 +96,7 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <CookieBanner />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/kvkk" element={<KVKKPage />} />
-          <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
-          <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-          <Route path="/create" element={<ProtectedRoute><CreateCardPage /></ProtectedRoute>} />
-          <Route path="/create-gno" element={<ProtectedRoute><CreateGNOPage /></ProtectedRoute>} />
-          <Route path="/girlsnightout/:slug" element={<GNOPage />} />
-          <Route path="/topluluk" element={<CommunityPage />} />
-          <Route path="/bulusma-mekanlari" element={<VenuesPage />} />
-          <Route path="/profil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-          <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
-          <Route path="/plan/yeni" element={<ProtectedRoute><CreateTriplistPage /></ProtectedRoute>} />
-          <Route path="/plan/:id" element={<ProtectedRoute><PlanCreatePage /></ProtectedRoute>} />
-          <Route path="/kurumsal" element={<KurumsalPage />} />
-          <Route path="/influencer-basvuru" element={<InfluencerBasvuruPage />} />
-          <Route path="/harita" element={<MapPage />} />
-          <Route path="/rehber" element={<RehberPage />} />
-          <Route path="/rehber/:slug" element={<RehberDetailPage />} />
-          <Route path="/:username/triplist/:slug" element={<TriplistPage />} />
-          <Route path="/:username/:slug" element={<InvitePage />} />
-        </Routes>
-        {isMobile && <MobileNav />}
+        <Layout isMobile={isMobile} />
       </BrowserRouter>
     </AuthProvider>
   )
