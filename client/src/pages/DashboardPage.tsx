@@ -146,12 +146,14 @@ export default function DashboardPage() {
   const navigate = useNavigate()
   const [cards, setCards] = useState<Card[]>([])
   const [gnoCards, setGnoCards] = useState<GNOCard[]>([])
+  const [triplists, setTriplists] = useState<{ id: string; title: string; slug: string; isPublic: boolean; viewCount: number; stops: { venueName: string }[] }[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     Promise.all([
       api.get('/api/cards').then(r => setCards(r.data.cards)).catch(() => {}),
       api.get('/api/gno').then(r => setGnoCards(r.data.cards)).catch(() => {}),
+      api.get('/api/triplists/mine').then(r => setTriplists(r.data)).catch(() => {}),
     ]).finally(() => setLoading(false))
   }, [])
 
@@ -256,6 +258,33 @@ export default function DashboardPage() {
           ) : (
             cards.map(c => <CardRow key={c.id} card={c} username={user?.username ?? ''} />)
           )}
+        </div>
+
+        {/* Triplists */}
+        <div className="card" style={{ overflow: 'hidden' }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid #2A2A2A', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <h3 style={{ fontWeight: 700, fontSize: '16px' }}>🗺️ Triplistlerim</h3>
+              <span style={{ background: '#1A2A1A', color: '#00F680', border: '1px solid #00F68040', borderRadius: '9999px', padding: '2px 8px', fontSize: '11px', fontWeight: 700 }}>YENİ</span>
+            </div>
+            <button onClick={() => navigate('/plan/yeni')} style={{ background: 'none', border: '1px solid #2A2A2A', borderRadius: '8px', color: '#888', fontSize: '11px', padding: '4px 10px', cursor: 'pointer', fontFamily: 'inherit' }}>+ Ekle</button>
+          </div>
+          {loading ? (
+            <div style={{ padding: '32px', textAlign: 'center', color: '#666' }}>Yükleniyor…</div>
+          ) : triplists.length === 0 ? (
+            <div style={{ padding: '32px', textAlign: 'center', color: '#666' }}>
+              <p style={{ fontSize: '32px', marginBottom: '8px' }}>🗺️</p>
+              <p>Henüz triplist yok. İlk rotanı oluştur!</p>
+            </div>
+          ) : triplists.map(t => (
+            <div key={t.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px', borderBottom: '1px solid #1A1A1A' }}>
+              <div>
+                <div style={{ fontWeight: 600, fontSize: '14px' }}>{t.title}</div>
+                <div style={{ fontSize: '11px', color: '#555', marginTop: '2px' }}>{t.stops.length} durak · {t.isPublic ? '🌐 Herkese açık' : '🔒 Gizli'} · 👁 {t.viewCount}</div>
+              </div>
+              <a href={`/${user?.username}/triplist/${t.slug}`} style={{ fontSize: '12px', color: '#00F680', textDecoration: 'none' }}>Görüntüle →</a>
+            </div>
+          ))}
         </div>
 
         {/* GNO Cards */}

@@ -23,6 +23,7 @@ model User {
   createdAt        DateTime  @default(now())
   cards            Card[]
   gnoCards         GNOCard[]
+  triplists        Triplist[]
 }
 
 model Card {
@@ -147,6 +148,43 @@ model GNOVote {
   pickupChoice     String   @default("meet")
   selectedVenueId  String?
   createdAt        DateTime @default(now())
+}
+
+model Triplist {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  title       String
+  slug        String
+  country     String   @default("Turkey")
+  city        String
+  district    String?
+  description String?
+  isPublic    Boolean  @default(false)
+  startDate   DateTime?
+  endDate     DateTime?
+  teamMembers String?
+  viewCount   Int      @default(0)
+  stops       TripStop[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, slug])
+}
+
+model TripStop {
+  id           String   @id @default(uuid())
+  triplistId   String
+  triplist     Triplist @relation(fields: [triplistId], references: [id], onDelete: Cascade)
+  order        Int
+  venueName    String
+  venueId      String?
+  address      String?
+  description  String?
+  transitMode  String?
+  transitLine  String?
+  transitNote  String?
+  createdAt    DateTime @default(now())
 }
 
 model VenueSubmission {

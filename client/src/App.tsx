@@ -18,6 +18,8 @@ import CommunityPage from './pages/CommunityPage'
 import VenuesPage from './pages/VenuesPage'
 import ProfilePage from './pages/ProfilePage'
 import OnboardingPage from './pages/OnboardingPage'
+import CreateTriplistPage from './pages/CreateTriplistPage'
+import TriplistPage from './pages/TriplistPage'
 
 const PlanCreatePage = () => (
   <div style={{ background: '#0D0D0D', minHeight: '100vh', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -56,8 +58,9 @@ export default function App() {
           <Route path="/bulusma-mekanlari" element={<VenuesPage />} />
           <Route path="/profil" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route path="/onboarding" element={<ProtectedRoute><OnboardingPage /></ProtectedRoute>} />
-          <Route path="/plan/yeni" element={<ProtectedRoute><PlanCreatePage /></ProtectedRoute>} />
+          <Route path="/plan/yeni" element={<ProtectedRoute><CreateTriplistPage /></ProtectedRoute>} />
           <Route path="/plan/:id" element={<ProtectedRoute><PlanCreatePage /></ProtectedRoute>} />
+          <Route path="/:username/triplist/:slug" element={<TriplistPage />} />
           <Route path="/:username/:slug" element={<InvitePage />} />
         </Routes>
         {isMobile && <MobileNav />}

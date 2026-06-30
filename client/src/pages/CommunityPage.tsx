@@ -3,6 +3,51 @@ import { Link } from 'react-router-dom'
 import AppHeader from '../components/AppHeader'
 import { api } from '../lib/api'
 
+interface TriplistPreview {
+  id: string; title: string; slug: string
+  city: string; district?: string; country: string
+  viewCount: number; stops: { id: string; venueName: string }[]
+  user: { username: string; name: string; avatarId?: string }
+  startDate?: string; endDate?: string
+}
+
+function TriplistCard({ t }: { t: TriplistPreview }) {
+  return (
+    <Link to={`/${t.user.username}/triplist/${t.slug}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+      <div style={{ background: '#111', border: '1px solid #1E1E1E', borderRadius: '16px', padding: '20px', transition: 'border-color 0.2s' }}
+        onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.borderColor = '#00F68040'}
+        onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.borderColor = '#1E1E1E'}>
+        {/* Etiketler */}
+        <div style={{ display: 'flex', gap: '6px', marginBottom: '12px', flexWrap: 'wrap' }}>
+          <span style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '20px', padding: '3px 10px', fontSize: '11px', color: '#666' }}>🌍 {t.country}</span>
+          <span style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '20px', padding: '3px 10px', fontSize: '11px', color: '#666' }}>📍 {t.city}{t.district ? `, ${t.district}` : ''}</span>
+        </div>
+        {/* Başlık */}
+        <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '17px', marginBottom: '10px' }}>{t.title}</div>
+        {/* Duraklar mini */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '14px' }}>
+          {t.stops.slice(0, 3).map((s, i) => (
+            <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#666' }}>
+              <span style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#00F68015', border: '1px solid #00F68030', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 700, color: '#00F680', flexShrink: 0 }}>{i + 1}</span>
+              {s.venueName}
+            </div>
+          ))}
+          {t.stops.length > 3 && <div style={{ fontSize: '11px', color: '#444', paddingLeft: '24px' }}>+{t.stops.length - 3} durak daha</div>}
+        </div>
+        {/* Alt bilgi */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#555' }}>
+            <span style={{ fontWeight: 600 }}>{t.user.name}</span>
+            <span>·</span>
+            <span>👁 {t.viewCount}</span>
+          </div>
+          <span style={{ fontSize: '11px', color: '#444' }}>{t.stops.length} durak →</span>
+        </div>
+      </div>
+    </Link>
+  )
+}
+
 const CATEGORIES = [
   { value: 'cafe',       label: 'Kafe',            emoji: '☕' },
   { value: 'restaurant', label: 'Restoran',         emoji: '🍽️' },
@@ -23,8 +68,13 @@ export default function CommunityPage() {
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
+  const [triplists, setTriplists] = useState<TriplistPreview[]>([])
+  const [activeTab, setActiveTab] = useState<'triplists' | 'suggest'>('triplists')
 
-  useEffect(() => { document.title = 'Mekan Öner — getdatewith.me' }, [])
+  useEffect(() => { document.title = 'Topluluk — getdatewith.me' }, [])
+  useEffect(() => {
+    api.get('/api/triplists/public').then(r => setTriplists(r.data)).catch(() => {})
+  }, [])
 
   function set(k: keyof typeof EMPTY) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
@@ -76,18 +126,55 @@ export default function CommunityPage() {
       <AppHeader rightContent={<Link to="/bulusma-mekanlari" style={{ color: '#666', textDecoration: 'none', fontSize: '13px' }}>← Mekanlar</Link>} />
 
       {/* HERO */}
-      <div className="page-content" style={{ textAlign: 'center', paddingTop: '48px', paddingBottom: '32px' }}>
+      <div className="page-content" style={{ textAlign: 'center', paddingTop: '48px', paddingBottom: '24px' }}>
         <div style={{ display: 'inline-block', background: '#111', border: '1px solid #2A2A2A', borderRadius: '9999px', padding: '6px 16px', fontSize: '12px', color: '#00F680', letterSpacing: '2px', fontWeight: 700, marginBottom: '24px', textTransform: 'uppercase' }}>
-          ✦ Community Built
+          ✦ Topluluk
         </div>
         <h1 className="page-h1" style={{ fontSize: 'clamp(28px, 7vw, 42px)', letterSpacing: '-1px', marginBottom: '12px' }}>
-          Mekan işi<br />
-          <span style={{ color: '#00F680' }}>ciddi bir iştir.</span>
+          Rotalar & Mekanlar
         </h1>
         <p style={{ fontSize: '15px', color: '#888', lineHeight: 1.7, maxWidth: '380px', margin: '0 auto' }}>
-          Şehrinin en iyi mekanını biliyor musun? Ekle, herkes senin gibi kaliteli vakit geçirsin.
+          Topluluğun keşfettiği güzergahlar ve mekanlar bir arada.
         </p>
       </div>
+
+      {/* TABS */}
+      <div style={{ maxWidth: '720px', margin: '0 auto', padding: '0 20px 32px', display: 'flex', gap: '8px' }}>
+        <button onClick={() => setActiveTab('triplists')}
+          style={{ padding: '10px 24px', borderRadius: '20px', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, fontSize: '13px', background: activeTab === 'triplists' ? '#00F680' : '#111', color: activeTab === 'triplists' ? '#000' : '#666', transition: 'all 0.15s' }}>
+          🗺️ Triplistler
+        </button>
+        <button onClick={() => setActiveTab('suggest')}
+          style={{ padding: '10px 24px', borderRadius: '20px', border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontWeight: 700, fontSize: '13px', background: activeTab === 'suggest' ? '#00F680' : '#111', color: activeTab === 'suggest' ? '#000' : '#666', transition: 'all 0.15s' }}>
+          📍 Mekan Öner
+        </button>
+      </div>
+
+      {/* TRIPLİST FEED */}
+      {activeTab === 'triplists' && (
+        <div style={{ maxWidth: '720px', margin: '0 auto', padding: '0 20px 60px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <div style={{ fontSize: '13px', color: '#555' }}>{triplists.length} triplist paylaşıldı</div>
+            <Link to="/plan/yeni"
+              style={{ background: '#00F680', color: '#000', fontWeight: 700, fontSize: '13px', padding: '8px 18px', borderRadius: '20px', textDecoration: 'none', fontFamily: 'Syne, sans-serif' }}>
+              + Triplist Oluştur
+            </Link>
+          </div>
+          {triplists.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '60px 20px', color: '#444' }}>
+              <div style={{ fontSize: '32px', marginBottom: '12px' }}>🗺️</div>
+              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, marginBottom: '8px' }}>Henüz triplist yok</div>
+              <div style={{ fontSize: '13px', color: '#555' }}>İlk triplist'i sen oluştur!</div>
+            </div>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
+              {triplists.map(t => <TriplistCard key={t.id} t={t} />)}
+            </div>
+          )}
+        </div>
+      )}
+
+      {activeTab === 'suggest' && (<>
 
       {/* STATS */}
       <section style={{ padding: '0 20px 60px', maxWidth: '640px', margin: '0 auto', boxSizing: 'border-box' }}>
@@ -269,6 +356,7 @@ export default function CommunityPage() {
           Ticari olmayan, gerçek mekan önerileri kabul edilir.
         </p>
       </div>
+      </>)}
 
       {/* FOOTER */}
       <footer style={{ borderTop: '1px solid #141414', padding: '28px 24px', textAlign: 'center' }}>
