@@ -87,6 +87,45 @@ export default function LandingPage() {
         </div>
       </div>
 
+      {/* TRIPLIST — YENİ ÖZELLİK BANNER */}
+      <section style={{ padding: '0 24px 80px', maxWidth: '900px', margin: '0 auto' }}>
+        <div style={{ background: 'linear-gradient(135deg, #00C060 0%, #00A050 100%)', borderRadius: '24px', padding: '40px 32px', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '200px', height: '200px', borderRadius: '50%', background: 'rgba(255,255,255,0.08)' }} />
+          <div style={{ position: 'absolute', bottom: '-60px', left: '-30px', width: '160px', height: '160px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }} />
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.2)', borderRadius: '9999px', padding: '4px 14px', fontSize: '11px', color: '#fff', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '16px' }}>
+              🆕 Yeni Özellik
+            </div>
+            <h2 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 900, fontSize: 'clamp(22px, 4vw, 32px)', color: '#fff', marginBottom: '12px', lineHeight: 1.2 }}>
+              Triplist — Rota paylaşımı<br />artık burada
+            </h2>
+            <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '15px', lineHeight: 1.6, maxWidth: '480px', marginBottom: '28px' }}>
+              Durak durak gezi planları oluştur, arkadaşlarınla paylaş. Hangi mekan, nasıl gidilir, kim geliyor — hepsi tek rotada.
+            </p>
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+              <Link to={isLoggedIn ? '/plan/yeni' : '/register'} style={{ background: '#fff', color: '#00A050', textDecoration: 'none', fontWeight: 800, fontSize: '14px', padding: '12px 24px', borderRadius: '9999px', display: 'inline-block' }}>
+                🗺️ Triplist Oluştur →
+              </Link>
+              <Link to="/topluluk" style={{ background: 'rgba(255,255,255,0.2)', color: '#fff', textDecoration: 'none', fontWeight: 600, fontSize: '14px', padding: '12px 24px', borderRadius: '9999px', display: 'inline-block', border: '1px solid rgba(255,255,255,0.4)' }}>
+                Topluluk Rotalarına Bak
+              </Link>
+            </div>
+            <div style={{ display: 'flex', gap: '24px', marginTop: '28px', flexWrap: 'wrap' }}>
+              {[
+                { icon: '📍', text: 'Durak durak rota' },
+                { icon: '🚌', text: 'Ulaşım bilgisi' },
+                { icon: '👥', text: 'Ekip paneli' },
+                { icon: '❤️', text: 'Beğen & kaydet' },
+              ].map(f => (
+                <div key={f.icon} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'rgba(255,255,255,0.9)', fontSize: '13px', fontWeight: 600 }}>
+                  <span>{f.icon}</span>{f.text}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* COMMUNITY TINY BANNER */}
       <div style={{ textAlign: 'center', padding: '0 24px 32px', fontSize: '13px', color: '#555' }}>
         <span>Şehrinin en iyi mekanını biliyor musun? </span>

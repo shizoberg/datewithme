@@ -31,9 +31,9 @@ interface GNOCard {
 }
 
 const STATUS: Record<string, { label: string; color: string; bg: string }> = {
-  pending:  { label: 'Bekliyor',  color: '#00F680', bg: '#2A2300' },
-  accepted: { label: 'Kabul ✓',  color: '#22C55E', bg: '#0D2E1A' },
-  declined: { label: 'Reddetti', color: '#EF4444', bg: '#2D1010' },
+  pending:  { label: 'Bekliyor',  color: '#D97706', bg: '#FEF3C7' },
+  accepted: { label: 'Kabul ✓',  color: '#059669', bg: '#D1FAE5' },
+  declined: { label: 'Reddetti', color: '#DC2626', bg: '#FEE2E2' },
 }
 
 function CardRow({ card, username }: { card: Card; username: string }) {
@@ -45,10 +45,10 @@ function CardRow({ card, username }: { card: Card; username: string }) {
   function copyLink() { navigator.clipboard.writeText(link) }
 
   return (
-    <div style={{ borderBottom: '1px solid #2A2A2A' }}>
+    <div style={{ borderBottom: '1px solid #E8E8E8' }}>
       <div onClick={() => hasDetails && setOpen(v => !v)}
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', cursor: hasDetails ? 'pointer' : 'default' }}
-        onMouseEnter={e => { if (hasDetails) (e.currentTarget as HTMLDivElement).style.background = '#222' }}
+        onMouseEnter={e => { if (hasDetails) (e.currentTarget as HTMLDivElement).style.background = '#F5F5F5' }}
         onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'transparent' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: s.color, flexShrink: 0, display: 'block' }} />
@@ -61,7 +61,7 @@ function CardRow({ card, username }: { card: Card; username: string }) {
           <span style={{ background: s.bg, color: s.color, border: `1px solid ${s.color}33`, borderRadius: '9999px', padding: '3px 10px', fontSize: '12px', fontWeight: 600 }}>{s.label}</span>
           {card.status === 'pending' && (
             <button onClick={e => { e.stopPropagation(); copyLink() }}
-              style={{ fontSize: '12px', color: '#00F680', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
+              style={{ fontSize: '12px', color: '#00C060', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
               Linki Kopyala
             </button>
           )}
@@ -102,7 +102,7 @@ function GNOCardRow({ card }: { card: GNOCard }) {
   }
 
   return (
-    <div style={{ borderBottom: '1px solid #2A2A2A' }}>
+    <div style={{ borderBottom: '1px solid #E8E8E8' }}>
       <div onClick={() => card.votes.length > 0 && setOpen(v => !v)}
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 20px', cursor: card.votes.length > 0 ? 'pointer' : 'default' }}
         onMouseEnter={e => { if (card.votes.length > 0) (e.currentTarget as HTMLDivElement).style.background = '#222' }}
@@ -112,17 +112,17 @@ function GNOCardRow({ card }: { card: GNOCard }) {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <p style={{ fontWeight: 600, fontSize: '15px' }}>{card.groupName}</p>
-              <span style={{ background: '#2D1520', color: '#FF8FAB', border: '1px solid #C0608044', borderRadius: '9999px', padding: '2px 8px', fontSize: '11px', fontWeight: 700 }}>Girls Night Out</span>
+              <span style={{ background: '#FFF0F5', color: '#C06080', border: '1px solid #F0C0D0', borderRadius: '9999px', padding: '2px 8px', fontSize: '11px', fontWeight: 700 }}>Girls Night Out</span>
             </div>
             <p style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>{new Date(card.createdAt).toLocaleDateString('tr-TR')} · {card.votes.length} oy</p>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <span style={{ background: '#2D1520', color: '#FF8FAB', border: '1px solid #C0608033', borderRadius: '9999px', padding: '3px 10px', fontSize: '12px', fontWeight: 600 }}>
+          <span style={{ background: '#FFF0F5', color: '#C06080', border: '1px solid #F0C0D0', borderRadius: '9999px', padding: '3px 10px', fontSize: '12px', fontWeight: 600 }}>
             {card.votes.length} oy
           </span>
           <button onClick={e => { e.stopPropagation(); copyLink() }}
-            style={{ fontSize: '12px', color: '#FF8FAB', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
+            style={{ fontSize: '12px', color: '#C06080', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
             {copied ? '✓ Kopyalandı' : 'Linki Kopyala'}
           </button>
           {card.votes.length > 0 && <span style={{ color: '#666', fontSize: '12px' }}>{open ? '▲' : '▼'}</span>}
@@ -130,7 +130,7 @@ function GNOCardRow({ card }: { card: GNOCard }) {
       </div>
       {open && card.votes.length > 0 && (
         <div className="fade-in" style={{ padding: '0 20px 16px 40px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <p style={{ fontSize: '13px', color: '#FF8FAB', fontWeight: 700, marginBottom: '4px' }}>🏆 Şu anki lider:</p>
+          <p style={{ fontSize: '13px', color: '#C06080', fontWeight: 700, marginBottom: '4px' }}>🏆 Şu anki lider:</p>
           <p style={{ fontSize: '14px' }}>🎯 {winner('selectedEvent')}</p>
           <p style={{ fontSize: '14px' }}>📅 {winner('selectedTime')}</p>
           <p style={{ fontSize: '14px' }}>📍 {winner('selectedLocation')}</p>
@@ -167,7 +167,7 @@ export default function DashboardPage() {
       <AppHeader rightContent={
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           <span style={{ color: '#666', fontSize: '13px' }}>@{user?.username}</span>
-          <button onClick={handleLogout} style={{ background: 'none', border: '1px solid #2A2A2A', borderRadius: '100px', padding: '5px 12px', color: '#666', fontSize: '12px', cursor: 'pointer', fontFamily: 'Raleway, sans-serif' }}>Çıkış</button>
+          <button onClick={handleLogout} style={{ background: 'none', border: '1px solid #E0E0E0', borderRadius: '100px', padding: '5px 12px', color: '#666', fontSize: '12px', cursor: 'pointer', fontFamily: 'Raleway, sans-serif' }}>Çıkış</button>
         </div>
       } />
 
@@ -186,26 +186,26 @@ export default function DashboardPage() {
             Ne yapmak istiyorsun?
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' } as React.CSSProperties}>
-            <button onClick={() => navigate('/create')} style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '14px', padding: '16px 12px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+            <button onClick={() => navigate('/create')} style={{ background: '#F5F5F5', border: '1px solid #E8E8E8', borderRadius: '14px', padding: '16px 12px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
               <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(0,246,128,0.1)', border: '1px solid rgba(0,246,128,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00F680" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                 </svg>
               </div>
-              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: '12px', color: '#fff' }}>Date Kartı</div>
+              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: '12px', color: '#0D0D0D' }}>Date Kartı</div>
               <div style={{ fontSize: '10px', color: '#555', lineHeight: 1.3 }}>Kişiye özel teklif</div>
             </button>
-            <button onClick={() => navigate('/create-gno')} style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '14px', padding: '16px 12px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+            <button onClick={() => navigate('/create-gno')} style={{ background: '#F5F5F5', border: '1px solid #E8E8E8', borderRadius: '14px', padding: '16px 12px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
               <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,111,174,0.1)', border: '1px solid rgba(255,111,174,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6FAE" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
                   <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                 </svg>
               </div>
-              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: '12px', color: '#fff' }}>Girls Night Out</div>
+              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: '12px', color: '#0D0D0D' }}>Girls Night Out</div>
               <div style={{ fontSize: '10px', color: '#555', lineHeight: 1.3 }}>Grup gecesi planla</div>
             </button>
-            <button onClick={() => navigate('/plan/yeni')} style={{ background: '#1A1A1A', border: '1px solid rgba(255,214,0,0.25)', borderRadius: '14px', padding: '16px 12px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+            <button onClick={() => navigate('/plan/yeni')} style={{ background: '#F5F5F5', border: '1px solid rgba(200,160,0,0.3)', borderRadius: '14px', padding: '16px 12px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
               <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,214,0,0.1)', border: '1px solid rgba(255,214,0,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFD600" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M3 17 C6 17 6 7 12 7 S18 17 21 17"/>
@@ -214,7 +214,7 @@ export default function DashboardPage() {
                   <circle cx="21" cy="17" r="2" fill="#FFD600" stroke="none"/>
                 </svg>
               </div>
-              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: '12px', color: '#fff' }}>
+              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: '12px', color: '#0D0D0D' }}>
                 Plan Oluştur
                 <span style={{ display: 'block', fontSize: '9px', background: 'rgba(255,214,0,0.15)', color: '#FFD600', padding: '1px 5px', borderRadius: '100px', marginTop: '2px' }}>YENİ</span>
               </div>
@@ -232,7 +232,7 @@ export default function DashboardPage() {
             </button>
           </Link>
           <Link to="/create-gno" style={{ textDecoration: 'none' }}>
-            <button style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '10px 20px', borderRadius: '9999px', border: '1.5px solid #C06080', background: '#2D1520', color: '#FF8FAB', cursor: 'pointer', fontWeight: 700, fontSize: '14px', fontFamily: 'Raleway, sans-serif' }}>
+            <button style={{ display: 'inline-flex', alignItems: 'center', gap: '7px', padding: '10px 20px', borderRadius: '9999px', border: '1.5px solid #E0A0B8', background: '#FFF0F5', color: '#C06080', cursor: 'pointer', fontWeight: 700, fontSize: '14px', fontFamily: 'Raleway, sans-serif' }}>
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               Girls Night Out Oluştur
             </button>
@@ -241,7 +241,7 @@ export default function DashboardPage() {
 
         {/* Date Cards */}
         <div className="card" style={{ overflow: 'hidden', marginBottom: '24px' }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid #2A2A2A' }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid #E8E8E8' }}>
             <h3 style={{ fontWeight: 700, fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
               Date Teklifleri
@@ -262,12 +262,12 @@ export default function DashboardPage() {
 
         {/* Triplists */}
         <div className="card" style={{ overflow: 'hidden' }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid #2A2A2A', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid #E8E8E8', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <h3 style={{ fontWeight: 700, fontSize: '16px' }}>🗺️ Triplistlerim</h3>
-              <span style={{ background: '#1A2A1A', color: '#00F680', border: '1px solid #00F68040', borderRadius: '9999px', padding: '2px 8px', fontSize: '11px', fontWeight: 700 }}>YENİ</span>
+              <span style={{ background: 'rgba(0,192,96,0.1)', color: '#00C060', border: '1px solid rgba(0,192,96,0.3)', borderRadius: '9999px', padding: '2px 8px', fontSize: '11px', fontWeight: 700 }}>YENİ</span>
             </div>
-            <button onClick={() => navigate('/plan/yeni')} style={{ background: 'none', border: '1px solid #2A2A2A', borderRadius: '8px', color: '#888', fontSize: '11px', padding: '4px 10px', cursor: 'pointer', fontFamily: 'inherit' }}>+ Ekle</button>
+            <button onClick={() => navigate('/plan/yeni')} style={{ background: 'none', border: '1px solid #E0E0E0', borderRadius: '8px', color: '#888', fontSize: '11px', padding: '4px 10px', cursor: 'pointer', fontFamily: 'inherit' }}>+ Ekle</button>
           </div>
           {loading ? (
             <div style={{ padding: '32px', textAlign: 'center', color: '#666' }}>Yükleniyor…</div>
@@ -277,21 +277,21 @@ export default function DashboardPage() {
               <p>Henüz triplist yok. İlk rotanı oluştur!</p>
             </div>
           ) : triplists.map(t => (
-            <div key={t.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px', borderBottom: '1px solid #1A1A1A' }}>
+            <div key={t.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px', borderBottom: '1px solid #F0F0F0' }}>
               <div>
                 <div style={{ fontWeight: 600, fontSize: '14px' }}>{t.title}</div>
                 <div style={{ fontSize: '11px', color: '#555', marginTop: '2px' }}>{t.stops.length} durak · {t.isPublic ? '🌐 Herkese açık' : '🔒 Gizli'} · 👁 {t.viewCount}</div>
               </div>
-              <a href={`/${user?.username}/triplist/${t.slug}`} style={{ fontSize: '12px', color: '#00F680', textDecoration: 'none' }}>Görüntüle →</a>
+              <a href={`/${user?.username}/triplist/${t.slug}`} style={{ fontSize: '12px', color: '#00C060', textDecoration: 'none' }}>Görüntüle →</a>
             </div>
           ))}
         </div>
 
         {/* GNO Cards */}
         <div className="card" style={{ overflow: 'hidden' }}>
-          <div style={{ padding: '16px 20px', borderBottom: '1px solid #2A2A2A', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ padding: '16px 20px', borderBottom: '1px solid #E8E8E8', display: 'flex', alignItems: 'center', gap: '10px' }}>
             <h3 style={{ fontWeight: 700, fontSize: '16px' }}>👯‍♀️ Girls Night Out</h3>
-            <span style={{ background: '#2D1520', color: '#FF8FAB', border: '1px solid #C0608044', borderRadius: '9999px', padding: '2px 8px', fontSize: '11px', fontWeight: 700 }}>GNO</span>
+            <span style={{ background: '#FFF0F5', color: '#C06080', border: '1px solid #F0C0D0', borderRadius: '9999px', padding: '2px 8px', fontSize: '11px', fontWeight: 700 }}>GNO</span>
           </div>
           {loading ? (
             <div style={{ padding: '32px', textAlign: 'center', color: '#666' }}>Yükleniyor…</div>
