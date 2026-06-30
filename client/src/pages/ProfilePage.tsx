@@ -94,12 +94,12 @@ export default function ProfilePage() {
             {user.avatarId ? (
               <AvatarDisplay avatarId={user.avatarId} size={64} />
             ) : (
-              <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#00C060', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '24px', color: '#fff', flexShrink: 0 }}>
+              <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#00C060', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '24px', color: '#fff', flexShrink: 0 }}>
                 {user.name?.[0]?.toUpperCase()}
               </div>
             )}
             <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '18px', color: '#0D0D0D' }}>{user.name}</div>
+              <div style={{ fontWeight: 700, fontSize: '18px', color: '#0D0D0D' }}>{user.name}</div>
               <div style={{ fontSize: '13px', color: '#777', marginTop: '2px' }}>@{user.username}</div>
               {user.city && (
                 <div style={{ fontSize: '12px', color: '#888', marginTop: '4px' }}>
@@ -161,7 +161,7 @@ export default function ProfilePage() {
               {triplists.map(t => (
                 <div key={t.id} style={{ ...card, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '15px', marginBottom: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.title}</div>
+                    <div style={{ fontWeight: 700, fontSize: '15px', marginBottom: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{t.title}</div>
                     <div style={{ fontSize: '12px', color: '#777' }}>
                       📍 {t.city} · {t.stops.length} durak · {t.isPublic ? '🌐 Herkese açık' : '🔒 Gizli'} · 👁 {t.viewCount} · ❤️ {t.likeCount}
                     </div>

@@ -32,7 +32,7 @@ function TriplistCard({ t, liked, saved, onLike, onSave }: {
           <span style={{ background: '#F5F5F5', border: '1px solid #E8E8E8', borderRadius: '20px', padding: '3px 10px', fontSize: '11px', color: '#555' }}>🌍 {t.country}</span>
           <span style={{ background: '#F5F5F5', border: '1px solid #E8E8E8', borderRadius: '20px', padding: '3px 10px', fontSize: '11px', color: '#555' }}>📍 {t.city}{t.district ? `, ${t.district}` : ''}</span>
         </div>
-        <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '17px', marginBottom: '10px', color: '#0D0D0D' }}>{t.title}</div>
+        <div style={{ fontWeight: 700, fontSize: '17px', marginBottom: '10px', color: '#0D0D0D' }}>{t.title}</div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '14px' }}>
           {t.stops.slice(0, 3).map((s, i) => (
             <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#666' }}>
@@ -202,7 +202,7 @@ export default function CommunityPage() {
           {triplists.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '60px 20px', color: '#999' }}>
               <div style={{ fontSize: '32px', marginBottom: '12px' }}>🗺️</div>
-              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, color: '#555', marginBottom: '8px' }}>Henüz triplist yok</div>
+              <div style={{ fontWeight: 700, color: '#555', marginBottom: '8px' }}>Henüz triplist yok</div>
               <div style={{ fontSize: '13px' }}>İlk triplist'i sen oluştur!</div>
             </div>
           ) : (

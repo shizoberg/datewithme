@@ -130,7 +130,7 @@ export default function AdminPage() {
     return (
       <div style={{ background: '#0D0D0D', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
         <div style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '360px' }}>
-          <div style={{ fontFamily: 'Syne, sans-serif', fontSize: '20px', fontWeight: 700, color: '#fff', marginBottom: '6px' }}>Admin Paneli</div>
+          <div style={{ fontSize: '20px', fontWeight: 700, color: '#fff', marginBottom: '6px' }}>Admin Paneli</div>
           <div style={{ fontSize: '13px', color: '#666', marginBottom: '24px' }}>getdatewith.me yönetim paneli</div>
           <input
             type="password"

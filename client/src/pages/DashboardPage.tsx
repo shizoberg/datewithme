@@ -192,7 +192,7 @@ export default function DashboardPage() {
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                 </svg>
               </div>
-              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: '12px', color: '#0D0D0D' }}>Date Kartı</div>
+              <div style={{ fontWeight: 600, fontSize: '12px', color: '#0D0D0D' }}>Date Kartı</div>
               <div style={{ fontSize: '10px', color: '#555', lineHeight: 1.3 }}>Kişiye özel teklif</div>
             </button>
             <button onClick={() => navigate('/create-gno')} style={{ background: '#F5F5F5', border: '1px solid #E8E8E8', borderRadius: '14px', padding: '16px 12px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
@@ -202,7 +202,7 @@ export default function DashboardPage() {
                   <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                 </svg>
               </div>
-              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: '12px', color: '#0D0D0D' }}>Girls Night Out</div>
+              <div style={{ fontWeight: 600, fontSize: '12px', color: '#0D0D0D' }}>Girls Night Out</div>
               <div style={{ fontSize: '10px', color: '#555', lineHeight: 1.3 }}>Grup gecesi planla</div>
             </button>
             <button onClick={() => navigate('/plan/yeni')} style={{ background: '#F5F5F5', border: '1px solid rgba(200,160,0,0.3)', borderRadius: '14px', padding: '16px 12px', cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
@@ -214,7 +214,7 @@ export default function DashboardPage() {
                   <circle cx="21" cy="17" r="2" fill="#FFD600" stroke="none"/>
                 </svg>
               </div>
-              <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: '12px', color: '#0D0D0D' }}>
+              <div style={{ fontWeight: 600, fontSize: '12px', color: '#0D0D0D' }}>
                 Plan Oluştur
                 <span style={{ display: 'block', fontSize: '9px', background: 'rgba(255,214,0,0.15)', color: '#FFD600', padding: '1px 5px', borderRadius: '100px', marginTop: '2px' }}>YENİ</span>
               </div>

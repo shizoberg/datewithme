@@ -64,7 +64,7 @@ const sections = [
 
 export default function KVKKPage() {
   return (
-    <div style={{ minHeight: '100vh', background: '#0D0D0D', color: '#fff', fontFamily: 'Syne, sans-serif', padding: '40px 24px' }}>
+    <div style={{ minHeight: '100vh', background: '#0D0D0D', color: '#fff', padding: '40px 24px' }}>
       <div style={{ maxWidth: '720px', margin: '0 auto' }}>
 
         <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#00F680', textDecoration: 'none', fontSize: '14px', fontWeight: 600, marginBottom: '32px' }}>

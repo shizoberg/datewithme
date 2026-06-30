@@ -78,7 +78,7 @@ export default function TriplistPage() {
                 <span style={{ background: '#F0F0F0', border: '1px solid #E0E0E0', borderRadius: '20px', padding: '4px 12px', fontSize: '12px', color: '#666' }}>🌍 {data.country}</span>
                 <span style={{ background: '#F0F0F0', border: '1px solid #E0E0E0', borderRadius: '20px', padding: '4px 12px', fontSize: '12px', color: '#666' }}>📍 {data.city}{data.district ? `, ${data.district}` : ''}</span>
               </div>
-              <h1 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '32px', margin: '0 0 12px' }}>{data.title}</h1>
+              <h1 style={{ fontWeight: 700, fontSize: '32px', margin: '0 0 12px' }}>{data.title}</h1>
               {data.description && <p style={{ color: '#666', fontSize: '14px', lineHeight: '1.6', marginBottom: '16px' }}>{data.description}</p>}
 
               {/* Kullanıcı + meta */}
@@ -103,7 +103,7 @@ export default function TriplistPage() {
                   <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
                     {/* Sol — numara + çizgi */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
-                      <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#00C060', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '14px', fontFamily: 'Syne, sans-serif', flexShrink: 0 }}>{stop.order}</div>
+                      <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#00C060', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '14px', flexShrink: 0 }}>{stop.order}</div>
                       {i < data.stops.length - 1 && (
                         <div style={{ width: '2px', flex: 1, minHeight: '60px', background: '#D0D0D0', marginTop: '4px' }} />
                       )}
@@ -112,7 +112,7 @@ export default function TriplistPage() {
                     {/* Sağ — içerik */}
                     <div style={{ flex: 1, paddingBottom: i < data.stops.length - 1 ? '0' : '0' }}>
                       <div style={{ background: '#F8F8F8', border: '1px solid #E8E8E8', borderRadius: '14px', padding: '18px', marginBottom: '0' }}>
-                        <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '17px', marginBottom: '4px' }}>{stop.venueName}</div>
+                        <div style={{ fontWeight: 700, fontSize: '17px', marginBottom: '4px' }}>{stop.venueName}</div>
                         {stop.address && <div style={{ fontSize: '13px', color: '#666', marginBottom: '6px' }}>📍 {stop.address}</div>}
                         {stop.description && <div style={{ fontSize: '13px', color: '#666', lineHeight: '1.5' }}>{stop.description}</div>}
                         {stop.venueId && (

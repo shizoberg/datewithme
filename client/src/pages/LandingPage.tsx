@@ -39,7 +39,7 @@ export default function LandingPage() {
         <div style={{ display: 'inline-block', background: '#F0F0F0', border: '1px solid #E0E0E0', borderRadius: '9999px', padding: '6px 18px', fontSize: '12px', color: '#555', letterSpacing: '1.5px', fontWeight: 700, marginBottom: '28px', textTransform: 'uppercase' }}>
           Hızlı ve Kaliteli Planlar
         </div>
-        <h1 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 900, fontSize: 'clamp(36px, 8vw, 64px)', lineHeight: 1.05, marginBottom: '20px', letterSpacing: '-2px', color: '#0D0D0D' }}>
+        <h1 style={{ fontWeight: 900, fontSize: 'clamp(36px, 8vw, 64px)', lineHeight: 1.05, marginBottom: '20px', letterSpacing: '-2px', color: '#0D0D0D' }}>
           Planı yap.{' '}
           <span style={{ color: '#00C060' }}>Linki at.</span>
           <br />Geriye gece kalsın.
@@ -71,7 +71,7 @@ export default function LandingPage() {
             <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.18)', borderRadius: '9999px', padding: '5px 16px', fontSize: '11px', color: '#fff', fontWeight: 700, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '20px' }}>
               Yeni Özellik
             </div>
-            <h2 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 900, fontSize: 'clamp(22px, 4vw, 34px)', color: '#fff', marginBottom: '14px', lineHeight: 1.15 }}>
+            <h2 style={{ fontWeight: 900, fontSize: 'clamp(22px, 4vw, 34px)', color: '#fff', marginBottom: '14px', lineHeight: 1.15 }}>
               Triplist — Rota paylaşımı<br />artık burada
             </h2>
             <p style={{ color: 'rgba(255,255,255,0.88)', fontSize: '15px', lineHeight: 1.65, maxWidth: '500px', marginBottom: '32px' }}>
@@ -105,7 +105,7 @@ export default function LandingPage() {
 
       {/* İKİ MOD */}
       <section style={{ padding: '0 24px 80px', maxWidth: '900px', margin: '0 auto' }}>
-        <h2 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 900, fontSize: 'clamp(24px, 4vw, 36px)', textAlign: 'center', marginBottom: '8px', color: '#0D0D0D' }}>
+        <h2 style={{ fontWeight: 900, fontSize: 'clamp(24px, 4vw, 36px)', textAlign: 'center', marginBottom: '8px', color: '#0D0D0D' }}>
           İki mod, sonsuz plan
         </h2>
         <p style={{ color: '#777', textAlign: 'center', marginBottom: '48px', fontSize: '15px' }}>
@@ -120,7 +120,7 @@ export default function LandingPage() {
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
               DATE KARTI
             </div>
-            <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '20px', marginBottom: '8px', color: '#0D0D0D' }}>Çıkma teklifi gönder</h3>
+            <h3 style={{ fontWeight: 800, fontSize: '20px', marginBottom: '8px', color: '#0D0D0D' }}>Çıkma teklifi gönder</h3>
             <p style={{ color: '#666', fontSize: '14px', lineHeight: 1.6, marginBottom: '24px' }}>
               Karşına özel kart oluştur, seçenekleri sun — o seçsin, sen sadece orada ol.
             </p>
@@ -136,7 +136,7 @@ export default function LandingPage() {
                     {s.icon}
                   </div>
                   <div>
-                    <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: '14px', color: '#0D0D0D', marginBottom: '3px' }}>{s.title}</div>
+                    <div style={{ fontWeight: 600, fontSize: '14px', color: '#0D0D0D', marginBottom: '3px' }}>{s.title}</div>
                     <div style={{ fontSize: '13px', color: '#777', lineHeight: 1.5 }}>{s.desc}</div>
                   </div>
                 </div>
@@ -153,7 +153,7 @@ export default function LandingPage() {
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               GIRLS NIGHT OUT
             </div>
-            <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '20px', marginBottom: '8px', color: '#0D0D0D' }}>Grup gecesini planla</h3>
+            <h3 style={{ fontWeight: 800, fontSize: '20px', marginBottom: '8px', color: '#0D0D0D' }}>Grup gecesini planla</h3>
             <p style={{ color: '#888', fontSize: '14px', lineHeight: 1.6, marginBottom: '24px' }}>
               Nereye? Ne zaman? Canlı anketle kızlar oylasın, en çok oy alan kazansın.
             </p>
@@ -169,7 +169,7 @@ export default function LandingPage() {
                     {s.icon}
                   </div>
                   <div>
-                    <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 600, fontSize: '14px', color: '#0D0D0D', marginBottom: '3px' }}>{s.title}</div>
+                    <div style={{ fontWeight: 600, fontSize: '14px', color: '#0D0D0D', marginBottom: '3px' }}>{s.title}</div>
                     <div style={{ fontSize: '13px', color: '#888', lineHeight: 1.5 }}>{s.desc}</div>
                   </div>
                 </div>
@@ -184,13 +184,13 @@ export default function LandingPage() {
 
       {/* MOCK KARTLAR */}
       <section style={{ padding: '0 24px 80px', maxWidth: '780px', margin: '0 auto' }}>
-        <h2 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 900, fontSize: 'clamp(22px, 4vw, 30px)', textAlign: 'center', marginBottom: '8px', color: '#0D0D0D' }}>Böyle görünüyor</h2>
+        <h2 style={{ fontWeight: 900, fontSize: 'clamp(22px, 4vw, 30px)', textAlign: 'center', marginBottom: '8px', color: '#0D0D0D' }}>Böyle görünüyor</h2>
         <p style={{ color: '#777', textAlign: 'center', marginBottom: '40px', fontSize: '15px' }}>Planını oluşturduktan sonra alıcı bu kartı görür</p>
         <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', flexWrap: 'wrap' }}>
           {/* Date Card */}
           <div style={{ background: '#FFFFFF', border: '2px solid #00C060', borderRadius: '20px', padding: '24px 28px', maxWidth: '300px', width: '100%', boxShadow: '0 4px 24px rgba(0,192,96,0.12)' }}>
             <p style={{ fontSize: '10px', color: '#00C060', letterSpacing: '2px', fontWeight: 700, marginBottom: '10px' }}>DATE CONFIRMED</p>
-            <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '20px', marginBottom: '16px', color: '#0D0D0D' }}>Mert & Zeynep</h3>
+            <h3 style={{ fontWeight: 800, fontSize: '20px', marginBottom: '16px', color: '#0D0D0D' }}>Mert & Zeynep</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {[
                 { label: 'Seçim', val: 'Pizza' },
@@ -208,7 +208,7 @@ export default function LandingPage() {
           {/* GNO Poll Card */}
           <div style={{ background: '#FFF5F8', border: '2px solid #D46080', borderRadius: '20px', padding: '24px 28px', maxWidth: '300px', width: '100%', boxShadow: '0 4px 24px rgba(212,96,128,0.1)' }}>
             <p style={{ fontSize: '10px', color: '#D46080', letterSpacing: '2px', fontWeight: 700, marginBottom: '10px' }}>GIRLS NIGHT OUT</p>
-            <h3 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '20px', marginBottom: '16px', color: '#0D0D0D' }}>Pembe Kızlar</h3>
+            <h3 style={{ fontWeight: 800, fontSize: '20px', marginBottom: '16px', color: '#0D0D0D' }}>Pembe Kızlar</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {[
                 { label: 'Önde giden', val: 'Kokteyl', pct: 60 },
@@ -236,7 +236,7 @@ export default function LandingPage() {
 
       {/* CTA FOOTER */}
       <section style={{ background: '#F8F8F8', borderTop: '1px solid #EEEEEE', padding: '60px 24px', textAlign: 'center' }}>
-        <h2 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 900, fontSize: '28px', marginBottom: '12px', color: '#0D0D0D' }}>
+        <h2 style={{ fontWeight: 900, fontSize: '28px', marginBottom: '12px', color: '#0D0D0D' }}>
           Başlamak ücretsiz
         </h2>
         <p style={{ color: '#777', marginBottom: '28px', fontSize: '15px' }}>Kayıt ol, ilk kartını oluştur, linki gönder.</p>

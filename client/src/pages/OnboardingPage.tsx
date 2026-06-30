@@ -142,7 +142,7 @@ export default function OnboardingPage() {
   // ADIM 1 — Avatar seç
   if (step === 1) return (
     <Wrapper>
-      <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>
+      <h1 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>
         Avatarını seç ✨
       </h1>
       <p style={{ color: '#666', fontSize: '14px', marginBottom: '28px', lineHeight: 1.6 }}>
@@ -183,7 +183,7 @@ export default function OnboardingPage() {
       <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
         <AvatarDisplay avatarId={form.selectedAvatar} size={72} />
       </div>
-      <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>
+      <h1 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>
         Kendini tanıt 👋
       </h1>
       <p style={{ color: '#666', fontSize: '14px', marginBottom: '24px', lineHeight: 1.6 }}>
@@ -207,7 +207,7 @@ export default function OnboardingPage() {
   // ADIM 3 — Şehir
   if (step === 3) return (
     <Wrapper>
-      <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>
+      <h1 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>
         Nerelisin? 📍
       </h1>
       <p style={{ color: '#666', fontSize: '14px', marginBottom: '24px', lineHeight: 1.6 }}>
@@ -245,7 +245,7 @@ export default function OnboardingPage() {
   // ADIM 4 — Kişilik etiketleri
   return (
     <Wrapper>
-      <h1 style={{ fontFamily: 'Syne, sans-serif', fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>
+      <h1 style={{ fontSize: '26px', fontWeight: 800, marginBottom: '8px' }}>
         Sen nasıl birisin? ✨
       </h1>
       <p style={{ color: '#666', fontSize: '14px', marginBottom: '6px', lineHeight: 1.6 }}>

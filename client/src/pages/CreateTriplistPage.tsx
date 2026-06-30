@@ -112,7 +112,7 @@ export default function CreateTriplistPage() {
       <div style={{ maxWidth: 680, margin: '0 auto', padding: '32px 20px 80px' }}>
         <div style={{ marginBottom: '32px' }}>
           <div style={{ fontSize: '11px', fontWeight: 700, color: '#00C060', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '8px' }}>Yeni Triplist</div>
-          <h1 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '28px', margin: 0 }}>Rotanı oluştur</h1>
+          <h1 style={{ fontWeight: 700, fontSize: '28px', margin: 0 }}>Rotanı oluştur</h1>
           <p style={{ color: '#444', fontSize: '14px', marginTop: '8px' }}>Durak durak bir gezi planı oluştur, istersen herkesle paylaş.</p>
         </div>
 
@@ -162,7 +162,7 @@ export default function CreateTriplistPage() {
           {/* Duraklar */}
           <div style={{ background: '#F8F8F8', border: '1px solid #E8E8E8', borderRadius: '16px', padding: '24px', marginBottom: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '16px' }}>Duraklar</span>
+              <span style={{ fontWeight: 700, fontSize: '16px' }}>Duraklar</span>
               <button type="button" onClick={addStop}
                 style={{ background: '#F0F0F0', border: '1px solid #333', borderRadius: '8px', color: '#00C060', fontSize: '12px', fontWeight: 700, padding: '6px 14px', cursor: 'pointer' }}>
                 + Durak Ekle
