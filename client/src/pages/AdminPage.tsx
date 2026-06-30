@@ -56,6 +56,7 @@ export default function AdminPage() {
   const [adminToken, setAdminToken] = useState<string | null>(
     localStorage.getItem('admin_token')
   )
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loginError, setLoginError] = useState('')
   const [loginLoading, setLoginLoading] = useState(false)
@@ -227,7 +228,7 @@ export default function AdminPage() {
       const res = await fetch(`${base}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ username, password }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.message || 'Hatalı şifre')
@@ -252,17 +253,32 @@ export default function AdminPage() {
           <div style={{ fontSize: '20px', fontWeight: 700, color: '#fff', marginBottom: '6px' }}>Admin Paneli</div>
           <div style={{ fontSize: '13px', color: '#666', marginBottom: '24px' }}>getdatewith.me yönetim paneli</div>
           <input
+            type="text"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleLogin()}
+            placeholder="Kullanıcı adı"
+            autoFocus
+            autoComplete="username"
+            style={{
+              width: '100%', background: '#111', border: `1px solid ${loginError ? '#ff4444' : '#2A2A2A'}`,
+              borderRadius: '10px', padding: '12px 14px', color: '#fff', fontSize: '14px',
+              marginBottom: '10px', outline: 'none', boxSizing: 'border-box',
+              fontFamily: 'Raleway, sans-serif',
+            }}
+          />
+          <input
             type="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleLogin()}
-            placeholder="Admin şifresi"
-            autoFocus
+            placeholder="Şifre"
+            autoComplete="current-password"
             style={{
               width: '100%', background: '#111', border: `1px solid ${loginError ? '#ff4444' : '#2A2A2A'}`,
               borderRadius: '10px', padding: '12px 14px', color: '#fff', fontSize: '14px',
               marginBottom: '12px', outline: 'none', boxSizing: 'border-box',
-              fontFamily: 'DM Sans, sans-serif',
+              fontFamily: 'Raleway, sans-serif',
             }}
           />
           {loginError && (
@@ -270,12 +286,12 @@ export default function AdminPage() {
           )}
           <button
             onClick={handleLogin}
-            disabled={loginLoading || !password}
+            disabled={loginLoading || !password || !username}
             style={{
               width: '100%', background: '#00F680', color: '#0D0D0D', border: 'none',
               borderRadius: '100px', padding: '13px', fontSize: '14px', fontWeight: 700,
-              cursor: loginLoading || !password ? 'not-allowed' : 'pointer',
-              opacity: loginLoading || !password ? 0.6 : 1, fontFamily: 'Syne, sans-serif',
+              cursor: loginLoading || !password || !username ? 'not-allowed' : 'pointer',
+              opacity: loginLoading || !password || !username ? 0.6 : 1, fontFamily: 'Raleway, sans-serif',
             }}
           >
             {loginLoading ? 'Giriş yapılıyor...' : 'Giriş Yap →'}

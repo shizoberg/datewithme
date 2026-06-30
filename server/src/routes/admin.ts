@@ -8,9 +8,10 @@ const prisma = new PrismaClient()
 
 // POST /api/admin/login
 router.post('/login', (req: Request, res: Response) => {
-  const { password } = req.body
-  if (!password || password !== process.env.ADMIN_PASSWORD) {
-    res.status(401).json({ message: 'Hatalı şifre' })
+  const { username, password } = req.body
+  const adminUser = process.env.ADMIN_USERNAME || 'krebsatka'
+  if (!username || !password || username !== adminUser || password !== process.env.ADMIN_PASSWORD) {
+    res.status(401).json({ message: 'Hatalı kullanıcı adı veya şifre' })
     return
   }
   const token = jwt.sign(
