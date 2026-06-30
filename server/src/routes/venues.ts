@@ -9,6 +9,7 @@ const VENUE_SELECT = {
   id: true, name: true, category: true, city: true, district: true,
   address: true, googleMapsUrl: true, instagramUrl: true, rating: true,
   priceLevel: true, imageUrl: true, aiTags: true, dateSkor: true, gnoSkor: true, atmosfer: true,
+  reviewsJson: true, totalRatings: true,
 }
 
 // GET /api/venues/suggest?city=...&district=...&category=...
