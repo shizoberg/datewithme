@@ -71,6 +71,7 @@ export default function AdminPage() {
   const [showGuideForm, setShowGuideForm] = useState(false)
   const [guideForm, setGuideForm] = useState({ ...GUIDE_EMPTY_FORM })
   const [guideSaving, setGuideSaving] = useState(false)
+  const [editGuideId, setEditGuideId] = useState<string | null>(null)
   const [triplists, setTriplists] = useState<any[]>([])
   const [triplistLoading, setTriplistLoading] = useState(false)
   const [venues, setVenues] = useState<Venue[]>([])
@@ -165,13 +166,30 @@ export default function AdminPage() {
   async function saveGuideEntry() {
     setGuideSaving(true)
     try {
-      await adminApi.post('/api/guide', { ...guideForm, authorId: guideForm.authorId || undefined, status: 'draft' })
+      const payload = { ...guideForm, authorId: guideForm.authorId || undefined }
+      if (editGuideId) {
+        await adminApi.patch(`/api/guide/${editGuideId}`, payload)
+      } else {
+        await adminApi.post('/api/guide', { ...payload, status: 'draft' })
+      }
       setShowGuideForm(false)
+      setEditGuideId(null)
       setGuideForm({ ...GUIDE_EMPTY_FORM })
       loadGuideEntries()
     } catch (err: any) {
       alert(err?.response?.data?.error || 'Hata')
     } finally { setGuideSaving(false) }
+  }
+
+  function startEditGuide(g: GuideEntry) {
+    setGuideForm({
+      title: g.title, content: g.content, city: g.city || '',
+      venueName: g.venueName || '', coverImage: g.coverImage || '',
+      authorId: g.authorId || '',
+    })
+    setEditGuideId(g.id)
+    setShowGuideForm(true)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   async function publishGuideEntry(id: string) {
@@ -749,7 +767,7 @@ export default function AdminPage() {
 
           {showGuideForm && (
             <div className="card" style={{ padding: '24px', marginBottom: '20px' }}>
-              <h3 style={{ fontWeight: 700, marginBottom: '20px' }}>+ Yeni Rehber Yazısı</h3>
+              <h3 style={{ fontWeight: 700, marginBottom: '20px' }}>{editGuideId ? '✏️ Yazıyı Düzenle' : '+ Yeni Rehber Yazısı'}</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div style={{ gridColumn: '1/-1' }}><label className="label">Başlık *</label><input className="input" value={guideForm.title} onChange={e => setGuideForm(p => ({ ...p, title: e.target.value }))} placeholder="Boyalık Plajı'nda bir gün" /></div>
                 <div><label className="label">Şehir</label><input className="input" value={guideForm.city} onChange={e => setGuideForm(p => ({ ...p, city: e.target.value }))} placeholder="İzmir" /></div>
@@ -772,8 +790,8 @@ export default function AdminPage() {
                 </div>
               </div>
               <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-                <button onClick={saveGuideEntry} disabled={guideSaving || !guideForm.title || !guideForm.content} className="btn-primary" style={{ padding: '10px 24px' }}>{guideSaving ? 'Kaydediliyor…' : '💾 Taslak Kaydet'}</button>
-                <button onClick={() => { setShowGuideForm(false); setGuideForm({ ...GUIDE_EMPTY_FORM }) }} className="btn-secondary" style={{ padding: '10px 20px' }}>İptal</button>
+                <button onClick={saveGuideEntry} disabled={guideSaving || !guideForm.title || !guideForm.content} className="btn-primary" style={{ padding: '10px 24px' }}>{guideSaving ? 'Kaydediliyor…' : editGuideId ? '💾 Güncelle' : '💾 Taslak Kaydet'}</button>
+                <button onClick={() => { setShowGuideForm(false); setEditGuideId(null); setGuideForm({ ...GUIDE_EMPTY_FORM }) }} className="btn-secondary" style={{ padding: '10px 20px' }}>İptal</button>
               </div>
             </div>
           )}
@@ -803,6 +821,7 @@ export default function AdminPage() {
                       </div>
                     </div>
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexShrink: 0 }}>
+                      <button onClick={() => startEditGuide(g)} style={{ background: 'none', border: 'none', color: '#F59E0B', cursor: 'pointer', fontSize: '12px', fontWeight: 700, fontFamily: 'inherit' }}>✏️ Düzenle</button>
                       {g.status !== 'published' && (
                         <button onClick={() => publishGuideEntry(g.id)} style={{ background: 'none', border: 'none', color: '#00F680', cursor: 'pointer', fontSize: '12px', fontWeight: 700, fontFamily: 'inherit' }}>↑ Yayınla</button>
                       )}

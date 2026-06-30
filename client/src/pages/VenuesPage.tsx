@@ -36,14 +36,21 @@ function parseReviews(json: string | null): Review[] {
   } catch { return [] }
 }
 
-// En sık geçen kelimelerden basit bir "ne için gidilir" özeti çıkarır
-const STOPWORDS = new Set(['the','a','an','and','or','but','is','was','were','are','for','with','to','of','in','on','at','this','that','it','very','really','we','i','my','our','their','they','have','has','had','place','great','good','nice','amazing'])
+const TR_CHARS = /[çğışöüÇĞİŞÖÜ]/
+function isTurkish(text: string) { return TR_CHARS.test(text) }
+
+// Türkçe review'ları önceliklendir, yoksa hepsinden anahtar kelime çıkar
+const STOPWORDS_TR = new Set(['bir','bu','ve','ile','için','çok','güzel','harika','iyi','ama','ben','biz','var','yok','olan','mı','mi','de','da','ne','en','kadar','gibi','daha','beni','bize','burada','burası','çok','her','yer','ları','leri','ında','inde','unda','ünde'])
+const STOPWORDS_EN = new Set(['the','a','an','and','or','but','is','was','were','are','for','with','to','of','in','on','at','this','that','it','very','really','we','i','my','our','their','they','have','has','had','place','great','good','nice','amazing','here','very','also','just'])
 function extractHighlights(reviews: Review[]): string[] {
-  const text = reviews.map(r => r.text).join(' ').toLowerCase()
-  const words = text.match(/[a-zçğıöşü]{4,}/g) || []
+  const trReviews = reviews.filter(r => isTurkish(r.text))
+  const source = trReviews.length > 0 ? trReviews : reviews
+  const text = source.map(r => r.text).join(' ').toLowerCase()
+  const stopwords = trReviews.length > 0 ? STOPWORDS_TR : STOPWORDS_EN
+  const words = text.match(/[a-zçğışöüA-ZÇĞİŞÖÜ]{4,}/g)?.map(w => w.toLowerCase()) || []
   const freq: Record<string, number> = {}
   for (const w of words) {
-    if (STOPWORDS.has(w)) continue
+    if (stopwords.has(w)) continue
     freq[w] = (freq[w] || 0) + 1
   }
   return Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([w]) => w)
@@ -132,7 +139,8 @@ function VenueCard({ venue, saved, onToggle }: { venue: Venue; saved: boolean; o
   const badges = venue.aiTags ? venue.aiTags.split(',').filter(Boolean).slice(0, 3) : []
   const reviews = parseReviews(venue.reviewsJson)
   const highlights = extractHighlights(reviews)
-  const topReview = reviews.find(r => r.text.length > 30 && r.text.length < 220) || reviews[0]
+  const trReview = reviews.find(r => isTurkish(r.text) && r.text.length > 30 && r.text.length < 220)
+  const topReview = trReview || reviews.find(r => r.text.length > 30 && r.text.length < 220) || reviews[0]
 
   return (
     <div style={{ background: '#FFFFFF', border: '1px solid #E8E8E8', borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>

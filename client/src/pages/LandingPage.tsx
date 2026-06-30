@@ -247,21 +247,38 @@ export default function LandingPage() {
 
       <CommunityBanner />
 
-      <footer style={{ borderTop: '1px solid #EEEEEE', padding: '28px 24px', textAlign: 'center', background: '#FFFFFF' }}>
-        <p style={{ color: '#888', fontSize: '13px', marginBottom: '12px' }}>
-          created by <span style={{ color: '#00C060', fontWeight: 700 }}>krebsatka</span>
-        </p>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
-          <a href="https://www.youtube.com/@krebsatka" target="_blank" rel="noopener noreferrer"
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#666', textDecoration: 'none', fontSize: '13px', fontWeight: 600, padding: '7px 14px', borderRadius: '9999px', border: '1px solid #E0E0E0' }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.75 15.5v-7l6.25 3.5-6.25 3.5z"/></svg>
-            YouTube
-          </a>
-          <a href="https://www.instagram.com/krebsatka" target="_blank" rel="noopener noreferrer"
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#666', textDecoration: 'none', fontSize: '13px', fontWeight: 600, padding: '7px 14px', borderRadius: '9999px', border: '1px solid #E0E0E0' }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
-            Instagram
-          </a>
+      <footer style={{ borderTop: '1px solid #EEEEEE', padding: '32px 24px 28px', background: '#FFFFFF' }}>
+        <div style={{ maxWidth: '860px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '24px', marginBottom: '28px' }}>
+          <div>
+            <div style={{ fontWeight: 800, fontSize: '14px', color: '#00C060', marginBottom: '12px' }}>getdatewith.me</div>
+            <p style={{ fontSize: '12px', color: '#AAA', lineHeight: 1.6 }}>Date planla, buluş, keşfet.</p>
+          </div>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: '12px', color: '#999', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '10px' }}>Keşfet</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <a href="/bulusma-mekanlari" style={{ fontSize: '13px', color: '#555', textDecoration: 'none' }}>Mekanlar</a>
+              <a href="/topluluk" style={{ fontSize: '13px', color: '#555', textDecoration: 'none' }}>Triplist</a>
+              <a href="/rehber" style={{ fontSize: '13px', color: '#555', textDecoration: 'none' }}>Rehber</a>
+            </div>
+          </div>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: '12px', color: '#999', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '10px' }}>İşletmeler</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <a href="/kurumsal" style={{ fontSize: '13px', color: '#555', textDecoration: 'none' }}>Kurumsal</a>
+              <a href="/influencer-basvuru" style={{ fontSize: '13px', color: '#555', textDecoration: 'none' }}>Influencer Başvurusu</a>
+            </div>
+          </div>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: '12px', color: '#999', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '10px' }}>Sosyal</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <a href="https://www.youtube.com/@krebsatka" target="_blank" rel="noopener noreferrer" style={{ fontSize: '13px', color: '#555', textDecoration: 'none' }}>YouTube</a>
+              <a href="https://www.instagram.com/krebsatka" target="_blank" rel="noopener noreferrer" style={{ fontSize: '13px', color: '#555', textDecoration: 'none' }}>Instagram</a>
+            </div>
+          </div>
+        </div>
+        <div style={{ borderTop: '1px solid #F0F0F0', paddingTop: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', maxWidth: '860px', margin: '0 auto' }}>
+          <p style={{ color: '#CCC', fontSize: '12px' }}>© 2025 getdatewith.me — created by <span style={{ color: '#00C060' }}>krebsatka</span></p>
+          <a href="/kvkk" style={{ color: '#CCC', fontSize: '12px', textDecoration: 'none' }}>KVKK</a>
         </div>
       </footer>
       <div style={{ height: '80px' }} />

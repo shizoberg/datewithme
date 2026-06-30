@@ -73,6 +73,26 @@ const PACKAGES = [
       'Tek seferlik ödeme, taahhüt yok',
     ],
   },
+  {
+    id: 'google',
+    title: 'Google Puan Artırma',
+    price: 'Özel Fiyat',
+    color: '#EA4335',
+    lightBg: 'rgba(234,67,53,0.05)',
+    border: 'rgba(234,67,53,0.2)',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#EA4335" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+      </svg>
+    ),
+    features: [
+      'Gerçek fiziksel ziyaretlerle yorum (kaldırılmaz)',
+      'Platform kullanıcısı + influencer havuzundan seçim',
+      'Yerel Rehber profilleri ile güvenilir yorumlar',
+      'Google Maps görünürlüğünü artır',
+      'Şeffaf süreç, her yorum gerçek ziyaret kanıtlı',
+    ],
+  },
 ]
 
 export default function KurumsalPage() {
