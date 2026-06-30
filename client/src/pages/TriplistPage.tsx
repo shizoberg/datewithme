@@ -127,11 +127,14 @@ export default function TriplistPage() {
     <div style={{ minHeight: '100vh', background: '#F7F7F7', color: '#0D0D0D', fontFamily: 'Raleway, sans-serif' }}>
 
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '28px 20px 80px' }}>
-        {/* Breadcrumb */}
-        <div style={{ fontSize: '12px', color: '#888', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <Link to="/topluluk" style={{ color: '#888', textDecoration: 'none' }}>Topluluk</Link>
-          <span>›</span>
-          <span style={{ color: '#555' }}>{data.title}</span>
+        {/* Geri + breadcrumb */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+          <Link to="/topluluk" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#555', textDecoration: 'none', fontSize: '13px', fontWeight: 600, background: '#fff', border: '1px solid #E8E8E8', borderRadius: '9999px', padding: '5px 12px 5px 8px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            Triplist
+          </Link>
+          <span style={{ color: '#CCC', fontSize: '12px' }}>›</span>
+          <span style={{ color: '#888', fontSize: '12px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{data.title}</span>
         </div>
 
         <style>{`@media(max-width:768px){.tl-grid{grid-template-columns:1fr!important}.tl-sticky{position:static!important}}`}</style>
@@ -248,19 +251,7 @@ export default function TriplistPage() {
                   <span style={{ fontSize: '11px', fontWeight: 700, color: '#00C060', letterSpacing: '0.8px', textTransform: 'uppercase' }}>Tarih</span>
                 </div>
 
-                {data.startDate && data.endDate ? (
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
-                    <CalendarBlock dateStr={data.startDate} label="başlangıç" />
-                    <div style={{ paddingTop: '28px', color: '#CCC' }}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-                      </svg>
-                    </div>
-                    <CalendarBlock dateStr={data.endDate} label="bitiş" />
-                  </div>
-                ) : (
-                  <CalendarBlock dateStr={(data.startDate || data.endDate)!} />
-                )}
+                <CalendarBlock dateStr={(data.startDate || data.endDate)!} label="O tarihte olduğum yer" />
               </div>
             )}
 

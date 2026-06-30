@@ -126,7 +126,7 @@ export default function DashboardPage() {
   const [gnoCards, setGnoCards] = useState<GNOCard[]>([])
   const [triplists, setTriplists] = useState<Triplist[]>([])
   const [loading, setLoading] = useState(true)
-  const [tab, setTab] = useState<Tab>('date')
+  const [tab, setTab] = useState<Tab>('triplist')
 
   useEffect(() => {
     Promise.all([
@@ -137,8 +137,8 @@ export default function DashboardPage() {
   }, [])
 
   const TABS: { id: Tab; label: string; count: number; color: string; action: string; path: string }[] = [
-    { id: 'date',     label: 'Date Kartları', count: cards.length,     color: '#00C060', action: 'Yeni Kart',     path: '/create' },
     { id: 'triplist', label: 'Triplistler',   count: triplists.length, color: '#D97706', action: 'Yeni Triplist', path: '/plan/yeni' },
+    { id: 'date',     label: 'Date Kartları', count: cards.length,     color: '#00C060', action: 'Yeni Kart',     path: '/create' },
     { id: 'gno',      label: 'Girls Night',   count: gnoCards.length,  color: '#C06080', action: 'Yeni GNO',      path: '/create-gno' },
   ]
   const active = TABS.find(t => t.id === tab)!
@@ -158,12 +158,12 @@ export default function DashboardPage() {
         {/* Hızlı eylemler */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '20px' }}>
           {[
-            { label: 'Date Kartı', icon: '💌', path: '/create', color: '#EDFAF4', stroke: '#00C060' },
-            { label: 'Triplist',   icon: '🗺️', path: '/plan/yeni', color: '#FEF9EC', stroke: '#D97706' },
-            { label: 'Girls Night',icon: '👯',  path: '/create-gno', color: '#FFF0F5', stroke: '#C06080' },
+            { label: 'Triplist', path: '/plan/yeni', bg: '#FEF9EC', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17 C6 17 6 7 12 7 S18 17 21 17"/><circle cx="3" cy="17" r="2" fill="#D97706" stroke="none"/><circle cx="12" cy="7" r="2" fill="#D97706" stroke="none"/><circle cx="21" cy="17" r="2" fill="#D97706" stroke="none"/></svg> },
+            { label: 'Date Kartı', path: '/create', bg: '#EDFAF4', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00C060" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> },
+            { label: 'Girls Night', path: '/create-gno', bg: '#FFF0F5', icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C06080" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> },
           ].map(item => (
-            <button key={item.path} onClick={() => navigate(item.path)} style={{ background: '#fff', border: '1px solid #EBEBEB', borderRadius: '12px', padding: '12px 8px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', fontFamily: 'Raleway, sans-serif' }}>
-              <span style={{ fontSize: '20px' }}>{item.icon}</span>
+            <button key={item.path} onClick={() => navigate(item.path)} style={{ background: '#fff', border: '1px solid #EBEBEB', borderRadius: '12px', padding: '14px 8px', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', fontFamily: 'Raleway, sans-serif' }}>
+              <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: item.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{item.icon}</div>
               <span style={{ fontSize: '10px', fontWeight: 700, color: '#555' }}>{item.label}</span>
             </button>
           ))}

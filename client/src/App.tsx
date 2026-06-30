@@ -29,7 +29,8 @@ import RehberDetailPage from './pages/RehberDetailPage'
 
 // Bu rotalarda global header gösterilmez (kendi layoutları var)
 const NO_HEADER_PREFIXES = ['/login', '/register', '/admin', '/onboarding', '/girlsnightout/']
-const NO_HEADER_PATTERNS = [/^\/.+\/.+$/] // /:username/:slug invite & triplist sayfaları
+// Sadece 2-segment /:username/:slug (invite sayfaları) hariç — triplist'in 3 segment'i var
+const NO_HEADER_PATTERNS = [/^\/[^/]+\/[^/]+$/]
 
 const PlanCreatePage = () => (
   <div style={{ background: '#0D0D0D', minHeight: '100vh', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
