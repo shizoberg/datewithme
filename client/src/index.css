@@ -118,6 +118,33 @@ h1, h2, h3, h4 { font-family: 'Raleway', sans-serif; }
   margin-bottom: 6px;
 }
 
+/* Admin dark theme overrides */
+.admin-panel {
+  --bg: #000000;
+  --surface: #141414;
+  --border: #2C2C2C;
+  --text: #F0F0F0;
+  --muted: #888888;
+  --primary: #00F680;
+}
+.admin-panel .card {
+  background: #141414;
+  border-color: #2C2C2C;
+  color: #F0F0F0;
+}
+.admin-panel .input {
+  background: #0A0A0A;
+  border-color: #333;
+  color: #F0F0F0;
+  font-size: 14px;
+}
+.admin-panel .input::placeholder { color: #555; }
+.admin-panel .input:focus { border-color: #00F680; }
+.admin-panel .label { color: #888; font-size: 12px; font-weight: 600; letter-spacing: 0.3px; }
+.admin-panel .btn-primary { background: #00F680; color: #000; font-size: 13px; padding: 9px 20px; }
+.admin-panel .btn-secondary { border-color: #333; color: #BBB; font-size: 13px; padding: 8px 18px; }
+.admin-panel .btn-secondary:hover { border-color: #555; }
+
 /* Spinning gold border for date card */
 @keyframes spin-border {
   to { --angle: 360deg; }

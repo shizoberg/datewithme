@@ -88,6 +88,11 @@ export default function AdminPage() {
   const [editId, setEditId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [showBulkImport, setShowBulkImport] = useState(false)
+  const [bulkText, setBulkText] = useState('')
+  const [bulkImporting, setBulkImporting] = useState(false)
+  const [bulkResults, setBulkResults] = useState<string[]>([])
+  const [deleteTriplistId, setDeleteTriplistId] = useState<string | null>(null)
 
   // Submissions state
   const [subFilter, setSubFilter] = useState<'pending' | 'approved' | 'rejected'>('pending')
@@ -248,53 +253,25 @@ export default function AdminPage() {
 
   if (!adminToken) {
     return (
-      <div style={{ background: '#0D0D0D', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-        <div style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '16px', padding: '32px', width: '100%', maxWidth: '360px' }}>
-          <div style={{ fontSize: '20px', fontWeight: 700, color: '#fff', marginBottom: '6px' }}>Admin Paneli</div>
-          <div style={{ fontSize: '13px', color: '#666', marginBottom: '24px' }}>getdatewith.me yönetim paneli</div>
-          <input
-            type="text"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleLogin()}
-            placeholder="Kullanıcı adı"
-            autoFocus
-            autoComplete="username"
-            style={{
-              width: '100%', background: '#111', border: `1px solid ${loginError ? '#ff4444' : '#2A2A2A'}`,
-              borderRadius: '10px', padding: '12px 14px', color: '#fff', fontSize: '14px',
-              marginBottom: '10px', outline: 'none', boxSizing: 'border-box',
-              fontFamily: 'Raleway, sans-serif',
-            }}
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && handleLogin()}
-            placeholder="Şifre"
-            autoComplete="current-password"
-            style={{
-              width: '100%', background: '#111', border: `1px solid ${loginError ? '#ff4444' : '#2A2A2A'}`,
-              borderRadius: '10px', padding: '12px 14px', color: '#fff', fontSize: '14px',
-              marginBottom: '12px', outline: 'none', boxSizing: 'border-box',
-              fontFamily: 'Raleway, sans-serif',
-            }}
-          />
-          {loginError && (
-            <div style={{ color: '#ff6b6b', fontSize: '13px', marginBottom: '12px' }}>{loginError}</div>
-          )}
-          <button
-            onClick={handleLogin}
-            disabled={loginLoading || !password || !username}
-            style={{
-              width: '100%', background: '#00F680', color: '#0D0D0D', border: 'none',
-              borderRadius: '100px', padding: '13px', fontSize: '14px', fontWeight: 700,
-              cursor: loginLoading || !password || !username ? 'not-allowed' : 'pointer',
-              opacity: loginLoading || !password || !username ? 0.6 : 1, fontFamily: 'Raleway, sans-serif',
-            }}
-          >
-            {loginLoading ? 'Giriş yapılıyor...' : 'Giriş Yap →'}
+      <div className="admin-panel" style={{ background: '#000', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+        <div style={{ background: '#141414', border: '1px solid #2C2C2C', borderRadius: '16px', padding: '36px', width: '100%', maxWidth: '360px' }}>
+          <div style={{ fontSize: '13px', color: '#00F680', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '8px' }}>getdatewith.me</div>
+          <div style={{ fontSize: '22px', fontWeight: 800, color: '#fff', marginBottom: '4px' }}>Admin Paneli</div>
+          <div style={{ fontSize: '13px', color: '#555', marginBottom: '28px' }}>Yönetim paneline giriş yap</div>
+          <div style={{ marginBottom: '10px' }}>
+            <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, color: '#666', marginBottom: '5px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Kullanıcı Adı</label>
+            <input type="text" value={username} onChange={e => setUsername(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleLogin()} placeholder="krebsatka" autoFocus autoComplete="username"
+              style={{ width: '100%', background: '#0A0A0A', border: `1px solid ${loginError ? '#EF4444' : '#333'}`, borderRadius: '10px', padding: '12px 14px', color: '#F0F0F0', fontSize: '14px', outline: 'none', boxSizing: 'border-box', fontFamily: 'Raleway, sans-serif' }} />
+          </div>
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', fontSize: '11px', fontWeight: 600, color: '#666', marginBottom: '5px', letterSpacing: '0.5px', textTransform: 'uppercase' }}>Şifre</label>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleLogin()} placeholder="••••••••••" autoComplete="current-password"
+              style={{ width: '100%', background: '#0A0A0A', border: `1px solid ${loginError ? '#EF4444' : '#333'}`, borderRadius: '10px', padding: '12px 14px', color: '#F0F0F0', fontSize: '14px', outline: 'none', boxSizing: 'border-box', fontFamily: 'Raleway, sans-serif' }} />
+          </div>
+          {loginError && <div style={{ color: '#EF4444', fontSize: '13px', marginBottom: '12px' }}>{loginError}</div>}
+          <button onClick={handleLogin} disabled={loginLoading || !password || !username}
+            style={{ width: '100%', background: loginLoading || !password || !username ? '#1A1A1A' : '#00F680', color: loginLoading || !password || !username ? '#444' : '#000', border: 'none', borderRadius: '10px', padding: '13px', fontSize: '14px', fontWeight: 700, cursor: loginLoading || !password || !username ? 'not-allowed' : 'pointer', fontFamily: 'Raleway, sans-serif', transition: 'all 0.15s' }}>
+            {loginLoading ? 'Giriş yapılıyor…' : 'Giriş Yap →'}
           </button>
         </div>
       </div>
@@ -385,6 +362,42 @@ export default function AdminPage() {
     await load()
   }
 
+  async function confirmDeleteTriplist() {
+    if (!deleteTriplistId) return
+    try {
+      await adminApi.delete(`/api/triplists/admin/${deleteTriplistId}`)
+      setTriplists(prev => prev.filter(t => t.id !== deleteTriplistId))
+    } catch (err: any) { alert(err?.response?.data?.error || 'Silinemedi') }
+    setDeleteTriplistId(null)
+  }
+
+  async function bulkImportFromGoogle() {
+    const lines = bulkText.split('\n').map(l => l.trim()).filter(l => l && l.includes('|'))
+    if (!lines.length) { alert('Format: mekan adı|şehir|kategori (her satıra bir mekan)'); return }
+    setBulkImporting(true)
+    setBulkResults([])
+    const results: string[] = []
+    for (const line of lines) {
+      const [name, city, category = 'cafe'] = line.split('|').map(s => s.trim())
+      if (!name || !city) { results.push(`✗ Geçersiz satır: ${line}`); continue }
+      try {
+        // Önce Google'da ara
+        const searchRes = await adminApi.post('/api/venues/admin/search-google', { name, city })
+        if (!searchRes.data.placeId) { results.push(`✗ Bulunamadı: ${name}`); continue }
+        // Sonra import et
+        await adminApi.post('/api/venues/admin/import-google', { placeId: searchRes.data.placeId, city, category, district: '' })
+        results.push(`✓ Eklendi: ${name} (${city})`)
+      } catch (err: any) {
+        const msg = err?.response?.data?.error || 'Hata'
+        results.push(msg.includes('zaten var') ? `· Zaten var: ${name}` : `✗ ${msg}: ${name}`)
+      }
+      setBulkResults([...results])
+      await new Promise(r => setTimeout(r, 400))
+    }
+    setBulkImporting(false)
+    await load()
+  }
+
   async function approveSubmission() {
     if (!approveModal) return
     setActionLoading(true)
@@ -416,7 +429,7 @@ export default function AdminPage() {
     setForm(p => ({ ...p, [k]: e.target.value }))
 
   return (
-    <div style={{ minHeight: '100vh', background: '#111', color: '#E8E8E8', fontFamily: 'Raleway, sans-serif' }}>
+    <div className="admin-panel" style={{ minHeight: '100vh', background: '#000', color: '#F0F0F0', fontFamily: 'Raleway, sans-serif' }}>
       <header style={{ borderBottom: '1px solid #2A2A2A', padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#0D0D0D' }}>
         <h1 style={{ fontSize: '16px', fontWeight: 800, color: '#00F680' }}>getdatewith.me / admin</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -456,14 +469,45 @@ export default function AdminPage() {
       {tab === 'venues' && (
         <div style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 24px' }}>
           <div style={{ marginBottom: '24px' }}>
-            {!showForm && !showGoogleImport && (
-              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                <button onClick={() => { setShowGoogleImport(true); setShowForm(false) }} style={{ padding: '10px 20px', fontSize: '14px', background: '#EA4335', color: '#fff', border: 'none', borderRadius: '9999px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
-                  🔴 Google'dan Çek
+            {!showForm && !showGoogleImport && !showBulkImport && (
+              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                <button onClick={() => { setShowBulkImport(true) }} style={{ padding: '9px 18px', fontSize: '13px', background: '#7C3AED', color: '#fff', border: 'none', borderRadius: '9999px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+                  ✦ Toplu Google Import
                 </button>
-                <button onClick={() => { setShowForm(true); setShowGoogleImport(false) }} className="btn-primary" style={{ padding: '10px 20px', fontSize: '14px' }}>
+                <button onClick={() => { setShowGoogleImport(true); setShowForm(false) }} style={{ padding: '9px 18px', fontSize: '13px', background: '#EA4335', color: '#fff', border: 'none', borderRadius: '9999px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+                  Google'dan Tek Çek
+                </button>
+                <button onClick={() => { setShowForm(true); setShowGoogleImport(false) }} className="btn-primary" style={{ padding: '9px 18px', fontSize: '13px' }}>
                   + Manuel Ekle
                 </button>
+              </div>
+            )}
+
+            {showBulkImport && (
+              <div className="card" style={{ padding: '24px', marginBottom: '16px' }}>
+                <h3 style={{ fontWeight: 700, marginBottom: '8px', color: '#F0F0F0' }}>✦ Toplu Google Import</h3>
+                <p style={{ fontSize: '12px', color: '#888', marginBottom: '4px' }}>Her satıra bir mekan — format: <code style={{ color: '#00F680', background: '#0A0A0A', padding: '1px 5px', borderRadius: '4px' }}>mekan adı|şehir|kategori</code></p>
+                <p style={{ fontSize: '11px', color: '#555', marginBottom: '14px' }}>Kategori: cafe · restaurant · bar · park · rooftop · cultural · koy · doga</p>
+                <textarea
+                  value={bulkText}
+                  onChange={e => setBulkText(e.target.value)}
+                  placeholder={'Karafırın|İstanbul|cafe\nBüyükada|İstanbul|doga\nPort Lounge|İzmir|bar'}
+                  rows={6}
+                  style={{ width: '100%', background: '#0A0A0A', border: '1px solid #333', borderRadius: '10px', padding: '12px', color: '#F0F0F0', fontSize: '13px', fontFamily: 'monospace', resize: 'vertical', outline: 'none', boxSizing: 'border-box' }}
+                />
+                {bulkResults.length > 0 && (
+                  <div style={{ margin: '12px 0', background: '#0A0A0A', borderRadius: '8px', padding: '12px', maxHeight: '160px', overflowY: 'auto' }}>
+                    {bulkResults.map((r, i) => (
+                      <div key={i} style={{ fontSize: '12px', color: r.startsWith('✓') ? '#00F680' : r.startsWith('·') ? '#888' : '#EF4444', lineHeight: 1.8, fontFamily: 'monospace' }}>{r}</div>
+                    ))}
+                  </div>
+                )}
+                <div style={{ display: 'flex', gap: '10px', marginTop: '14px' }}>
+                  <button onClick={bulkImportFromGoogle} disabled={bulkImporting || !bulkText.trim()} className="btn-primary" style={{ padding: '10px 24px' }}>
+                    {bulkImporting ? `Import ediliyor… (${bulkResults.length})` : '▶ Başlat'}
+                  </button>
+                  <button onClick={() => { setShowBulkImport(false); setBulkText(''); setBulkResults([]) }} className="btn-secondary" style={{ padding: '10px 20px' }}>İptal</button>
+                </div>
               </div>
             )}
             {showGoogleImport && (
@@ -644,10 +688,15 @@ export default function AdminPage() {
                         ))}
                       </div>
                     </div>
-                    <a href={`/${t.user?.username}/triplist/${t.slug}`} target="_blank" rel="noreferrer"
-                      style={{ fontSize: '12px', color: '#00F680', textDecoration: 'none', whiteSpace: 'nowrap' }}>
-                      Görüntüle →
-                    </a>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexShrink: 0 }}>
+                      <a href={`/${t.user?.username}/triplist/${t.slug}`} target="_blank" rel="noreferrer"
+                        style={{ fontSize: '12px', color: '#00F680', textDecoration: 'none', whiteSpace: 'nowrap' }}>
+                        Görüntüle →
+                      </a>
+                      <button onClick={() => setDeleteTriplistId(t.id)} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', fontSize: '13px', padding: '4px', fontFamily: 'inherit' }}>
+                        🗑️
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -942,6 +991,21 @@ export default function AdminPage() {
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
               <button onClick={() => setDeleteId(null)} className="btn-secondary">İptal</button>
               <button onClick={confirmDelete} style={{ padding: '10px 20px', background: '#EF4444', color: '#fff', border: 'none', borderRadius: '9999px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Sil</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Triplist sil modal */}
+      {deleteTriplistId && (
+        <div style={{ position: 'fixed', inset: 0, background: '#000000CC', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999 }}>
+          <div className="card" style={{ padding: '32px', maxWidth: '360px', textAlign: 'center' }}>
+            <p style={{ fontSize: '32px', marginBottom: '12px' }}>🗑️</p>
+            <h3 style={{ fontWeight: 800, marginBottom: '8px', color: '#F0F0F0' }}>Bu triplist'i sil?</h3>
+            <p style={{ color: '#888', fontSize: '14px', marginBottom: '24px' }}>Küfürlü veya uygunsuz içerik varsa sil. Bu işlem geri alınamaz.</p>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+              <button onClick={() => setDeleteTriplistId(null)} className="btn-secondary">İptal</button>
+              <button onClick={confirmDeleteTriplist} style={{ padding: '10px 20px', background: '#EF4444', color: '#fff', border: 'none', borderRadius: '9999px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>Sil</button>
             </div>
           </div>
         </div>

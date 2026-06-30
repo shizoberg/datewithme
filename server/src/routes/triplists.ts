@@ -1,5 +1,5 @@
 import { Router, Response } from 'express'
-import { requireAuth, AuthRequest } from '../middleware/auth'
+import { requireAuth, adminAuth, AuthRequest } from '../middleware/auth'
 import { prisma } from '../lib/prisma'
 
 const router = Router()
@@ -156,6 +156,12 @@ router.put('/:id', requireAuth, async (req: AuthRequest, res: Response) => {
 router.delete('/:id', requireAuth, async (req: AuthRequest, res: Response) => {
   const existing = await prisma.triplist.findUnique({ where: { id: req.params.id } })
   if (!existing || existing.userId !== req.userId) { res.status(403).json({ error: 'Yetkisiz' }); return }
+  await prisma.triplist.delete({ where: { id: req.params.id } })
+  res.json({ ok: true })
+})
+
+// DELETE /api/triplists/admin/:id — admin herhangi bir triplist'i silebilir
+router.delete('/admin/:id', adminAuth, async (req: AuthRequest, res: Response) => {
   await prisma.triplist.delete({ where: { id: req.params.id } })
   res.json({ ok: true })
 })

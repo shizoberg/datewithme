@@ -122,6 +122,23 @@ router.patch('/admin/:id', adminAuth, async (req: AuthRequest, res: Response) =>
   res.json({ venue })
 })
 
+// POST /api/venues/admin/search-google — isim+şehir ile Place ID bul (toplu import için)
+router.post('/admin/search-google', adminAuth, async (req: AuthRequest, res: Response) => {
+  const { name, city } = req.body
+  if (!name || !city) { res.status(400).json({ error: 'name ve city gerekli' }); return }
+  const API_KEY = process.env.GOOGLE_PLACES_API_KEY
+  if (!API_KEY) { res.status(500).json({ error: 'GOOGLE_PLACES_API_KEY eksik' }); return }
+  const searchRes = await fetch('https://places.googleapis.com/v1/places:searchText', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Goog-Api-Key': API_KEY, 'X-Goog-FieldMask': 'places.id,places.displayName' },
+    body: JSON.stringify({ textQuery: `${name} ${city}`, languageCode: 'tr', regionCode: 'TR', maxResultCount: 1 }),
+  })
+  const data: Record<string, unknown> = await searchRes.json() as Record<string, unknown>
+  const places = (data.places as Array<Record<string,unknown>>) || []
+  if (!places.length) { res.json({ placeId: null }); return }
+  res.json({ placeId: places[0].id, name: (places[0].displayName as Record<string,string>)?.text })
+})
+
 // DELETE /api/admin/venues/:id
 router.delete('/admin/:id', adminAuth, async (req: AuthRequest, res: Response) => {
   await prisma.venue.delete({ where: { id: req.params.id } })
