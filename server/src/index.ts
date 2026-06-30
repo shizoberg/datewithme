@@ -10,6 +10,7 @@ import venueSubmissionRouter from './routes/venueSubmissions'
 import adminRouter from './routes/admin'
 import profileRouter from './routes/profile'
 import triplistRouter from './routes/triplists'
+import leadsRouter from './routes/leads'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -34,5 +35,6 @@ app.use('/api/venues', venueRouter)
 app.use('/api/venue-submissions', venueSubmissionRouter)
 app.use('/api/admin/venue-submissions', venueSubmissionRouter)
 app.use('/api/triplists', triplistRouter)
+app.use('/api/leads', leadsRouter)
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

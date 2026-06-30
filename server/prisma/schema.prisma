@@ -201,6 +201,18 @@ model TripStop {
   createdAt    DateTime @default(now())
 }
 
+model BusinessLead {
+  id           String   @id @default(uuid())
+  businessName String
+  contactName  String
+  email        String
+  phone        String?
+  package      String
+  message      String?
+  status       String   @default("new")
+  createdAt    DateTime @default(now())
+}
+
 model VenueSubmission {
   id             String    @id @default(uuid())
   name           String

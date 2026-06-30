@@ -54,6 +54,17 @@ export default function LoginPage() {
           Hesabın yok mu?{' '}
           <Link to="/register" style={{ color: '#00C060', textDecoration: 'none', fontWeight: 600 }}>Kayıt ol</Link>
         </p>
+
+        <div style={{ marginTop: '32px', borderTop: '1px solid #EEEEEE', paddingTop: '24px', textAlign: 'center' }}>
+          <p style={{ color: '#999', fontSize: '12px', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>İşletme misiniz?</p>
+          <Link to="/kurumsal" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#F8F8F8', border: '1px solid #E0E0E0', borderRadius: '12px', padding: '12px 20px', textDecoration: 'none', color: '#0D0D0D', fontSize: '14px', fontWeight: 600 }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00C060" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+            </svg>
+            Kurumsal — İşletmeler &amp; Etkinlikler
+            <span style={{ color: '#00C060' }}>→</span>
+          </Link>
+        </div>
       </div>
     </div>
   )
