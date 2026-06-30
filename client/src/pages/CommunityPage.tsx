@@ -79,15 +79,12 @@ function TriplistCard({ t, liked, saved, onLike, onSave }: {
           {t.stops.length > 3 && <div style={{ fontSize: '11px', color: '#AAA', paddingLeft: '26px' }}>+{t.stops.length - 3} durak daha</div>}
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-          <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: '#00C060', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 800, flexShrink: 0 }}>
+          <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#00C060', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 800, flexShrink: 0 }}>
             {t.user.name[0]?.toUpperCase()}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
-            <span style={{ fontWeight: 700, fontSize: '12px', color: '#333' }}>{t.user.name}</span>
-            <span style={{ fontSize: '12px', color: '#AAA' }}>@{t.user.username}</span>
-          </div>
-          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '4px', color: '#AAA', fontSize: '11px' }}>
-            <IcEye c="#AAA" /> {t.viewCount}
+          <span style={{ fontSize: '13px', fontWeight: 700, color: '#00C060' }}>@{t.user.username}</span>
+          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '4px', color: '#BBB', fontSize: '11px' }}>
+            <IcEye c="#BBB" /> {t.viewCount}
           </div>
         </div>
       </Link>
@@ -175,29 +172,34 @@ export default function CommunityPage() {
     <div style={{ minHeight: '100vh', background: '#F8F8F8', color: '#0D0D0D', fontFamily: 'Raleway, sans-serif' }}>
 
       {/* Header */}
-      <div className="page-content" style={{ paddingTop: '32px', paddingBottom: '16px' }}>
-        <h1 className="page-h1" style={{ fontSize: 'clamp(24px, 6vw, 36px)', letterSpacing: '-1px', marginBottom: '4px' }}>
-          Rotalar & Mekanlar
-        </h1>
-        <p style={{ fontSize: '14px', color: '#888', lineHeight: 1.6 }}>
-          Keşfedilen güzergahlar ve mekanlar bir arada.
-        </p>
-      </div>
-
-      {/* Tabs */}
-      <div className="page-content" style={{ paddingBottom: '0' }}>
-        <div style={{ display: 'flex', gap: '6px', borderBottom: '1px solid #EBEBEB', paddingBottom: '0' }}>
-          {[
-            { id: 'triplists', label: 'Triplistler', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 17 C6 17 6 7 12 7 S18 17 21 17"/><circle cx="3" cy="17" r="2" fill="currentColor" stroke="none"/><circle cx="12" cy="7" r="2" fill="currentColor" stroke="none"/><circle cx="21" cy="17" r="2" fill="currentColor" stroke="none"/></svg> },
-            { id: 'suggest', label: 'Mekan Öner', icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> },
-          ].map(t => (
-            <button key={t.id} onClick={() => setActiveTab(t.id as 'triplists' | 'suggest')}
-              style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 18px', background: 'none', border: 'none', borderBottom: `2px solid ${activeTab === t.id ? '#00C060' : 'transparent'}`, color: activeTab === t.id ? '#00C060' : '#888', fontWeight: activeTab === t.id ? 700 : 500, fontSize: '13px', cursor: 'pointer', fontFamily: 'inherit', marginBottom: '-1px' }}>
-              {t.icon} {t.label}
+      <div className="page-content" style={{ paddingTop: '28px', paddingBottom: '0' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '0' }}>
+          <h1 style={{ fontSize: 'clamp(20px, 5vw, 28px)', fontWeight: 800, letterSpacing: '-0.5px', margin: 0 }}>Triplistler</h1>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <Link to="/plan/yeni" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#00C060', color: '#fff', fontWeight: 700, fontSize: '13px', padding: '8px 16px', borderRadius: '9999px', textDecoration: 'none' }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Triplist Oluştur
+            </Link>
+            <button onClick={() => setActiveTab('suggest')}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', background: activeTab === 'suggest' ? '#0D0D0D' : '#F5F5F5', color: activeTab === 'suggest' ? '#fff' : '#555', fontWeight: 600, fontSize: '13px', padding: '8px 16px', borderRadius: '9999px', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              Mekanını Ekle
             </button>
-          ))}
+          </div>
         </div>
       </div>
+
+      {/* Tab indicator — sadece suggest için göster */}
+      {activeTab === 'suggest' && (
+        <div className="page-content" style={{ paddingTop: '0', paddingBottom: '0' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', paddingTop: '12px' }}>
+            <button onClick={() => setActiveTab('triplists')} style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'none', border: 'none', color: '#888', fontSize: '13px', cursor: 'pointer', fontFamily: 'inherit', padding: '0' }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              Triplistlere dön
+            </button>
+          </div>
+        </div>
+      )}
 
       {activeTab === 'triplists' && (
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px 20px 80px' }}>
@@ -212,11 +214,6 @@ export default function CommunityPage() {
                 </button>
               ))}
             </div>
-            {/* Oluştur */}
-            <Link to="/plan/yeni" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#00C060', color: '#fff', fontWeight: 700, fontSize: '12px', padding: '7px 14px', borderRadius: '9999px', textDecoration: 'none', flexShrink: 0 }}>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Oluştur
-            </Link>
           </div>
 
           {/* Sıralama */}

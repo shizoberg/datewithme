@@ -416,38 +416,38 @@ export default function AdminPage() {
     setForm(p => ({ ...p, [k]: e.target.value }))
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0D0D0D', color: '#fff', fontFamily: 'Syne, sans-serif' }}>
-      <header style={{ borderBottom: '1px solid #2A2A2A', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <h1 style={{ fontSize: '18px', fontWeight: 800, color: '#00F680' }}>Admin Panel</h1>
+    <div style={{ minHeight: '100vh', background: '#111', color: '#E8E8E8', fontFamily: 'Raleway, sans-serif' }}>
+      <header style={{ borderBottom: '1px solid #2A2A2A', padding: '14px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#0D0D0D' }}>
+        <h1 style={{ fontSize: '16px', fontWeight: 800, color: '#00F680' }}>getdatewith.me / admin</h1>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Link to="/dashboard" style={{ color: '#999', fontSize: '14px', textDecoration: 'none' }}>← Dashboard</Link>
-          <button onClick={handleLogout} style={{ background: 'none', border: '1px solid #2A2A2A', borderRadius: '100px', padding: '6px 14px', color: '#666', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit' }}>Çıkış</button>
+          <Link to="/dashboard" style={{ color: '#AAA', fontSize: '13px', textDecoration: 'none' }}>← Dashboard</Link>
+          <button onClick={handleLogout} style={{ background: 'none', border: '1px solid #333', borderRadius: '100px', padding: '5px 14px', color: '#AAA', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit' }}>Çıkış</button>
         </div>
       </header>
 
-      <div style={{ display: 'flex', borderBottom: '1px solid #2A2A2A' }}>
+      <div style={{ display: 'flex', borderBottom: '1px solid #2A2A2A', background: '#0D0D0D', overflowX: 'auto' }}>
         <button onClick={() => setTab('venues')}
-          style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'venues' ? '#00F680' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'venues' ? '2px solid #00F680' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
-          📍 Mekanlar
+          style={{ padding: '11px 20px', background: 'none', border: 'none', color: tab === 'venues' ? '#00F680' : '#AAA', fontWeight: tab === 'venues' ? 700 : 500, cursor: 'pointer', borderBottom: tab === 'venues' ? '2px solid #00F680' : '2px solid transparent', fontSize: '13px', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
+          Mekanlar
         </button>
         <button onClick={() => setTab('submissions')}
-          style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'submissions' ? '#00F680' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'submissions' ? '2px solid #00F680' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
-          📬 Mekan Önerileri {pendingCount > 0 && <span style={{ background: '#00F680', color: '#000', borderRadius: '9999px', padding: '1px 7px', fontSize: '11px', marginLeft: '6px' }}>{pendingCount}</span>}
+          style={{ padding: '11px 20px', background: 'none', border: 'none', color: tab === 'submissions' ? '#00F680' : '#AAA', fontWeight: tab === 'submissions' ? 700 : 500, cursor: 'pointer', borderBottom: tab === 'submissions' ? '2px solid #00F680' : '2px solid transparent', fontSize: '13px', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
+          Mekan Önerileri {pendingCount > 0 && <span style={{ background: '#00F680', color: '#000', borderRadius: '9999px', padding: '1px 7px', fontSize: '11px', marginLeft: '6px' }}>{pendingCount}</span>}
         </button>
         <button onClick={() => setTab('triplists')}
-          style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'triplists' ? '#00F680' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'triplists' ? '2px solid #00F680' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
-          🗺️ Triplistler
+          style={{ padding: '11px 20px', background: 'none', border: 'none', color: tab === 'triplists' ? '#00F680' : '#AAA', fontWeight: tab === 'triplists' ? 700 : 500, cursor: 'pointer', borderBottom: tab === 'triplists' ? '2px solid #00F680' : '2px solid transparent', fontSize: '13px', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
+          Triplistler
         </button>
         <button onClick={() => setTab('leads')}
-          style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'leads' ? '#00F680' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'leads' ? '2px solid #00F680' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
+          style={{ padding: '11px 20px', background: 'none', border: 'none', color: tab === 'leads' ? '#00F680' : '#AAA', fontWeight: tab === 'leads' ? 700 : 500, cursor: 'pointer', borderBottom: tab === 'leads' ? '2px solid #00F680' : '2px solid transparent', fontSize: '13px', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
           💼 Başvurular {leads.length > 0 && <span style={{ background: '#00F680', color: '#000', borderRadius: '9999px', padding: '1px 7px', fontSize: '11px', marginLeft: '6px' }}>{leads.length}</span>}
         </button>
         <button onClick={() => setTab('influencers')}
-          style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'influencers' ? '#00F680' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'influencers' ? '2px solid #00F680' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
+          style={{ padding: '11px 20px', background: 'none', border: 'none', color: tab === 'influencers' ? '#00F680' : '#AAA', fontWeight: tab === 'influencers' ? 700 : 500, cursor: 'pointer', borderBottom: tab === 'influencers' ? '2px solid #00F680' : '2px solid transparent', fontSize: '13px', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
           ⭐ Influencerlar {influencers.filter(i => i.status === 'pending').length > 0 && <span style={{ background: '#00F680', color: '#000', borderRadius: '9999px', padding: '1px 7px', fontSize: '11px', marginLeft: '6px' }}>{influencers.filter(i => i.status === 'pending').length}</span>}
         </button>
         <button onClick={() => setTab('guide')}
-          style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'guide' ? '#00F680' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'guide' ? '2px solid #00F680' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
+          style={{ padding: '11px 20px', background: 'none', border: 'none', color: tab === 'guide' ? '#00F680' : '#AAA', fontWeight: tab === 'guide' ? 700 : 500, cursor: 'pointer', borderBottom: tab === 'guide' ? '2px solid #00F680' : '2px solid transparent', fontSize: '13px', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
           📝 Rehber
         </button>
       </div>

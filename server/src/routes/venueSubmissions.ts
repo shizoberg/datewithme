@@ -80,6 +80,8 @@ router.patch('/admin/:id/approve', adminAuth, async (req: AuthRequest, res: Resp
       priceLevel:   sub.priceLevel ?? undefined,
       description:  sub.description ?? undefined,
       isActive:     true,
+      isFeatured:   true,
+      featuredBy:   'admin',
     },
   })
 
