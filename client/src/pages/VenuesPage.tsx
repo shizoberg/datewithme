@@ -24,6 +24,9 @@ interface Venue {
   atmosfer: string | null
   reviewsJson: string | null
   totalRatings: number | null
+  isFeatured: boolean | null
+  featuredBy: string | null
+  featuredInfluencerId: string | null
 }
 
 interface Review { author: string; text: string; rating: number }
@@ -143,14 +146,50 @@ function VenueCard({ venue, saved, onToggle }: { venue: Venue; saved: boolean; o
   const topReview = trReview || reviews.find(r => r.text.length > 30 && r.text.length < 220) || reviews[0]
 
   return (
-    <div style={{ background: '#FFFFFF', border: '1px solid #E8E8E8', borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
+    <div style={{
+      background: '#FFFFFF',
+      border: venue.isFeatured && venue.featuredBy === 'admin'
+        ? '1.5px solid #F59E0B'
+        : venue.isFeatured ? '1.5px solid #8B5CF6' : '1px solid #E8E8E8',
+      borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column',
+      position: 'relative',
+      boxShadow: venue.isFeatured && venue.featuredBy === 'admin'
+        ? '0 4px 16px rgba(245,158,11,0.15)'
+        : venue.isFeatured ? '0 4px 16px rgba(139,92,246,0.12)' : '0 1px 4px rgba(0,0,0,0.06)',
+    }}>
       {venue.imageUrl ? (
-        <div style={{ height: '160px', background: '#F0F0F0', overflow: 'hidden' }}>
+        <div style={{ height: '160px', background: '#F0F0F0', overflow: 'hidden', position: 'relative' }}>
           <img src={venue.imageUrl} alt={venue.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          {venue.isFeatured && (
+            <div style={{
+              position: 'absolute', top: '10px', left: '10px',
+              background: venue.featuredBy === 'admin' ? '#F59E0B' : '#8B5CF6',
+              color: '#fff', borderRadius: '9999px', padding: '3px 10px',
+              fontSize: '11px', fontWeight: 800, letterSpacing: '0.3px',
+              display: 'flex', alignItems: 'center', gap: '4px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            }}>
+              {venue.featuredBy === 'admin' ? (
+                <><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Editörün Seçimi</>
+              ) : (
+                <><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Influencer Tavsiyesi</>
+              )}
+            </div>
+          )}
         </div>
       ) : (
-        <div style={{ height: '100px', background: '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px' }}>
+        <div style={{ height: '100px', background: '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', position: 'relative' }}>
           {cat?.emoji ?? '📍'}
+          {venue.isFeatured && (
+            <div style={{
+              position: 'absolute', top: '8px', left: '8px',
+              background: venue.featuredBy === 'admin' ? '#F59E0B' : '#8B5CF6',
+              color: '#fff', borderRadius: '9999px', padding: '3px 10px',
+              fontSize: '11px', fontWeight: 800,
+            }}>
+              {venue.featuredBy === 'admin' ? '★ Editörün Seçimi' : '✦ Influencer Tavsiyesi'}
+            </div>
+          )}
         </div>
       )}
       <button

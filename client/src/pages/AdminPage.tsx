@@ -27,7 +27,10 @@ interface Venue {
   id: string; name: string; category: string; city: string; district: string
   address?: string; googleMapsUrl?: string; instagramUrl?: string
   rating?: number; priceLevel?: number; isActive: boolean; createdAt: string
+  isFeatured?: boolean; featuredBy?: string
 }
+
+const GOOGLE_IMPORT_EMPTY = { placeId: '', city: '', district: '', category: 'cafe' }
 
 interface Submission {
   id: string; name: string; category: string; city: string; district: string
@@ -77,6 +80,9 @@ export default function AdminPage() {
   const [venues, setVenues] = useState<Venue[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
+  const [showGoogleImport, setShowGoogleImport] = useState(false)
+  const [googleImportForm, setGoogleImportForm] = useState({ ...GOOGLE_IMPORT_EMPTY })
+  const [googleImporting, setGoogleImporting] = useState(false)
   const [form, setForm] = useState({ ...EMPTY_FORM })
   const [editId, setEditId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
@@ -324,6 +330,33 @@ export default function AdminPage() {
     } finally { setSaving(false) }
   }
 
+  async function importFromGoogle() {
+    if (!googleImportForm.placeId || !googleImportForm.city || !googleImportForm.category) {
+      alert('Place ID, şehir ve kategori zorunlu'); return
+    }
+    setGoogleImporting(true)
+    try {
+      const r = await adminApi.post('/api/venues/admin/import-google', googleImportForm)
+      alert(`✓ "${r.data.venue.name}" başarıyla eklendi!`)
+      setShowGoogleImport(false)
+      setGoogleImportForm({ ...GOOGLE_IMPORT_EMPTY })
+      await load()
+    } catch (err: any) {
+      const msg = err?.response?.data?.error || 'Hata'
+      alert(msg === 'Bu mekan zaten DB\'de var' ? '⚠️ Bu mekan zaten veritabanında var.' : `Hata: ${msg}`)
+    } finally { setGoogleImporting(false) }
+  }
+
+  async function toggleFeatured(v: Venue) {
+    if (v.isFeatured) {
+      await adminApi.patch(`/api/venues/admin/${v.id}/featured`, { isFeatured: false })
+      setVenues(prev => prev.map(x => x.id === v.id ? { ...x, isFeatured: false, featuredBy: undefined } : x))
+    } else {
+      await adminApi.patch(`/api/venues/admin/${v.id}/featured`, { isFeatured: true, featuredBy: 'admin' })
+      setVenues(prev => prev.map(x => x.id === v.id ? { ...x, isFeatured: true, featuredBy: 'admin' } : x))
+    }
+  }
+
   async function toggleActive(v: Venue) {
     await adminApi.patch(`/api/venues/admin/${v.id}`, { isActive: !v.isActive })
     setVenues(prev => prev.map(x => x.id === v.id ? { ...x, isActive: !v.isActive } : x))
@@ -407,11 +440,52 @@ export default function AdminPage() {
       {tab === 'venues' && (
         <div style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 24px' }}>
           <div style={{ marginBottom: '24px' }}>
-            {!showForm ? (
-              <button onClick={() => setShowForm(true)} className="btn-primary" style={{ padding: '10px 20px', fontSize: '14px' }}>
-                + Yeni Mekan Ekle
-              </button>
-            ) : (
+            {!showForm && !showGoogleImport && (
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <button onClick={() => { setShowGoogleImport(true); setShowForm(false) }} style={{ padding: '10px 20px', fontSize: '14px', background: '#EA4335', color: '#fff', border: 'none', borderRadius: '9999px', fontWeight: 700, cursor: 'pointer', fontFamily: 'inherit' }}>
+                  🔴 Google'dan Çek
+                </button>
+                <button onClick={() => { setShowForm(true); setShowGoogleImport(false) }} className="btn-primary" style={{ padding: '10px 20px', fontSize: '14px' }}>
+                  + Manuel Ekle
+                </button>
+              </div>
+            )}
+            {showGoogleImport && (
+              <div className="card" style={{ padding: '24px', marginBottom: '16px' }}>
+                <h3 style={{ fontWeight: 700, marginBottom: '16px' }}>🔴 Google Places'tan Mekan Çek</h3>
+                <p style={{ fontSize: '12px', color: '#666', marginBottom: '16px' }}>Google Maps URL'inden Place ID'yi al: URL'deki <code style={{ color: '#00F680' }}>ChIJ...</code> kısmını kopyala.</p>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div style={{ gridColumn: '1/-1' }}>
+                    <label className="label">Google Place ID *</label>
+                    <input className="input" value={googleImportForm.placeId} onChange={e => setGoogleImportForm(p => ({ ...p, placeId: e.target.value }))} placeholder="ChIJN1t_tDeuEmsRUsoyG83frY4" />
+                  </div>
+                  <div>
+                    <label className="label">Şehir *</label>
+                    <select className="input" value={googleImportForm.city} onChange={e => setGoogleImportForm(p => ({ ...p, city: e.target.value }))} style={{ cursor: 'pointer' }}>
+                      <option value="">Seç…</option>
+                      <option>İstanbul</option><option>İzmir</option><option>Ankara</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="label">İlçe</label>
+                    <input className="input" value={googleImportForm.district} onChange={e => setGoogleImportForm(p => ({ ...p, district: e.target.value }))} placeholder="Kadıköy" />
+                  </div>
+                  <div>
+                    <label className="label">Kategori *</label>
+                    <select className="input" value={googleImportForm.category} onChange={e => setGoogleImportForm(p => ({ ...p, category: e.target.value }))} style={{ cursor: 'pointer' }}>
+                      {['cafe','restaurant','bar','park','rooftop','cultural','koy','doga','antik'].map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '10px', marginTop: '16px' }}>
+                  <button onClick={importFromGoogle} disabled={googleImporting} className="btn-primary" style={{ padding: '10px 24px' }}>
+                    {googleImporting ? 'Çekiliyor…' : '🔴 Çek ve Ekle'}
+                  </button>
+                  <button onClick={() => { setShowGoogleImport(false); setGoogleImportForm({ ...GOOGLE_IMPORT_EMPTY }) }} className="btn-secondary" style={{ padding: '10px 20px' }}>İptal</button>
+                </div>
+              </div>
+            )}
+            {showForm && (
               <div className="card" style={{ padding: '24px' }}>
                 <h3 style={{ fontWeight: 700, marginBottom: '20px' }}>{editId ? '✏️ Mekanı Düzenle' : '+ Yeni Mekan'}</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
@@ -506,7 +580,11 @@ export default function AdminPage() {
                           </button>
                         </td>
                         <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
-                          <button onClick={() => startEdit(v)} style={{ background: 'none', border: 'none', color: '#00F680', cursor: 'pointer', fontSize: '14px', marginRight: '8px' }}>✏️</button>
+                          <button onClick={() => toggleFeatured(v)} title={v.isFeatured ? 'Öne çıkmayı kaldır' : 'Öne çıkar (admin)'}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '14px', marginRight: '4px', opacity: v.isFeatured ? 1 : 0.3 }}>
+                            {v.isFeatured && v.featuredBy === 'admin' ? '🌟' : v.isFeatured ? '⭐' : '☆'}
+                          </button>
+                          <button onClick={() => startEdit(v)} style={{ background: 'none', border: 'none', color: '#00F680', cursor: 'pointer', fontSize: '14px', marginRight: '4px' }}>✏️</button>
                           <button onClick={() => setDeleteId(v.id)} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', fontSize: '14px' }}>🗑️</button>
                         </td>
                       </tr>

@@ -100,6 +100,10 @@ model Venue {
   isNature      Boolean  @default(false)
   beachType     String?
   swimSuitable  Boolean?
+
+  isFeatured       Boolean @default(false)
+  featuredBy       String? // "admin" | "influencer"
+  featuredInfluencerId String?
 }
 
 model GNOCard {

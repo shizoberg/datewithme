@@ -10,6 +10,7 @@ const VENUE_SELECT = {
   address: true, googleMapsUrl: true, instagramUrl: true, rating: true,
   priceLevel: true, imageUrl: true, aiTags: true, dateSkor: true, gnoSkor: true, atmosfer: true,
   reviewsJson: true, totalRatings: true,
+  isFeatured: true, featuredBy: true, featuredInfluencerId: true,
 }
 
 // GET /api/venues/suggest?city=...&district=...&category=...
@@ -115,6 +116,93 @@ router.patch('/admin/:id', adminAuth, async (req: AuthRequest, res: Response) =>
 router.delete('/admin/:id', adminAuth, async (req: AuthRequest, res: Response) => {
   await prisma.venue.delete({ where: { id: req.params.id } })
   res.json({ ok: true })
+})
+
+// POST /api/venues/admin/import-google — Google Place ID ile mekan çek ve ekle
+router.post('/admin/import-google', adminAuth, async (req: AuthRequest, res: Response) => {
+  const { placeId, city, district, category } = req.body
+  if (!placeId || !city || !category) {
+    res.status(400).json({ error: 'placeId, city ve category zorunlu' }); return
+  }
+
+  const existing = await prisma.venue.findUnique({ where: { googlePlaceId: placeId } })
+  if (existing) { res.status(409).json({ error: 'Bu mekan zaten DB\'de var', venue: existing }); return }
+
+  const API_KEY = process.env.GOOGLE_PLACES_API_KEY
+  if (!API_KEY) { res.status(500).json({ error: 'GOOGLE_PLACES_API_KEY eksik' }); return }
+
+  const FIELD_MASK = [
+    'id','displayName','formattedAddress','rating','userRatingCount','priceLevel',
+    'types','editorialSummary','reviews','photos','websiteUri','regularOpeningHours',
+    'nationalPhoneNumber','googleMapsUri',
+  ].join(',')
+
+  const detailRes = await fetch(
+    `https://places.googleapis.com/v1/places/${placeId}`,
+    { headers: { 'X-Goog-Api-Key': API_KEY, 'X-Goog-FieldMask': FIELD_MASK } }
+  )
+  if (!detailRes.ok) { res.status(502).json({ error: 'Google API hatası', status: detailRes.status }); return }
+  const p: Record<string, unknown> = await detailRes.json() as Record<string, unknown>
+
+  const name = (p.displayName as Record<string,string>)?.text || ''
+  if (!name) { res.status(400).json({ error: 'Mekan adı alınamadı' }); return }
+
+  const PRICE_MAP: Record<string, number> = {
+    PRICE_LEVEL_FREE: 1, PRICE_LEVEL_INEXPENSIVE: 1, PRICE_LEVEL_MODERATE: 2,
+    PRICE_LEVEL_EXPENSIVE: 3, PRICE_LEVEL_VERY_EXPENSIVE: 3,
+  }
+
+  const photos = (p.photos as Array<Record<string,string>>) || []
+  const photoUrls = photos.slice(0, 3).map(ph =>
+    `https://places.googleapis.com/v1/${ph.name}/media?maxWidthPx=800&key=${API_KEY}`
+  )
+  const reviews = (p.reviews as Array<Record<string, unknown>>) || []
+  const reviewsData = reviews.slice(0, 5).map(rv => ({
+    author: (rv.authorAttribution as Record<string,string>)?.displayName || '',
+    text: (rv.text as Record<string,string>)?.text || '',
+    rating: rv.rating as number,
+  })).filter(r => r.text)
+
+  const venue = await prisma.venue.create({
+    data: {
+      name,
+      category: ['koy','doga','antik'].includes(category) ? 'park' : category,
+      city,
+      district: district || '',
+      address: (p.formattedAddress as string) || null,
+      googleMapsUrl: (p.googleMapsUri as string) || null,
+      googleMapsUri: (p.googleMapsUri as string) || null,
+      rating: (p.rating as number) || null,
+      totalRatings: (p.userRatingCount as number) || null,
+      googleRating: (p.rating as number) || null,
+      priceLevel: PRICE_MAP[p.priceLevel as string] || null,
+      imageUrl: photoUrls[0] || null,
+      photosJson: photoUrls.length ? JSON.stringify(photoUrls) : null,
+      description: (p.editorialSummary as Record<string,string>)?.text || null,
+      reviewsJson: reviewsData.length ? JSON.stringify(reviewsData) : null,
+      phone: (p.nationalPhoneNumber as string) || null,
+      website: (p.websiteUri as string) || null,
+      googlePlaceId: placeId,
+      venueType: category,
+      isNature: ['koy','doga'].includes(category),
+      isActive: true,
+    },
+  })
+  res.json({ ok: true, venue })
+})
+
+// PATCH /api/venues/admin/:id/featured — öne çıkar / kaldır
+router.patch('/admin/:id/featured', adminAuth, async (req: AuthRequest, res: Response) => {
+  const { isFeatured, featuredBy, featuredInfluencerId } = req.body
+  const venue = await prisma.venue.update({
+    where: { id: req.params.id },
+    data: {
+      isFeatured: isFeatured ?? true,
+      featuredBy: featuredBy || 'admin',
+      featuredInfluencerId: featuredInfluencerId || null,
+    },
+  })
+  res.json(venue)
 })
 
 export default router
