@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import AppHeader from '../components/AppHeader'
 import { api } from '../lib/api'
-import { avatarComponents } from '../components/avatars'
+import { AvatarDisplay } from '../components/avatars'
 
 interface Stop {
   id: string; order: number; venueName: string; venueId?: string
@@ -54,7 +54,6 @@ export default function TriplistPage() {
     <div style={{ minHeight: '100vh', background: '#0D0D0D', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#555' }}>Triplist bulunamadı.</div>
   )
 
-  const AvatarComp = avatarComponents[data.user.avatarId || 'kedi']
   const teamList = data.teamMembers ? data.teamMembers.split(',').map(s => s.trim()).filter(Boolean) : []
 
   return (
@@ -84,9 +83,7 @@ export default function TriplistPage() {
               {/* Kullanıcı + meta */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ width: '32px', height: '32px' }}>
-                    {AvatarComp ? <AvatarComp /> : <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#222' }} />}
-                  </div>
+                  <AvatarDisplay avatarId={data.user.avatarId || 'kedi'} size={32} />
                   <span style={{ fontWeight: 600, fontSize: '14px' }}>{data.user.name}</span>
                   <span style={{ color: '#555', fontSize: '12px' }}>@{data.user.username}</span>
                 </div>
