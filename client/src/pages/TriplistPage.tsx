@@ -105,7 +105,7 @@ export default function TriplistPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
                       <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#00C060', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '14px', fontFamily: 'Syne, sans-serif', flexShrink: 0 }}>{stop.order}</div>
                       {i < data.stops.length - 1 && (
-                        <div style={{ width: '2px', flex: 1, minHeight: '60px', background: 'linear-gradient(#00F68040, #2A2A2A)', marginTop: '4px' }} />
+                        <div style={{ width: '2px', flex: 1, minHeight: '60px', background: '#D0D0D0', marginTop: '4px' }} />
                       )}
                     </div>
 
@@ -122,12 +122,12 @@ export default function TriplistPage() {
 
                       {/* Ulaşım köprüsü */}
                       {i < data.stops.length - 1 && stop.transitMode && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', margin: '8px 0', background: '#FFFFFF', border: '1px dashed #2A2A2A', borderRadius: '10px', fontSize: '13px', color: '#666' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 14px', margin: '8px 0', background: '#F8F8F8', border: '1px dashed #D0D0D0', borderRadius: '10px', fontSize: '13px', color: '#666' }}>
                           <span>{TRANSIT_ICONS[stop.transitMode] || '🚌'}</span>
-                          <span style={{ fontWeight: 600, color: '#666' }}>{stop.transitMode}</span>
-                          {stop.transitLine && <span style={{ background: '#F0F0F0', border: '1px solid #333', borderRadius: '6px', padding: '2px 8px', fontSize: '11px', fontWeight: 700 }}>{stop.transitLine}</span>}
-                          {stop.transitNote && <span style={{ color: '#444', fontSize: '12px' }}>— {stop.transitNote}</span>}
-                          <span style={{ marginLeft: 'auto', fontSize: '16px', color: '#333' }}>↓</span>
+                          <span style={{ fontWeight: 600, color: '#555' }}>{stop.transitMode}</span>
+                          {stop.transitLine && <span style={{ background: '#F0F0F0', border: '1px solid #D0D0D0', borderRadius: '6px', padding: '2px 8px', fontSize: '11px', fontWeight: 700 }}>{stop.transitLine}</span>}
+                          {stop.transitNote && <span style={{ color: '#666', fontSize: '12px' }}>— {stop.transitNote}</span>}
+                          <span style={{ marginLeft: 'auto', fontSize: '16px', color: '#888' }}>↓</span>
                         </div>
                       )}
                     </div>
@@ -139,7 +139,7 @@ export default function TriplistPage() {
             {/* Paylaş butonu */}
             <div style={{ marginTop: '32px', display: 'flex', gap: '12px' }}>
               <button onClick={copyLink}
-                style={{ flex: 1, padding: '12px', borderRadius: '12px', background: '#F0F0F0', border: '1px solid #E0E0E0', color: copied ? '#00C060' : '#fff', fontWeight: 600, fontSize: '14px', cursor: 'pointer', fontFamily: 'inherit' }}>
+                style={{ flex: 1, padding: '12px', borderRadius: '12px', background: '#F0F0F0', border: '1px solid #E0E0E0', color: copied ? '#00C060' : '#0D0D0D', fontWeight: 600, fontSize: '14px', cursor: 'pointer', fontFamily: 'inherit' }}>
                 {copied ? '✓ Link kopyalandı!' : '🔗 Linki Kopyala'}
               </button>
             </div>
@@ -153,12 +153,12 @@ export default function TriplistPage() {
                 <div style={{ fontSize: '11px', fontWeight: 700, color: '#444', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '12px' }}>📅 Tarih</div>
                 {data.startDate && data.endDate ? (
                   <>
-                    <div style={{ fontSize: '14px', color: '#aaa', marginBottom: '4px' }}>{fmt(data.startDate)}</div>
+                    <div style={{ fontSize: '14px', color: '#555', marginBottom: '4px' }}>{fmt(data.startDate)}</div>
                     <div style={{ fontSize: '12px', color: '#444' }}>→</div>
-                    <div style={{ fontSize: '14px', color: '#aaa', marginTop: '4px' }}>{fmt(data.endDate)}</div>
+                    <div style={{ fontSize: '14px', color: '#555', marginTop: '4px' }}>{fmt(data.endDate)}</div>
                   </>
                 ) : (
-                  <div style={{ fontSize: '14px', color: '#aaa' }}>{fmt(data.startDate || data.endDate)}</div>
+                  <div style={{ fontSize: '14px', color: '#555' }}>{fmt(data.startDate || data.endDate)}</div>
                 )}
               </div>
             )}
@@ -185,7 +185,7 @@ export default function TriplistPage() {
                 {data.stops.map((stop, i) => (
                   <div key={stop.id} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: '#00F68020', border: '1px solid #00F68050', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 700, color: '#00C060', flexShrink: 0 }}>{i + 1}</div>
-                    <span style={{ fontSize: '13px', color: '#aaa' }}>{stop.venueName}</span>
+                    <span style={{ fontSize: '13px', color: '#555' }}>{stop.venueName}</span>
                   </div>
                 ))}
               </div>

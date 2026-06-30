@@ -79,7 +79,7 @@ function PriceDots({ level }: { level: number | null }) {
 function StarRating({ rating }: { rating: number | null }) {
   if (!rating) return null
   return (
-    <span style={{ color: '#00F680', fontSize: '13px', fontWeight: 700 }}>
+    <span style={{ color: '#00C060', fontSize: '13px', fontWeight: 700 }}>
       ★ {rating.toFixed(1)}
     </span>
   )
@@ -107,33 +107,33 @@ function VenueCard({ venue, saved, onToggle }: { venue: Venue; saved: boolean; o
   const badges = venue.aiTags ? venue.aiTags.split(',').filter(Boolean).slice(0, 3) : []
 
   return (
-    <div style={{ background: '#111', border: '1px solid #1E1E1E', borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+    <div style={{ background: '#FFFFFF', border: '1px solid #E8E8E8', borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', position: 'relative', boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}>
       {venue.imageUrl ? (
-        <div style={{ height: '160px', background: '#1A1A1A', overflow: 'hidden' }}>
+        <div style={{ height: '160px', background: '#F0F0F0', overflow: 'hidden' }}>
           <img src={venue.imageUrl} alt={venue.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
       ) : (
-        <div style={{ height: '100px', background: '#161616', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px' }}>
+        <div style={{ height: '100px', background: '#F5F5F5', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px' }}>
           {cat?.emoji ?? '📍'}
         </div>
       )}
       <button
         onClick={e => { e.stopPropagation(); onToggle(venue.id) }}
-        style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(13,13,13,0.75)', border: 'none', borderRadius: '8px', cursor: 'pointer', padding: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        style={{ position: 'absolute', top: '10px', right: '10px', background: 'rgba(255,255,255,0.9)', border: 'none', borderRadius: '8px', cursor: 'pointer', padding: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.1)' }}
         title={saved ? 'Kaydedildi' : 'Kaydet'}
       >
         <BookmarkIcon filled={saved} />
       </button>
       <div style={{ padding: '16px', flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px' }}>
-          <div style={{ fontWeight: 700, fontSize: '15px', color: '#fff', lineHeight: 1.3 }}>{venue.name}</div>
+          <div style={{ fontWeight: 700, fontSize: '15px', color: '#0D0D0D', lineHeight: 1.3 }}>{venue.name}</div>
           <StarRating rating={venue.rating} />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
-          <span style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '9999px', padding: '3px 10px', fontSize: '11px', color: '#888' }}>
+          <span style={{ background: '#F0F0F0', border: '1px solid #E0E0E0', borderRadius: '9999px', padding: '3px 10px', fontSize: '11px', color: '#555' }}>
             {cat?.emoji} {cat?.label ?? venue.category}
           </span>
-          <span style={{ fontSize: '12px', color: '#555' }}>{venue.district}, {venue.city}</span>
+          <span style={{ fontSize: '12px', color: '#777' }}>{venue.district}, {venue.city}</span>
           <PriceDots level={venue.priceLevel} />
         </div>
         {badges.length > 0 && (
@@ -147,12 +147,12 @@ function VenueCard({ venue, saved, onToggle }: { venue: Venue; saved: boolean; o
         {(venue.dateSkor || venue.gnoSkor) && (
           <div style={{ display: 'flex', gap: '12px', paddingTop: '4px' }}>
             {venue.dateSkor && (
-              <span style={{ fontSize: '12px', color: '#888' }}>
-                💑 Date <span style={{ color: '#00F680', fontWeight: 700 }}>{venue.dateSkor}/10</span>
+              <span style={{ fontSize: '12px', color: '#777' }}>
+                💑 Date <span style={{ color: '#00C060', fontWeight: 700 }}>{venue.dateSkor}/10</span>
               </span>
             )}
             {venue.gnoSkor && (
-              <span style={{ fontSize: '12px', color: '#888' }}>
+              <span style={{ fontSize: '12px', color: '#777' }}>
                 👯 GNO <span style={{ color: '#F472B6', fontWeight: 700 }}>{venue.gnoSkor}/10</span>
               </span>
             )}
@@ -161,7 +161,7 @@ function VenueCard({ venue, saved, onToggle }: { venue: Venue; saved: boolean; o
         <div style={{ display: 'flex', gap: '8px', marginTop: 'auto', paddingTop: '8px' }}>
           {mapsUrl && (
             <a href={mapsUrl} target="_blank" rel="noopener noreferrer"
-              style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '10px', padding: '9px 12px', color: '#ccc', textDecoration: 'none', fontSize: '12px', fontWeight: 600 }}>
+              style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', background: '#F5F5F5', border: '1px solid #E0E0E0', borderRadius: '10px', padding: '9px 12px', color: '#444', textDecoration: 'none', fontSize: '12px', fontWeight: 600 }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
               </svg>
@@ -170,7 +170,7 @@ function VenueCard({ venue, saved, onToggle }: { venue: Venue; saved: boolean; o
           )}
           {igLink && (
             <a href={igLink} target="_blank" rel="noopener noreferrer"
-              style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '10px', padding: '9px 12px', color: '#ccc', textDecoration: 'none', fontSize: '12px', fontWeight: 600 }}>
+              style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', background: '#F5F5F5', border: '1px solid #E0E0E0', borderRadius: '10px', padding: '9px 12px', color: '#444', textDecoration: 'none', fontSize: '12px', fontWeight: 600 }}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
                 <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
@@ -224,19 +224,19 @@ export default function VenuesPage() {
   })
 
   return (
-    <div style={{ minHeight: '100vh', fontFamily: 'Raleway, sans-serif' }}>
-      <AppHeader rightContent={<Link to="/topluluk" style={{ color: '#00F680', textDecoration: 'none', fontSize: '13px', fontWeight: 600 }}>+ Mekan Ekle</Link>} />
+    <div style={{ minHeight: '100vh', fontFamily: 'Raleway, sans-serif', background: '#FFFFFF', color: '#0D0D0D' }}>
+      <AppHeader rightContent={<Link to="/topluluk" style={{ color: '#00C060', textDecoration: 'none', fontSize: '13px', fontWeight: 600 }}>+ Mekan Ekle</Link>} />
 
       {/* HERO */}
       <div className="page-content" style={{ textAlign: 'center', paddingTop: '48px', paddingBottom: '32px' }}>
-        <div style={{ display: 'inline-block', background: '#111', border: '1px solid #2A2A2A', borderRadius: '9999px', padding: '6px 16px', fontSize: '12px', color: '#00F680', letterSpacing: '2px', fontWeight: 700, marginBottom: '24px', textTransform: 'uppercase' }}>
+        <div style={{ display: 'inline-block', background: '#F0F0F0', border: '1px solid #E0E0E0', borderRadius: '9999px', padding: '6px 16px', fontSize: '12px', color: '#00C060', letterSpacing: '2px', fontWeight: 700, marginBottom: '24px', textTransform: 'uppercase' }}>
           ✦ Mekan Rehberi
         </div>
         <h1 className="page-h1" style={{ fontSize: 'clamp(28px, 7vw, 42px)', letterSpacing: '-1px', marginBottom: '12px' }}>
           Şehrinin en iyi<br />
-          <span style={{ color: '#00F680' }}>buluşma mekanları.</span>
+          <span style={{ color: '#00C060' }}>buluşma mekanları.</span>
         </h1>
-        <p style={{ fontSize: '15px', color: '#888', lineHeight: 1.6, maxWidth: '380px', margin: '0 auto' }}>
+        <p style={{ fontSize: '15px', color: '#777', lineHeight: 1.6, maxWidth: '380px', margin: '0 auto' }}>
           Topluluk tarafından derlendi. Date için, GNO için.
         </p>
       </div>
@@ -244,7 +244,7 @@ export default function VenuesPage() {
       {/* FILTERS */}
       <div style={{ maxWidth: '960px', margin: '0 auto', padding: '0 20px 32px', boxSizing: 'border-box' }}>
         <select value={city} onChange={e => setCity(e.target.value)}
-          style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '10px', padding: '10px 14px', color: '#fff', fontSize: '13px', width: '100%', marginBottom: '12px', outline: 'none', cursor: 'pointer', fontFamily: 'Raleway, sans-serif', boxSizing: 'border-box' }}>
+          style={{ background: '#F8F8F8', border: '1px solid #E0E0E0', borderRadius: '10px', padding: '10px 14px', color: '#0D0D0D', fontSize: '13px', width: '100%', marginBottom: '12px', outline: 'none', cursor: 'pointer', fontFamily: 'Raleway, sans-serif', boxSizing: 'border-box' }}>
           <option value="">Tüm Şehirler</option>
           <option value="İstanbul">İstanbul</option>
           <option value="İzmir">İzmir</option>
@@ -254,7 +254,7 @@ export default function VenuesPage() {
         <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'none', msOverflowStyle: 'none', marginBottom: '12px' } as React.CSSProperties}>
           {CATEGORIES.map(cat => (
             <button key={cat.value} onClick={() => { setCategory(cat.value); setBadge('') }}
-              style={{ background: category === cat.value && !badge ? 'rgba(0,246,128,0.12)' : '#111', border: `1px solid ${category === cat.value && !badge ? 'rgba(0,246,128,0.4)' : '#2A2A2A'}`, borderRadius: '9999px', padding: '8px 14px', color: category === cat.value && !badge ? '#00F680' : '#888', fontSize: '13px', fontWeight: category === cat.value && !badge ? 700 : 400, cursor: 'pointer', fontFamily: 'Raleway, sans-serif', flexShrink: 0 }}>
+              style={{ background: category === cat.value && !badge ? 'rgba(0,192,96,0.1)' : '#F0F0F0', border: `1px solid ${category === cat.value && !badge ? '#00C060' : '#E0E0E0'}`, borderRadius: '9999px', padding: '8px 14px', color: category === cat.value && !badge ? '#00C060' : '#555', fontSize: '13px', fontWeight: category === cat.value && !badge ? 700 : 400, cursor: 'pointer', fontFamily: 'Raleway, sans-serif', flexShrink: 0 }}>
               {cat.emoji} {cat.label}
             </button>
           ))}
@@ -269,10 +269,10 @@ export default function VenuesPage() {
               return (
                 <button key={f.value} onClick={() => { setBadge(active ? '' : f.value); setCategory('') }}
                   style={{
-                    background: active ? `${f.color}18` : '#111',
-                    border: `1px solid ${active ? f.color + '60' : '#2A2A2A'}`,
+                    background: active ? `${f.color}18` : '#F0F0F0',
+                    border: `1px solid ${active ? f.color + '80' : '#E0E0E0'}`,
                     borderRadius: '9999px', padding: '7px 14px',
-                    color: active ? f.color : '#666',
+                    color: active ? f.color : '#555',
                     fontSize: '12px', fontWeight: active ? 700 : 400,
                     cursor: 'pointer', fontFamily: 'Raleway, sans-serif', flexShrink: 0,
                     transition: 'all 0.15s',
@@ -289,7 +289,7 @@ export default function VenuesPage() {
           placeholder="Mekan veya semt ara…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          style={{ width: '100%', background: '#111', border: '1px solid #2A2A2A', borderRadius: '12px', padding: '12px 18px', color: '#fff', fontSize: '14px', fontFamily: 'Raleway, sans-serif', outline: 'none', boxSizing: 'border-box' }}
+          style={{ width: '100%', background: '#F8F8F8', border: '1px solid #E0E0E0', borderRadius: '12px', padding: '12px 18px', color: '#0D0D0D', fontSize: '14px', fontFamily: 'Raleway, sans-serif', outline: 'none', boxSizing: 'border-box' }}
         />
       </div>
 
@@ -301,7 +301,7 @@ export default function VenuesPage() {
           <div style={{ textAlign: 'center', padding: '80px', color: '#555' }}>
             <div style={{ fontSize: '40px', marginBottom: '16px' }}>🗺️</div>
             <p style={{ fontSize: '16px', marginBottom: '8px' }}>Mekan bulunamadı.</p>
-            <p style={{ fontSize: '13px', color: '#444' }}>Filtreni değiştir veya <Link to="/topluluk" style={{ color: '#00F680' }}>sen öner!</Link></p>
+            <p style={{ fontSize: '13px', color: '#444' }}>Filtreni değiştir veya <Link to="/topluluk" style={{ color: '#00C060' }}>sen öner!</Link></p>
           </div>
         ) : (
           <div className="venue-grid">
@@ -317,7 +317,7 @@ export default function VenuesPage() {
         )}
         <div style={{ textAlign: 'center', marginTop: '48px' }}>
           <p style={{ fontSize: '14px', color: '#555', marginBottom: '16px' }}>Favori mekanın listede yok mu?</p>
-          <Link to="/topluluk" style={{ display: 'inline-block', background: '#00F680', color: '#0D0D0D', textDecoration: 'none', borderRadius: '9999px', padding: '13px 28px', fontSize: '14px', fontWeight: 800 }}>
+          <Link to="/topluluk" style={{ display: 'inline-block', background: '#00C060', color: '#fff', textDecoration: 'none', borderRadius: '9999px', padding: '13px 28px', fontSize: '14px', fontWeight: 800 }}>
             Mekan Öner →
           </Link>
         </div>
