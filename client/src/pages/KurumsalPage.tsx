@@ -52,6 +52,26 @@ const PACKAGES = [
       'Detaylı kampanya analitikleri',
     ],
   },
+  {
+    id: 'cekim',
+    title: 'Çekim Hizmeti',
+    price: 'Tek Seferlik',
+    color: '#F59E0B',
+    lightBg: 'rgba(245,158,11,0.06)',
+    border: 'rgba(245,158,11,0.2)',
+    icon: (
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>
+      </svg>
+    ),
+    features: [
+      'Mekanınızda profesyonel fotoğraf & video çekimi',
+      'Sosyal medya için hazır kısa içerikler',
+      'Platform profilinizde kullanılacak görseller',
+      'Triplist ve mekan kartlarında öne çıkan kalite',
+      'Tek seferlik ödeme, taahhüt yok',
+    ],
+  },
 ]
 
 export default function KurumsalPage() {
@@ -125,7 +145,7 @@ export default function KurumsalPage() {
 
       {/* Paketler */}
       <section id="paketler" style={{ maxWidth: 860, margin: '0 auto', padding: '72px 24px 56px' }}>
-        <h2 style={{ fontSize: '32px', fontWeight: 800, letterSpacing: '-1px', textAlign: 'center', marginBottom: '8px' }}>İki yol, bir hedef</h2>
+        <h2 style={{ fontSize: '32px', fontWeight: 800, letterSpacing: '-1px', textAlign: 'center', marginBottom: '8px' }}>Üç yol, bir hedef</h2>
         <p style={{ textAlign: 'center', color: '#666', marginBottom: '48px', fontSize: '15px' }}>İşletmenize en uygun paketi seçin</p>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
           {PACKAGES.map(pkg => (
