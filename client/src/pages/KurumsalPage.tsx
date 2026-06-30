@@ -1,15 +1,16 @@
-import { useState, FormEvent } from 'react'
+import { useState, FormEvent, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
 
-const INFLUENCERS = [
-  { name: 'Ayşe K.', city: 'İstanbul', followers: '24K', engagement: '%8.2', niche: 'Yemek & Kafe', avatar: 'A', color: '#00C060' },
-  { name: 'Mert D.', city: 'İstanbul', followers: '18K', engagement: '%6.9', niche: 'Date & Lifestyle', avatar: 'M', color: '#4A90E2' },
-  { name: 'Zeynep A.', city: 'Ankara', followers: '31K', engagement: '%9.1', niche: 'Gece Hayatı & Bar', avatar: 'Z', color: '#D46080' },
-  { name: 'Can B.', city: 'İzmir', followers: '12K', engagement: '%11.4', niche: 'Outdoor & Doğa', avatar: 'C', color: '#F59E0B' },
-  { name: 'Selin T.', city: 'İstanbul', followers: '42K', engagement: '%7.3', niche: 'Etkinlik & Sanat', avatar: 'S', color: '#8B5CF6' },
-  { name: 'Burak Y.', city: 'Antalya', followers: '9K', engagement: '%14.2', niche: 'Plaj & Yaz', avatar: 'B', color: '#06B6D4' },
-]
+interface InfluencerEntry {
+  id: string
+  name: string
+  city: string
+  followers: string | null
+  engagement: string | null
+  niche: string | null
+  avatarColor: string
+}
 
 const PACKAGES = [
   {
@@ -80,6 +81,11 @@ export default function KurumsalPage() {
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
+  const [influencers, setInfluencers] = useState<InfluencerEntry[]>([])
+
+  useEffect(() => {
+    api.get('/api/influencers').then(r => setInfluencers(r.data)).catch(() => setInfluencers([]))
+  }, [])
 
   async function submit(e: FormEvent) {
     e.preventDefault()
@@ -185,24 +191,31 @@ export default function KurumsalPage() {
             <h2 style={{ fontSize: '32px', fontWeight: 800, letterSpacing: '-1px', marginBottom: '8px' }}>Platform Influencerları</h2>
             <p style={{ color: '#666', fontSize: '15px' }}>İşbirliği yapabileceğiniz içerik üreticileri — şehir, niş ve erişim bazlı eşleştirme</p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '16px' }}>
-            {INFLUENCERS.map(inf => (
-              <div key={inf.name} style={{ background: '#FFFFFF', border: '1px solid #E8E8E8', borderRadius: '16px', padding: '20px', display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: inf.color, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '18px', flexShrink: 0 }}>{inf.avatar}</div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 700, fontSize: '15px' }}>{inf.name}</div>
-                  <div style={{ fontSize: '12px', color: '#777', marginBottom: '8px' }}>📍 {inf.city}</div>
-                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                    <span style={{ background: '#F0F0F0', borderRadius: '100px', padding: '3px 10px', fontSize: '11px', color: '#555', fontWeight: 600 }}>{inf.followers} takipçi</span>
-                    <span style={{ background: 'rgba(0,192,96,0.08)', border: '1px solid rgba(0,192,96,0.15)', borderRadius: '100px', padding: '3px 10px', fontSize: '11px', color: '#00C060', fontWeight: 600 }}>{inf.engagement} etkileşim</span>
+          {influencers.length > 0 ? (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '16px' }}>
+              {influencers.map(inf => (
+                <div key={inf.id} style={{ background: '#FFFFFF', border: '1px solid #E8E8E8', borderRadius: '16px', padding: '20px', display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                  <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: inf.avatarColor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '18px', flexShrink: 0 }}>{inf.name[0]}</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontWeight: 700, fontSize: '15px' }}>{inf.name}</div>
+                    <div style={{ fontSize: '12px', color: '#777', marginBottom: '8px' }}>📍 {inf.city}</div>
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                      {inf.followers && <span style={{ background: '#F0F0F0', borderRadius: '100px', padding: '3px 10px', fontSize: '11px', color: '#555', fontWeight: 600 }}>{inf.followers} takipçi</span>}
+                      {inf.engagement && <span style={{ background: 'rgba(0,192,96,0.08)', border: '1px solid rgba(0,192,96,0.15)', borderRadius: '100px', padding: '3px 10px', fontSize: '11px', color: '#00C060', fontWeight: 600 }}>{inf.engagement} etkileşim</span>}
+                    </div>
+                    {inf.niche && <div style={{ marginTop: '6px', fontSize: '12px', color: '#888' }}>{inf.niche}</div>}
                   </div>
-                  <div style={{ marginTop: '6px', fontSize: '12px', color: '#888' }}>{inf.niche}</div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p style={{ textAlign: 'center', color: '#999', fontSize: '14px' }}>Influencer havuzumuz büyüyor — yakında burada listelenecekler.</p>
+          )}
           <p style={{ textAlign: 'center', marginTop: '28px', fontSize: '13px', color: '#999' }}>
             * Influencer veritabanımız sürekli büyüyor. Başvurunuzda hedef kitlenizi belirtin, size en uygun eşleşmeyi sunalım.
+          </p>
+          <p style={{ textAlign: 'center', marginTop: '12px' }}>
+            <Link to="/influencer-basvuru" style={{ color: '#7C3AED', fontWeight: 700, fontSize: '13px', textDecoration: 'none' }}>İçerik üreticisi misin? Başvur →</Link>
           </p>
         </div>
       </section>

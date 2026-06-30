@@ -7,14 +7,21 @@ interface BusinessLead {
   phone?: string; package: string; message?: string; status: string; createdAt: string
 }
 
-const INFLUENCERS = [
-  { name: 'Ayşe K.', city: 'İstanbul', followers: '24K', engagement: '%8.2', niche: 'Yemek & Kafe', ig: '', color: '#00C060' },
-  { name: 'Mert D.', city: 'İstanbul', followers: '18K', engagement: '%6.9', niche: 'Date & Lifestyle', ig: '', color: '#4A90E2' },
-  { name: 'Zeynep A.', city: 'Ankara', followers: '31K', engagement: '%9.1', niche: 'Gece Hayatı & Bar', ig: '', color: '#D46080' },
-  { name: 'Can B.', city: 'İzmir', followers: '12K', engagement: '%11.4', niche: 'Outdoor & Doğa', ig: '', color: '#F59E0B' },
-  { name: 'Selin T.', city: 'İstanbul', followers: '42K', engagement: '%7.3', niche: 'Etkinlik & Sanat', ig: '', color: '#8B5CF6' },
-  { name: 'Burak Y.', city: 'Antalya', followers: '9K', engagement: '%14.2', niche: 'Plaj & Yaz', ig: '', color: '#06B6D4' },
-]
+interface Influencer {
+  id: string; name: string; email?: string; phone?: string; city: string
+  instagram?: string; followers?: string; engagement?: string; niche?: string
+  bio?: string; avatarColor: string; status: string; source: string; createdAt: string
+}
+
+interface GuideEntry {
+  id: string; title: string; slug: string; coverImage?: string; content: string
+  city?: string; venueName?: string; status: string; authorId?: string
+  author?: { id: string; name: string; avatarColor: string } | null
+  publishedAt?: string; createdAt: string
+}
+
+const INFLUENCER_EMPTY_FORM = { name: '', city: '', instagram: '', followers: '', engagement: '', niche: '', email: '', phone: '', bio: '' }
+const GUIDE_EMPTY_FORM = { title: '', content: '', city: '', venueName: '', coverImage: '', authorId: '' }
 
 interface Venue {
   id: string; name: string; category: string; city: string; district: string
@@ -51,9 +58,19 @@ export default function AdminPage() {
   const [loginLoading, setLoginLoading] = useState(false)
 
   // Venues state
-  const [tab, setTab] = useState<'venues' | 'submissions' | 'triplists' | 'leads' | 'influencers'>('venues')
+  const [tab, setTab] = useState<'venues' | 'submissions' | 'triplists' | 'leads' | 'influencers' | 'guide'>('venues')
   const [leads, setLeads] = useState<BusinessLead[]>([])
   const [leadsLoading, setLeadsLoading] = useState(false)
+  const [influencers, setInfluencers] = useState<Influencer[]>([])
+  const [influencersLoading, setInfluencersLoading] = useState(false)
+  const [showInfForm, setShowInfForm] = useState(false)
+  const [infForm, setInfForm] = useState({ ...INFLUENCER_EMPTY_FORM })
+  const [infSaving, setInfSaving] = useState(false)
+  const [guideEntries, setGuideEntries] = useState<GuideEntry[]>([])
+  const [guideLoading, setGuideLoading] = useState(false)
+  const [showGuideForm, setShowGuideForm] = useState(false)
+  const [guideForm, setGuideForm] = useState({ ...GUIDE_EMPTY_FORM })
+  const [guideSaving, setGuideSaving] = useState(false)
   const [triplists, setTriplists] = useState<any[]>([])
   const [triplistLoading, setTriplistLoading] = useState(false)
   const [venues, setVenues] = useState<Venue[]>([])
@@ -110,6 +127,62 @@ export default function AdminPage() {
       adminApi.get('/api/triplists/public').then(r => setTriplists(r.data)).catch(() => {}).finally(() => setTriplistLoading(false))
     }
   }, [tab, adminToken])
+  function loadInfluencers() {
+    setInfluencersLoading(true)
+    adminApi.get('/api/influencers?status=all').then(r => setInfluencers(r.data)).catch(() => {}).finally(() => setInfluencersLoading(false))
+  }
+  useEffect(() => { if (adminToken && tab === 'influencers') loadInfluencers() }, [tab, adminToken])
+
+  function loadGuideEntries() {
+    setGuideLoading(true)
+    adminApi.get('/api/guide?status=all').then(r => setGuideEntries(r.data)).catch(() => {}).finally(() => setGuideLoading(false))
+  }
+  useEffect(() => { if (adminToken && tab === 'guide') loadGuideEntries() }, [tab, adminToken])
+  useEffect(() => { if (adminToken && tab === 'guide' && influencers.length === 0) loadInfluencers() }, [tab, adminToken])
+
+  async function saveInfluencer() {
+    setInfSaving(true)
+    try {
+      await adminApi.post('/api/influencers', infForm)
+      setShowInfForm(false)
+      setInfForm({ ...INFLUENCER_EMPTY_FORM })
+      loadInfluencers()
+    } catch (err: any) {
+      alert(err?.response?.data?.error || 'Hata')
+    } finally { setInfSaving(false) }
+  }
+
+  async function approveInfluencer(id: string) {
+    await adminApi.patch(`/api/influencers/${id}`, { status: 'approved' })
+    setInfluencers(prev => prev.map(i => i.id === id ? { ...i, status: 'approved' } : i))
+  }
+
+  async function deleteInfluencer(id: string) {
+    await adminApi.delete(`/api/influencers/${id}`)
+    setInfluencers(prev => prev.filter(i => i.id !== id))
+  }
+
+  async function saveGuideEntry() {
+    setGuideSaving(true)
+    try {
+      await adminApi.post('/api/guide', { ...guideForm, authorId: guideForm.authorId || undefined, status: 'draft' })
+      setShowGuideForm(false)
+      setGuideForm({ ...GUIDE_EMPTY_FORM })
+      loadGuideEntries()
+    } catch (err: any) {
+      alert(err?.response?.data?.error || 'Hata')
+    } finally { setGuideSaving(false) }
+  }
+
+  async function publishGuideEntry(id: string) {
+    await adminApi.patch(`/api/guide/${id}`, { status: 'published' })
+    loadGuideEntries()
+  }
+
+  async function deleteGuideEntry(id: string) {
+    await adminApi.delete(`/api/guide/${id}`)
+    setGuideEntries(prev => prev.filter(e => e.id !== id))
+  }
 
   // Auto-refresh pending count every 30s
   useEffect(() => {
@@ -304,7 +377,11 @@ export default function AdminPage() {
         </button>
         <button onClick={() => setTab('influencers')}
           style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'influencers' ? '#00F680' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'influencers' ? '2px solid #00F680' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
-          ⭐ Influencerlar
+          ⭐ Influencerlar {influencers.filter(i => i.status === 'pending').length > 0 && <span style={{ background: '#00F680', color: '#000', borderRadius: '9999px', padding: '1px 7px', fontSize: '11px', marginLeft: '6px' }}>{influencers.filter(i => i.status === 'pending').length}</span>}
+        </button>
+        <button onClick={() => setTab('guide')}
+          style={{ padding: '12px 24px', background: 'none', border: 'none', color: tab === 'guide' ? '#00F680' : '#666', fontWeight: 700, cursor: 'pointer', borderBottom: tab === 'guide' ? '2px solid #00F680' : '2px solid transparent', fontSize: '14px', fontFamily: 'inherit' }}>
+          📝 Rehber
         </button>
       </div>
 
@@ -601,24 +678,144 @@ export default function AdminPage() {
       {tab === 'influencers' && (
         <div style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 24px' }}>
           <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ color: '#555', fontSize: '13px' }}>{INFLUENCERS.length} influencer — kurumsal sayfada gösteriliyor</div>
+            <div style={{ color: '#555', fontSize: '13px' }}>{influencers.length} influencer</div>
+            {!showInfForm && (
+              <button onClick={() => setShowInfForm(true)} className="btn-primary" style={{ padding: '8px 18px', fontSize: '13px' }}>+ Influencer Ekle</button>
+            )}
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '14px' }}>
-            {INFLUENCERS.map(inf => (
-              <div key={inf.name} style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: '14px', padding: '20px', display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
-                <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: inf.color, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '18px', flexShrink: 0 }}>{inf.name[0]}</div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontWeight: 700, fontSize: '15px', color: '#fff', marginBottom: '2px' }}>{inf.name}</div>
-                  <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>📍 {inf.city}</div>
-                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                    <span style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '100px', padding: '2px 9px', fontSize: '11px', color: '#888', fontWeight: 600 }}>{inf.followers} takipçi</span>
-                    <span style={{ background: '#00F68012', border: '1px solid #00F68030', borderRadius: '100px', padding: '2px 9px', fontSize: '11px', color: '#00F680', fontWeight: 600 }}>{inf.engagement}</span>
+
+          {showInfForm && (
+            <div className="card" style={{ padding: '24px', marginBottom: '20px' }}>
+              <h3 style={{ fontWeight: 700, marginBottom: '20px' }}>+ Yeni Influencer</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div><label className="label">İsim *</label><input className="input" value={infForm.name} onChange={e => setInfForm(p => ({ ...p, name: e.target.value }))} placeholder="Ayşe K." /></div>
+                <div><label className="label">Şehir *</label><input className="input" value={infForm.city} onChange={e => setInfForm(p => ({ ...p, city: e.target.value }))} placeholder="İstanbul" /></div>
+                <div><label className="label">Instagram</label><input className="input" value={infForm.instagram} onChange={e => setInfForm(p => ({ ...p, instagram: e.target.value }))} placeholder="@kullaniciadi" /></div>
+                <div><label className="label">Niş</label><input className="input" value={infForm.niche} onChange={e => setInfForm(p => ({ ...p, niche: e.target.value }))} placeholder="Yemek & Kafe" /></div>
+                <div><label className="label">Takipçi</label><input className="input" value={infForm.followers} onChange={e => setInfForm(p => ({ ...p, followers: e.target.value }))} placeholder="24K" /></div>
+                <div><label className="label">Etkileşim</label><input className="input" value={infForm.engagement} onChange={e => setInfForm(p => ({ ...p, engagement: e.target.value }))} placeholder="%8.2" /></div>
+                <div><label className="label">E-posta</label><input className="input" value={infForm.email} onChange={e => setInfForm(p => ({ ...p, email: e.target.value }))} placeholder="mail@ornek.com" /></div>
+                <div><label className="label">Telefon</label><input className="input" value={infForm.phone} onChange={e => setInfForm(p => ({ ...p, phone: e.target.value }))} placeholder="05XX XXX XX XX" /></div>
+                <div style={{ gridColumn: '1/-1' }}><label className="label">Bio</label><input className="input" value={infForm.bio} onChange={e => setInfForm(p => ({ ...p, bio: e.target.value }))} /></div>
+              </div>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                <button onClick={saveInfluencer} disabled={infSaving || !infForm.name || !infForm.city} className="btn-primary" style={{ padding: '10px 24px' }}>{infSaving ? 'Kaydediliyor…' : '💾 Kaydet'}</button>
+                <button onClick={() => { setShowInfForm(false); setInfForm({ ...INFLUENCER_EMPTY_FORM }) }} className="btn-secondary" style={{ padding: '10px 20px' }}>İptal</button>
+              </div>
+            </div>
+          )}
+
+          {influencersLoading ? (
+            <p style={{ color: '#666' }}>Yükleniyor…</p>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '14px' }}>
+              {influencers.map(inf => (
+                <div key={inf.id} style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: '14px', padding: '20px', display: 'flex', gap: '14px', alignItems: 'flex-start' }}>
+                  <div style={{ width: '44px', height: '44px', borderRadius: '50%', background: inf.avatarColor, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '18px', flexShrink: 0 }}>{inf.name[0]}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
+                      <div style={{ fontWeight: 700, fontSize: '15px', color: '#fff' }}>{inf.name}</div>
+                      {inf.status === 'pending' && <span style={{ fontSize: '10px', background: '#F59E0B20', color: '#F59E0B', borderRadius: '6px', padding: '1px 6px', fontWeight: 700 }}>BEKLİYOR</span>}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>📍 {inf.city}{inf.instagram ? ` · ${inf.instagram}` : ''}</div>
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                      {inf.followers && <span style={{ background: '#1A1A1A', border: '1px solid #2A2A2A', borderRadius: '100px', padding: '2px 9px', fontSize: '11px', color: '#888', fontWeight: 600 }}>{inf.followers} takipçi</span>}
+                      {inf.engagement && <span style={{ background: '#00F68012', border: '1px solid #00F68030', borderRadius: '100px', padding: '2px 9px', fontSize: '11px', color: '#00F680', fontWeight: 600 }}>{inf.engagement}</span>}
+                    </div>
+                    {inf.niche && <div style={{ marginTop: '6px', fontSize: '12px', color: '#555' }}>{inf.niche}</div>}
+                    <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                      {inf.status === 'pending' && (
+                        <button onClick={() => approveInfluencer(inf.id)} style={{ background: 'none', border: 'none', color: '#00F680', cursor: 'pointer', fontSize: '12px', fontWeight: 700, fontFamily: 'inherit' }}>✓ Onayla</button>
+                      )}
+                      <button onClick={() => deleteInfluencer(inf.id)} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', fontSize: '12px', fontFamily: 'inherit' }}>🗑️ Sil</button>
+                    </div>
                   </div>
-                  <div style={{ marginTop: '6px', fontSize: '12px', color: '#555' }}>{inf.niche}</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── REHBER TAB ── */}
+      {tab === 'guide' && (
+        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 24px' }}>
+          <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ color: '#555', fontSize: '13px' }}>{guideEntries.length} yazı</div>
+            {!showGuideForm && (
+              <button onClick={() => setShowGuideForm(true)} className="btn-primary" style={{ padding: '8px 18px', fontSize: '13px' }}>+ Yazı Ekle</button>
+            )}
+          </div>
+
+          {showGuideForm && (
+            <div className="card" style={{ padding: '24px', marginBottom: '20px' }}>
+              <h3 style={{ fontWeight: 700, marginBottom: '20px' }}>+ Yeni Rehber Yazısı</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div style={{ gridColumn: '1/-1' }}><label className="label">Başlık *</label><input className="input" value={guideForm.title} onChange={e => setGuideForm(p => ({ ...p, title: e.target.value }))} placeholder="Boyalık Plajı'nda bir gün" /></div>
+                <div><label className="label">Şehir</label><input className="input" value={guideForm.city} onChange={e => setGuideForm(p => ({ ...p, city: e.target.value }))} placeholder="İzmir" /></div>
+                <div><label className="label">Mekan Adı</label><input className="input" value={guideForm.venueName} onChange={e => setGuideForm(p => ({ ...p, venueName: e.target.value }))} placeholder="Boyalık Plajı" /></div>
+                <div style={{ gridColumn: '1/-1' }}><label className="label">Kapak Görseli URL</label><input className="input" value={guideForm.coverImage} onChange={e => setGuideForm(p => ({ ...p, coverImage: e.target.value }))} placeholder="https://..." /></div>
+                <div style={{ gridColumn: '1/-1' }}>
+                  <label className="label">Yazar (Influencer)</label>
+                  <select className="input" value={guideForm.authorId} onChange={e => setGuideForm(p => ({ ...p, authorId: e.target.value }))} style={{ cursor: 'pointer' }}>
+                    <option value="">— Yazar seçilmedi —</option>
+                    {influencers.filter(i => i.status === 'approved').map(i => <option key={i.id} value={i.id}>{i.name}</option>)}
+                  </select>
+                </div>
+                <div style={{ gridColumn: '1/-1' }}>
+                  <label className="label">İçerik *</label>
+                  <textarea
+                    style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1.5px solid #2A2A2A', background: '#111', color: '#fff', fontSize: '14px', outline: 'none', fontFamily: 'inherit', resize: 'vertical', minHeight: '160px', boxSizing: 'border-box' }}
+                    value={guideForm.content} onChange={e => setGuideForm(p => ({ ...p, content: e.target.value }))}
+                    placeholder="Birinci ağızdan deneyimi yaz…"
+                  />
                 </div>
               </div>
-            ))}
-          </div>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                <button onClick={saveGuideEntry} disabled={guideSaving || !guideForm.title || !guideForm.content} className="btn-primary" style={{ padding: '10px 24px' }}>{guideSaving ? 'Kaydediliyor…' : '💾 Taslak Kaydet'}</button>
+                <button onClick={() => { setShowGuideForm(false); setGuideForm({ ...GUIDE_EMPTY_FORM }) }} className="btn-secondary" style={{ padding: '10px 20px' }}>İptal</button>
+              </div>
+            </div>
+          )}
+
+          {guideLoading ? (
+            <p style={{ color: '#666' }}>Yükleniyor…</p>
+          ) : guideEntries.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '60px 0', color: '#444' }}>
+              <div style={{ fontSize: '32px', marginBottom: '8px' }}>📝</div>
+              <div>Henüz yazı yok.</div>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {guideEntries.map(g => (
+                <div key={g.id} style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: '14px', padding: '18px 20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
+                    <div style={{ flex: 1, minWidth: '200px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <div style={{ fontWeight: 700, fontSize: '15px' }}>{g.title}</div>
+                        <span style={{ fontSize: '10px', background: g.status === 'published' ? '#00F68020' : '#2A2A2A', color: g.status === 'published' ? '#00F680' : '#888', borderRadius: '6px', padding: '1px 6px', fontWeight: 700 }}>
+                          {g.status === 'published' ? 'YAYINDA' : 'TASLAK'}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#666' }}>
+                        {g.city && `📍 ${g.city}${g.venueName ? ` · ${g.venueName}` : ''}`}
+                        {g.author && ` · ✦ ${g.author.name}`}
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexShrink: 0 }}>
+                      {g.status !== 'published' && (
+                        <button onClick={() => publishGuideEntry(g.id)} style={{ background: 'none', border: 'none', color: '#00F680', cursor: 'pointer', fontSize: '12px', fontWeight: 700, fontFamily: 'inherit' }}>↑ Yayınla</button>
+                      )}
+                      {g.status === 'published' && (
+                        <a href={`/rehber/${g.slug}`} target="_blank" rel="noreferrer" style={{ fontSize: '12px', color: '#60A5FA', textDecoration: 'none' }}>Görüntüle →</a>
+                      )}
+                      <button onClick={() => deleteGuideEntry(g.id)} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', fontSize: '12px', fontFamily: 'inherit' }}>🗑️</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

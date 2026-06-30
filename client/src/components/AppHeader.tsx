@@ -60,6 +60,7 @@ export default function AppHeader({ rightContent }: Props) {
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           {navLink('/bulusma-mekanlari', 'Mekanlar')}
           {navLink('/topluluk', 'Triplist')}
+          {navLink('/rehber', 'Rehber')}
           {isLoggedIn ? (
             <>
               {navLink('/dashboard', 'Dashboard')}

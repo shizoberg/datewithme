@@ -213,6 +213,42 @@ model BusinessLead {
   createdAt    DateTime @default(now())
 }
 
+model Influencer {
+  id          String   @id @default(uuid())
+  name        String
+  email       String?
+  phone       String?
+  city        String
+  instagram   String?
+  followers   String?
+  engagement  String?
+  niche       String?
+  bio         String?
+  avatarColor String   @default("#00C060")
+  status      String   @default("pending")
+  source      String   @default("admin")
+  createdAt   DateTime @default(now())
+
+  guideEntries GuideEntry[]
+}
+
+model GuideEntry {
+  id           String      @id @default(uuid())
+  title        String
+  slug         String      @unique
+  coverImage   String?
+  content      String
+  city         String?
+  venueName    String?
+  venueId      String?
+  status       String      @default("draft")
+  authorId     String?
+  author       Influencer? @relation(fields: [authorId], references: [id])
+  publishedAt  DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
 model VenueSubmission {
   id             String    @id @default(uuid())
   name           String
