@@ -22,6 +22,7 @@ import CreateTriplistPage from './pages/CreateTriplistPage'
 import TriplistPage from './pages/TriplistPage'
 import KurumsalPage from './pages/KurumsalPage'
 import InfluencerBasvuruPage from './pages/InfluencerBasvuruPage'
+import MapPage from './pages/MapPage'
 import RehberPage from './pages/RehberPage'
 import RehberDetailPage from './pages/RehberDetailPage'
 
@@ -66,6 +67,7 @@ export default function App() {
           <Route path="/plan/:id" element={<ProtectedRoute><PlanCreatePage /></ProtectedRoute>} />
           <Route path="/kurumsal" element={<KurumsalPage />} />
           <Route path="/influencer-basvuru" element={<InfluencerBasvuruPage />} />
+          <Route path="/harita" element={<MapPage />} />
           <Route path="/rehber" element={<RehberPage />} />
           <Route path="/rehber/:slug" element={<RehberDetailPage />} />
           <Route path="/:username/triplist/:slug" element={<TriplistPage />} />

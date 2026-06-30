@@ -104,6 +104,9 @@ model Venue {
   isFeatured       Boolean @default(false)
   featuredBy       String? // "admin" | "influencer"
   featuredInfluencerId String?
+
+  lat Float?
+  lng Float?
 }
 
 model GNOCard {

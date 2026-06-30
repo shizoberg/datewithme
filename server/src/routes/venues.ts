@@ -38,6 +38,16 @@ router.get('/suggest', async (req: Request, res: Response) => {
 // venueType olarak saklanan kategoriler
 const VENUE_TYPE_CATEGORIES = ['koy', 'doga', 'antik', 'plaj']
 
+// GET /api/venues/map — harita için lat/lng olan mekanlar
+router.get('/map', async (_req: Request, res: Response) => {
+  const venues = await prisma.venue.findMany({
+    where: { isActive: true, lat: { not: null }, lng: { not: null } },
+    select: { id: true, name: true, category: true, city: true, district: true, lat: true, lng: true, rating: true, isFeatured: true, featuredBy: true, imageUrl: true },
+    orderBy: { name: 'asc' },
+  })
+  res.json(venues)
+})
+
 // GET /api/venues/all
 router.get('/all', async (req: Request, res: Response) => {
   const { city, category, limit = '100' } = req.query as Record<string, string>
@@ -186,6 +196,8 @@ router.post('/admin/import-google', adminAuth, async (req: AuthRequest, res: Res
       venueType: category,
       isNature: ['koy','doga'].includes(category),
       isActive: true,
+      lat: ((p.location as Record<string,number>)?.latitude) || null,
+      lng: ((p.location as Record<string,number>)?.longitude) || null,
     },
   })
   res.json({ ok: true, venue })

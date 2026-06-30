@@ -59,6 +59,7 @@ export default function AppHeader({ rightContent }: Props) {
       {!isMobile && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
           {navLink('/bulusma-mekanlari', 'Mekanlar')}
+          {navLink('/harita', 'Harita')}
           {navLink('/topluluk', 'Triplist')}
           {navLink('/rehber', 'Rehber')}
           {isLoggedIn ? (
