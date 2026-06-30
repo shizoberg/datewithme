@@ -68,7 +68,8 @@ export default function TriplistPage() {
           <span style={{ color: '#888' }}>{data.title}</span>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '32px', alignItems: 'start' }}>
+        <style>{`@media(max-width:768px){.tl-grid{grid-template-columns:1fr!important}.tl-sticky{position:static!important}}`}</style>
+        <div className="tl-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '32px', alignItems: 'start' }}>
           {/* SOL — Roadmap */}
           <div>
             {/* Header */}
@@ -145,7 +146,7 @@ export default function TriplistPage() {
           </div>
 
           {/* SAĞ — Panel */}
-          <div style={{ position: 'sticky', top: '24px' }}>
+          <div className="tl-sticky" style={{ position: 'sticky', top: '24px' }}>
             {/* Tarih */}
             {(data.startDate || data.endDate) && (
               <div style={{ background: '#111', border: '1px solid #222', borderRadius: '16px', padding: '20px', marginBottom: '16px' }}>
