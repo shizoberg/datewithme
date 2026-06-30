@@ -150,6 +150,17 @@ model GNOVote {
   createdAt        DateTime @default(now())
 }
 
+model TriplistLike {
+  id         String   @id @default(uuid())
+  triplistId String
+  triplist   Triplist @relation(fields: [triplistId], references: [id], onDelete: Cascade)
+  userId     String
+  type       String   @default("like")
+  createdAt  DateTime @default(now())
+
+  @@unique([triplistId, userId, type])
+}
+
 model Triplist {
   id          String   @id @default(uuid())
   userId      String
@@ -166,6 +177,9 @@ model Triplist {
   teamMembers String?
   viewCount   Int      @default(0)
   stops       TripStop[]
+  likes       TriplistLike[]
+  likeCount   Int      @default(0)
+  saveCount   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

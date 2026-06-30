@@ -30,11 +30,11 @@ const TRANSIT_MODES = [
 
 const inp: React.CSSProperties = {
   width: '100%', padding: '10px 14px', borderRadius: '10px',
-  border: '1px solid #2A2A2A', background: '#111', color: '#fff',
+  border: '1px solid #E0E0E0', background: '#F8F8F8', color: '#0D0D0D',
   fontSize: '14px', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box',
 }
 const lbl: React.CSSProperties = {
-  display: 'block', fontSize: '11px', fontWeight: 700, color: '#555',
+  display: 'block', fontSize: '11px', fontWeight: 700, color: '#444',
   letterSpacing: '0.5px', marginBottom: '5px', textTransform: 'uppercase',
 }
 
@@ -107,18 +107,18 @@ export default function CreateTriplistPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0D0D0D', color: '#fff', fontFamily: 'Raleway, sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#0D0D0D', fontFamily: 'Raleway, sans-serif' }}>
       <AppHeader />
       <div style={{ maxWidth: 680, margin: '0 auto', padding: '32px 20px 80px' }}>
         <div style={{ marginBottom: '32px' }}>
-          <div style={{ fontSize: '11px', fontWeight: 700, color: '#00F680', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '8px' }}>Yeni Triplist</div>
+          <div style={{ fontSize: '11px', fontWeight: 700, color: '#00C060', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '8px' }}>Yeni Triplist</div>
           <h1 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '28px', margin: 0 }}>Rotanı oluştur</h1>
-          <p style={{ color: '#555', fontSize: '14px', marginTop: '8px' }}>Durak durak bir gezi planı oluştur, istersen herkesle paylaş.</p>
+          <p style={{ color: '#444', fontSize: '14px', marginTop: '8px' }}>Durak durak bir gezi planı oluştur, istersen herkesle paylaş.</p>
         </div>
 
         <form onSubmit={handleSubmit}>
           {/* Temel bilgiler */}
-          <div style={{ background: '#111', border: '1px solid #222', borderRadius: '16px', padding: '24px', marginBottom: '16px' }}>
+          <div style={{ background: '#F8F8F8', border: '1px solid #E8E8E8', borderRadius: '16px', padding: '24px', marginBottom: '16px' }}>
             <div style={{ marginBottom: '16px' }}>
               <label style={lbl}>Triplist Adı *</label>
               <input style={inp} placeholder="Urla Sabahtan Akşama" value={title} onChange={e => setTitle(e.target.value)} />
@@ -142,7 +142,7 @@ export default function CreateTriplistPage() {
           </div>
 
           {/* Tarih & Ekip */}
-          <div style={{ background: '#111', border: '1px solid #222', borderRadius: '16px', padding: '24px', marginBottom: '16px' }}>
+          <div style={{ background: '#F8F8F8', border: '1px solid #E8E8E8', borderRadius: '16px', padding: '24px', marginBottom: '16px' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
               <div>
                 <label style={lbl}>Başlangıç Tarihi</label>
@@ -160,11 +160,11 @@ export default function CreateTriplistPage() {
           </div>
 
           {/* Duraklar */}
-          <div style={{ background: '#111', border: '1px solid #222', borderRadius: '16px', padding: '24px', marginBottom: '16px' }}>
+          <div style={{ background: '#F8F8F8', border: '1px solid #E8E8E8', borderRadius: '16px', padding: '24px', marginBottom: '16px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <span style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: '16px' }}>Duraklar</span>
               <button type="button" onClick={addStop}
-                style={{ background: '#1A1A1A', border: '1px solid #333', borderRadius: '8px', color: '#00F680', fontSize: '12px', fontWeight: 700, padding: '6px 14px', cursor: 'pointer' }}>
+                style={{ background: '#F0F0F0', border: '1px solid #333', borderRadius: '8px', color: '#00C060', fontSize: '12px', fontWeight: 700, padding: '6px 14px', cursor: 'pointer' }}>
                 + Durak Ekle
               </button>
             </div>
@@ -175,13 +175,13 @@ export default function CreateTriplistPage() {
                 {i < stops.length - 1 && (
                   <div style={{ position: 'absolute', left: '20px', top: '100%', width: '2px', height: '32px', background: '#2A2A2A', zIndex: 0 }} />
                 )}
-                <div style={{ background: '#0D0D0D', border: '1px solid #2A2A2A', borderRadius: '12px', padding: '16px', marginBottom: '32px', position: 'relative', zIndex: 1 }}>
+                <div style={{ background: '#FFFFFF', border: '1px solid #E0E0E0', borderRadius: '12px', padding: '16px', marginBottom: '32px', position: 'relative', zIndex: 1 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#00F680', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '12px', flexShrink: 0 }}>{i + 1}</div>
-                    <span style={{ fontWeight: 600, fontSize: '13px', color: '#888' }}>Durak {i + 1}</span>
+                    <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#00C060', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '12px', flexShrink: 0 }}>{i + 1}</div>
+                    <span style={{ fontWeight: 600, fontSize: '13px', color: '#666' }}>Durak {i + 1}</span>
                     {stops.length > 1 && (
                       <button type="button" onClick={() => removeStop(i)}
-                        style={{ marginLeft: 'auto', background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontSize: '16px' }}>×</button>
+                        style={{ marginLeft: 'auto', background: 'none', border: 'none', color: '#444', cursor: 'pointer', fontSize: '16px' }}>×</button>
                     )}
                   </div>
 
@@ -192,24 +192,24 @@ export default function CreateTriplistPage() {
                       value={stop._venueSearch ?? stop.venueName}
                       onChange={e => searchVenue(i, e.target.value)} />
                     {stop._results && stop._results.length > 0 && (
-                      <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#1A1A1A', border: '1px solid #333', borderRadius: '10px', zIndex: 10, overflow: 'hidden' }}>
+                      <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#F0F0F0', border: '1px solid #333', borderRadius: '10px', zIndex: 10, overflow: 'hidden' }}>
                         {stop._results.map(v => (
                           <div key={v.id} onClick={() => selectVenue(i, v)}
                             style={{ padding: '10px 14px', cursor: 'pointer', borderBottom: '1px solid #222', fontSize: '13px' }}
                             onMouseEnter={e => (e.currentTarget as HTMLDivElement).style.background = '#222'}
                             onMouseLeave={e => (e.currentTarget as HTMLDivElement).style.background = 'transparent'}>
                             <span style={{ fontWeight: 600 }}>{v.name}</span>
-                            <span style={{ color: '#555', marginLeft: '8px' }}>{v.district}, {v.city}</span>
-                            {stop.venueId === v.id && <span style={{ color: '#00F680', marginLeft: '8px' }}>✓ DB'de var</span>}
+                            <span style={{ color: '#444', marginLeft: '8px' }}>{v.district}, {v.city}</span>
+                            {stop.venueId === v.id && <span style={{ color: '#00C060', marginLeft: '8px' }}>✓ DB'de var</span>}
                           </div>
                         ))}
                       </div>
                     )}
                     {stop.venueId && (
-                      <div style={{ fontSize: '11px', color: '#00F680', marginTop: '4px' }}>✓ Veritabanımızda mevcut</div>
+                      <div style={{ fontSize: '11px', color: '#00C060', marginTop: '4px' }}>✓ Veritabanımızda mevcut</div>
                     )}
                     {!stop.venueId && stop.venueName.length > 1 && stop._results?.length === 0 && (
-                      <div style={{ fontSize: '11px', color: '#888', marginTop: '4px' }}>Veritabanımızda yok — onayladıktan sonra ekleyeceğiz</div>
+                      <div style={{ fontSize: '11px', color: '#666', marginTop: '4px' }}>Veritabanımızda yok — onayladıktan sonra ekleyeceğiz</div>
                     )}
                   </div>
 
@@ -243,20 +243,20 @@ export default function CreateTriplistPage() {
           </div>
 
           {/* Paylaşım */}
-          <div style={{ background: '#111', border: '1px solid #222', borderRadius: '16px', padding: '20px', marginBottom: '24px' }}>
+          <div style={{ background: '#F8F8F8', border: '1px solid #E8E8E8', borderRadius: '16px', padding: '20px', marginBottom: '24px' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <div>
                 <div style={{ fontWeight: 600, fontSize: '14px' }}>Herkesle paylaş</div>
-                <div style={{ fontSize: '12px', color: '#555', marginTop: '2px' }}>Topluluğun feed'inde görünsün</div>
+                <div style={{ fontSize: '12px', color: '#444', marginTop: '2px' }}>Topluluğun feed'inde görünsün</div>
               </div>
               <div onClick={() => setIsPublic(v => !v)}
-                style={{ width: '44px', height: '24px', borderRadius: '12px', background: isPublic ? '#00F680' : '#2A2A2A', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }}>
+                style={{ width: '44px', height: '24px', borderRadius: '12px', background: isPublic ? '#00C060' : '#2A2A2A', cursor: 'pointer', position: 'relative', transition: 'background 0.2s' }}>
                 <div style={{ position: 'absolute', top: '3px', left: isPublic ? '23px' : '3px', width: '18px', height: '18px', borderRadius: '50%', background: '#fff', transition: 'left 0.2s' }} />
               </div>
             </div>
             {!isPublic && (
-              <div style={{ marginTop: '10px', fontSize: '12px', color: '#555' }}>
-                Sadece link ile erişilebilir: <span style={{ color: '#888' }}>{window.location.origin}/{user?.username}/triplist/…</span>
+              <div style={{ marginTop: '10px', fontSize: '12px', color: '#444' }}>
+                Sadece link ile erişilebilir: <span style={{ color: '#666' }}>{window.location.origin}/{user?.username}/triplist/…</span>
               </div>
             )}
           </div>
@@ -264,7 +264,7 @@ export default function CreateTriplistPage() {
           {error && <div style={{ color: '#EF4444', fontSize: '13px', marginBottom: '16px' }}>{error}</div>}
 
           <button type="submit" disabled={saving}
-            style={{ width: '100%', padding: '14px', borderRadius: '12px', background: saving ? '#333' : '#00F680', color: '#000', fontWeight: 700, fontSize: '15px', border: 'none', cursor: saving ? 'default' : 'pointer', fontFamily: 'Syne, sans-serif' }}>
+            style={{ width: '100%', padding: '14px', borderRadius: '12px', background: saving ? '#333' : '#00C060', color: '#000', fontWeight: 700, fontSize: '15px', border: 'none', cursor: saving ? 'default' : 'pointer', fontFamily: 'Syne, sans-serif' }}>
             {saving ? 'Kaydediliyor...' : isPublic ? '🗺️ Triplist Oluştur & Paylaş' : '🗺️ Triplist Oluştur'}
           </button>
         </form>

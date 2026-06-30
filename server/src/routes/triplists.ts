@@ -15,14 +15,21 @@ function generateSlug(title: string): string {
 }
 
 // Public feed
-router.get('/public', async (_req, res: Response) => {
+router.get('/public', async (req, res: Response) => {
+  const sort = (req.query.sort as string) || 'latest'
+  const orderBy =
+    sort === 'views'  ? { viewCount: 'desc' as const } :
+    sort === 'likes'  ? { likeCount: 'desc' as const } :
+    sort === 'saves'  ? { saveCount: 'desc' as const } :
+                        { createdAt: 'desc' as const }
+
   const triplists = await prisma.triplist.findMany({
     where: { isPublic: true },
     include: {
       user: { select: { username: true, name: true, avatarId: true } },
       stops: { orderBy: { order: 'asc' } },
     },
-    orderBy: { createdAt: 'desc' },
+    orderBy,
     take: 50,
   })
   res.json(triplists)
@@ -162,6 +169,31 @@ router.patch('/:id/publish', requireAuth, async (req: AuthRequest, res: Response
     data: { isPublic: !existing.isPublic },
   })
   res.json({ isPublic: updated.isPublic })
+})
+
+// Like / Save toggle
+router.post('/:id/like', requireAuth, async (req: AuthRequest, res: Response) => {
+  const { type } = req.body // 'like' | 'save'
+  const t = type === 'save' ? 'save' : 'like'
+  const field = t === 'save' ? 'saveCount' : 'likeCount'
+  const existing = await prisma.triplistLike.findUnique({
+    where: { triplistId_userId_type: { triplistId: req.params.id, userId: req.userId!, type: t } },
+  })
+  if (existing) {
+    await prisma.triplistLike.delete({ where: { id: existing.id } })
+    await prisma.triplist.update({ where: { id: req.params.id }, data: { [field]: { decrement: 1 } } })
+    res.json({ active: false })
+  } else {
+    await prisma.triplistLike.create({ data: { triplistId: req.params.id, userId: req.userId!, type: t } })
+    await prisma.triplist.update({ where: { id: req.params.id }, data: { [field]: { increment: 1 } } })
+    res.json({ active: true })
+  }
+})
+
+// My likes/saves (hangileri beğendim/kaydettim)
+router.get('/my-interactions', requireAuth, async (req: AuthRequest, res: Response) => {
+  const items = await prisma.triplistLike.findMany({ where: { userId: req.userId! } })
+  res.json(items)
 })
 
 // Venue search (DB'de var mı?)

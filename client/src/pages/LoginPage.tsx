@@ -25,13 +25,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
+    <div style={{ minHeight: '100vh', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
       <div style={{ width: '100%', maxWidth: '400px' }}>
-        <h1 style={{ fontSize: '28px', fontWeight: 800, marginBottom: '8px' }}>Tekrar hoş geldin 👋</h1>
-        <p style={{ color: '#999', marginBottom: '32px', fontSize: '15px' }}>Hesabına giriş yap</p>
+        <h1 style={{ fontSize: '28px', fontWeight: 800, marginBottom: '8px', color: '#0D0D0D' }}>Tekrar hoş geldin 👋</h1>
+        <p style={{ color: '#777', marginBottom: '32px', fontSize: '15px' }}>Hesabına giriş yap</p>
 
         {error && (
-          <div style={{ background: '#3D1515', border: '1px solid #EF4444', borderRadius: '10px', padding: '12px 16px', marginBottom: '20px', color: '#EF4444', fontSize: '14px' }}>
+          <div style={{ background: '#FEE2E2', border: '1px solid #EF4444', borderRadius: '10px', padding: '12px 16px', marginBottom: '20px', color: '#B91C1C', fontSize: '14px' }}>
             {error}
           </div>
         )}
@@ -50,9 +50,9 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <p style={{ marginTop: '24px', textAlign: 'center', color: '#999', fontSize: '14px' }}>
+        <p style={{ marginTop: '24px', textAlign: 'center', color: '#777', fontSize: '14px' }}>
           Hesabın yok mu?{' '}
-          <Link to="/register" style={{ color: '#00F680', textDecoration: 'none', fontWeight: 600 }}>Kayıt ol</Link>
+          <Link to="/register" style={{ color: '#00C060', textDecoration: 'none', fontWeight: 600 }}>Kayıt ol</Link>
         </p>
       </div>
     </div>
