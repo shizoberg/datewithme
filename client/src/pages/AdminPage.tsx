@@ -5,6 +5,13 @@ import { adminApi } from '../lib/api'
 interface BusinessLead {
   id: string; businessName: string; contactName: string; email: string
   phone?: string; package: string; message?: string; status: string; createdAt: string
+  slug?: string; description?: string; logoUrl?: string; city?: string; website?: string
+  instagram?: string; highlights?: string
+}
+
+interface AdminUser {
+  id: string; name: string; email: string; username: string
+  city?: string; role: string; influencerId?: string; createdAt: string
 }
 
 interface Influencer {
@@ -62,7 +69,12 @@ export default function AdminPage() {
   const [loginLoading, setLoginLoading] = useState(false)
 
   // Venues state
-  const [tab, setTab] = useState<'venues' | 'submissions' | 'triplists' | 'leads' | 'influencers' | 'guide'>('venues')
+  const [tab, setTab] = useState<'venues' | 'submissions' | 'triplists' | 'leads' | 'influencers' | 'guide' | 'users'>('venues')
+  const [users, setUsers] = useState<AdminUser[]>([])
+  const [usersLoading, setUsersLoading] = useState(false)
+  const [makingInfluencer, setMakingInfluencer] = useState<string | null>(null)
+  const [editLeadId, setEditLeadId] = useState<string | null>(null)
+  const [leadEditForm, setLeadEditForm] = useState<Partial<BusinessLead>>({})
   const [leads, setLeads] = useState<BusinessLead[]>([])
   const [leadsLoading, setLeadsLoading] = useState(false)
   const [influencers, setInfluencers] = useState<Influencer[]>([])
@@ -152,6 +164,29 @@ export default function AdminPage() {
   }
   useEffect(() => { if (adminToken && tab === 'guide') loadGuideEntries() }, [tab, adminToken])
   useEffect(() => { if (adminToken && tab === 'guide' && influencers.length === 0) loadInfluencers() }, [tab, adminToken])
+  useEffect(() => {
+    if (adminToken && tab === 'users') {
+      setUsersLoading(true)
+      adminApi.get('/api/admin/users').then(r => setUsers(r.data)).catch(() => {}).finally(() => setUsersLoading(false))
+    }
+  }, [tab, adminToken])
+
+  async function makeInfluencer(userId: string) {
+    setMakingInfluencer(userId)
+    try {
+      await adminApi.post(`/api/admin/users/${userId}/make-influencer`)
+      setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: 'influencer' } : u))
+    } catch { alert('İşlem başarısız') }
+    finally { setMakingInfluencer(null) }
+  }
+
+  async function saveLead(id: string) {
+    try {
+      await adminApi.patch(`/api/admin/leads/${id}`, leadEditForm)
+      setLeads(prev => prev.map(l => l.id === id ? { ...l, ...leadEditForm } : l))
+      setEditLeadId(null)
+    } catch { alert('Kayıt başarısız') }
+  }
 
   async function saveInfluencer() {
     setInfSaving(true)
@@ -462,6 +497,10 @@ export default function AdminPage() {
         <button onClick={() => setTab('guide')}
           style={{ padding: '11px 20px', background: 'none', border: 'none', color: tab === 'guide' ? '#00F680' : '#AAA', fontWeight: tab === 'guide' ? 700 : 500, cursor: 'pointer', borderBottom: tab === 'guide' ? '2px solid #00F680' : '2px solid transparent', fontSize: '13px', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
           📝 Rehber
+        </button>
+        <button onClick={() => setTab('users')}
+          style={{ padding: '11px 20px', background: 'none', border: 'none', color: tab === 'users' ? '#00F680' : '#AAA', fontWeight: tab === 'users' ? 700 : 500, cursor: 'pointer', borderBottom: tab === 'users' ? '2px solid #00F680' : '2px solid transparent', fontSize: '13px', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
+          👤 Kullanıcılar
         </button>
       </div>
 
@@ -797,37 +836,107 @@ export default function AdminPage() {
               <div>Henüz başvuru yok.</div>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {leads.map(l => (
                 <div key={l.id} style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: '14px', padding: '20px' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px', marginBottom: '14px' }}>
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
                         <div style={{ fontWeight: 700, fontSize: '16px' }}>{l.businessName}</div>
-                        <span style={{ background: l.package === 'triplist' ? '#00F68018' : '#7C3AED20', border: `1px solid ${l.package === 'triplist' ? '#00F68040' : '#7C3AED40'}`, borderRadius: '6px', padding: '2px 10px', fontSize: '11px', color: l.package === 'triplist' ? '#00F680' : '#A78BFA', fontWeight: 700 }}>
-                          {l.package === 'triplist' ? 'Triplist Öne Çıkma' : 'Influencer İşbirliği'}
+                        <span style={{ background: l.status === 'approved' ? '#00F68020' : '#2A2A2A', border: `1px solid ${l.status === 'approved' ? '#00F68040' : '#333'}`, borderRadius: '6px', padding: '2px 10px', fontSize: '11px', color: l.status === 'approved' ? '#00F680' : '#888', fontWeight: 700 }}>
+                          {l.status === 'approved' ? 'Onaylı' : 'Beklemede'}
                         </span>
+                        {l.slug && (
+                          <a href={`/isletme/${l.slug}`} target="_blank" rel="noopener noreferrer"
+                            style={{ fontSize: '11px', color: '#60A5FA', textDecoration: 'none' }}>
+                            Profil →
+                          </a>
+                        )}
                       </div>
                       <div style={{ fontSize: '13px', color: '#888', marginBottom: '4px' }}>
-                        👤 {l.contactName} · 📧 <a href={`mailto:${l.email}`} style={{ color: '#60A5FA', textDecoration: 'none' }}>{l.email}</a>
-                        {l.phone && <> · 📞 {l.phone}</>}
+                        {l.contactName} · <a href={`mailto:${l.email}`} style={{ color: '#60A5FA', textDecoration: 'none' }}>{l.email}</a>
+                        {l.phone && <> · {l.phone}</>}
                       </div>
                       {l.message && (
-                        <div style={{ marginTop: '10px', fontSize: '13px', color: '#666', background: '#1A1A1A', borderRadius: '8px', padding: '10px 14px', lineHeight: 1.5 }}>
+                        <div style={{ marginTop: '8px', fontSize: '13px', color: '#666', background: '#1A1A1A', borderRadius: '8px', padding: '10px 14px', lineHeight: 1.5 }}>
                           "{l.message}"
                         </div>
                       )}
+                      {/* Highlights preview */}
+                      {l.highlights && (() => { try { const h: string[] = JSON.parse(l.highlights); return h.length > 0 ? (
+                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '8px' }}>
+                          {h.map((hh, hi) => <span key={hi} style={{ background: '#1A1A1A', border: '1px solid #333', borderRadius: '9999px', padding: '3px 10px', fontSize: '11px', color: '#AAA' }}>{hh}</span>)}
+                        </div>
+                      ) : null } catch { return null } })()}
                     </div>
-                    <div style={{ flexShrink: 0, textAlign: 'right' }}>
-                      <div style={{ fontSize: '11px', color: '#444' }}>{new Date(l.createdAt).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
-                      <div style={{ marginTop: '8px' }}>
-                        <a href={`mailto:${l.email}?subject=getdatewith.me Kurumsal Başvurunuz`}
-                          style={{ padding: '7px 14px', borderRadius: '8px', background: '#00F680', color: '#000', fontWeight: 700, fontSize: '12px', textDecoration: 'none', display: 'inline-block' }}>
-                          Yanıtla →
-                        </a>
-                      </div>
+                    <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'flex-end' }}>
+                      <div style={{ fontSize: '11px', color: '#444' }}>{new Date(l.createdAt).toLocaleDateString('tr-TR')}</div>
+                      <button onClick={() => { setEditLeadId(editLeadId === l.id ? null : l.id); setLeadEditForm({ status: l.status, slug: l.slug || '', description: l.description || '', logoUrl: l.logoUrl || '', city: l.city || '', website: l.website || '', instagram: l.instagram || '', highlights: l.highlights || '[]' }) }}
+                        style={{ padding: '6px 12px', background: '#1A1A1A', border: '1px solid #333', borderRadius: '8px', color: '#CCC', fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit' }}>
+                        {editLeadId === l.id ? 'Kapat' : '✏️ Profil Düzenle'}
+                      </button>
+                      <a href={`mailto:${l.email}?subject=getdatewith.me Kurumsal Başvurunuz`}
+                        style={{ padding: '6px 12px', borderRadius: '8px', background: '#00F680', color: '#000', fontWeight: 700, fontSize: '12px', textDecoration: 'none' }}>
+                        Yanıtla →
+                      </a>
                     </div>
                   </div>
+
+                  {/* Profil editörü */}
+                  {editLeadId === l.id && (
+                    <div style={{ borderTop: '1px solid #222', paddingTop: '16px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '11px', color: '#666', marginBottom: '4px' }}>Durum</label>
+                        <select value={leadEditForm.status || 'new'} onChange={e => setLeadEditForm(f => ({ ...f, status: e.target.value }))}
+                          style={{ width: '100%', padding: '8px 12px', background: '#0A0A0A', border: '1px solid #333', borderRadius: '8px', color: '#EEE', fontSize: '13px', fontFamily: 'inherit' }}>
+                          <option value="new">Beklemede</option>
+                          <option value="approved">Onaylı (Profil Aktif)</option>
+                          <option value="rejected">Reddedildi</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '11px', color: '#666', marginBottom: '4px' }}>Slug (URL)</label>
+                        <input value={leadEditForm.slug || ''} onChange={e => setLeadEditForm(f => ({ ...f, slug: e.target.value }))}
+                          placeholder="kafe-adi" style={{ width: '100%', padding: '8px 12px', background: '#0A0A0A', border: '1px solid #333', borderRadius: '8px', color: '#EEE', fontSize: '13px', fontFamily: 'inherit', boxSizing: 'border-box' }} />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '11px', color: '#666', marginBottom: '4px' }}>Şehir</label>
+                        <input value={leadEditForm.city || ''} onChange={e => setLeadEditForm(f => ({ ...f, city: e.target.value }))}
+                          placeholder="İstanbul" style={{ width: '100%', padding: '8px 12px', background: '#0A0A0A', border: '1px solid #333', borderRadius: '8px', color: '#EEE', fontSize: '13px', fontFamily: 'inherit', boxSizing: 'border-box' }} />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '11px', color: '#666', marginBottom: '4px' }}>Logo URL</label>
+                        <input value={leadEditForm.logoUrl || ''} onChange={e => setLeadEditForm(f => ({ ...f, logoUrl: e.target.value }))}
+                          placeholder="https://..." style={{ width: '100%', padding: '8px 12px', background: '#0A0A0A', border: '1px solid #333', borderRadius: '8px', color: '#EEE', fontSize: '13px', fontFamily: 'inherit', boxSizing: 'border-box' }} />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '11px', color: '#666', marginBottom: '4px' }}>Website</label>
+                        <input value={leadEditForm.website || ''} onChange={e => setLeadEditForm(f => ({ ...f, website: e.target.value }))}
+                          placeholder="https://..." style={{ width: '100%', padding: '8px 12px', background: '#0A0A0A', border: '1px solid #333', borderRadius: '8px', color: '#EEE', fontSize: '13px', fontFamily: 'inherit', boxSizing: 'border-box' }} />
+                      </div>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '11px', color: '#666', marginBottom: '4px' }}>Instagram</label>
+                        <input value={leadEditForm.instagram || ''} onChange={e => setLeadEditForm(f => ({ ...f, instagram: e.target.value }))}
+                          placeholder="@hesap" style={{ width: '100%', padding: '8px 12px', background: '#0A0A0A', border: '1px solid #333', borderRadius: '8px', color: '#EEE', fontSize: '13px', fontFamily: 'inherit', boxSizing: 'border-box' }} />
+                      </div>
+                      <div style={{ gridColumn: '1 / -1' }}>
+                        <label style={{ display: 'block', fontSize: '11px', color: '#666', marginBottom: '4px' }}>Açıklama</label>
+                        <textarea value={leadEditForm.description || ''} onChange={e => setLeadEditForm(f => ({ ...f, description: e.target.value }))}
+                          placeholder="İşletme hakkında kısa açıklama..."
+                          style={{ width: '100%', padding: '8px 12px', background: '#0A0A0A', border: '1px solid #333', borderRadius: '8px', color: '#EEE', fontSize: '13px', fontFamily: 'inherit', minHeight: '60px', resize: 'vertical', boxSizing: 'border-box' }} />
+                      </div>
+                      <div style={{ gridColumn: '1 / -1' }}>
+                        <label style={{ display: 'block', fontSize: '11px', color: '#666', marginBottom: '4px' }}>Öne Çıkan Detaylar (JSON array, max 3)</label>
+                        <input value={leadEditForm.highlights || '[]'} onChange={e => setLeadEditForm(f => ({ ...f, highlights: e.target.value }))}
+                          placeholder='["Kahve uzmanı", "Canlı müzik", "Vegan menü"]'
+                          style={{ width: '100%', padding: '8px 12px', background: '#0A0A0A', border: '1px solid #333', borderRadius: '8px', color: '#EEE', fontSize: '13px', fontFamily: 'inherit', boxSizing: 'border-box' }} />
+                      </div>
+                      <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
+                        <button onClick={() => setEditLeadId(null)} style={{ padding: '8px 16px', background: '#1A1A1A', border: '1px solid #333', borderRadius: '8px', color: '#AAA', fontSize: '13px', cursor: 'pointer', fontFamily: 'inherit' }}>İptal</button>
+                        <button onClick={() => saveLead(l.id)} style={{ padding: '8px 16px', background: '#00F680', color: '#000', border: 'none', borderRadius: '8px', fontWeight: 700, fontSize: '13px', cursor: 'pointer', fontFamily: 'inherit' }}>Kaydet</button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -973,6 +1082,54 @@ export default function AdminPage() {
                       )}
                       <button onClick={() => deleteGuideEntry(g.id)} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', fontSize: '12px', fontFamily: 'inherit' }}>🗑️</button>
                     </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── USERS TAB ── */}
+      {tab === 'users' && (
+        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '32px 24px' }}>
+          <div style={{ marginBottom: '16px', color: '#555', fontSize: '13px' }}>{users.length} kullanıcı</div>
+          {usersLoading ? (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#555' }}>Yükleniyor…</div>
+          ) : users.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '60px 0', color: '#444' }}>
+              <div style={{ fontSize: '32px', marginBottom: '8px' }}>👥</div>
+              <div>Henüz kullanıcı yok.</div>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {users.map(u => (
+                <div key={u.id} style={{ background: '#111', border: '1px solid #2A2A2A', borderRadius: '12px', padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                  <div style={{ flex: 1, minWidth: '200px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <span style={{ fontWeight: 700, fontSize: '14px' }}>{u.name}</span>
+                      <span style={{ fontSize: '11px', background: u.role === 'influencer' ? '#7C3AED20' : '#1A1A1A', color: u.role === 'influencer' ? '#A78BFA' : '#555', border: `1px solid ${u.role === 'influencer' ? '#7C3AED40' : '#333'}`, borderRadius: '9999px', padding: '1px 8px', fontWeight: 700 }}>
+                        {u.role === 'influencer' ? '✦ Influencer' : 'Kullanıcı'}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#666' }}>
+                      @{u.username} · <a href={`mailto:${u.email}`} style={{ color: '#60A5FA', textDecoration: 'none' }}>{u.email}</a>
+                      {u.city && ` · 📍 ${u.city}`}
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#444', marginTop: '2px' }}>
+                      {new Date(u.createdAt).toLocaleDateString('tr-TR')}
+                      {u.influencerId && <> · <a href={`/influencer/${u.influencerId}`} target="_blank" rel="noopener noreferrer" style={{ color: '#A78BFA', textDecoration: 'none' }}>Profil →</a></>}
+                    </div>
+                  </div>
+                  <div>
+                    {u.role !== 'influencer' ? (
+                      <button onClick={() => makeInfluencer(u.id)} disabled={makingInfluencer === u.id}
+                        style={{ padding: '7px 14px', background: '#7C3AED', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 700, fontSize: '12px', cursor: 'pointer', fontFamily: 'inherit', opacity: makingInfluencer === u.id ? 0.6 : 1 }}>
+                        {makingInfluencer === u.id ? 'İşleniyor…' : '✦ Influencer Yap'}
+                      </button>
+                    ) : (
+                      <span style={{ fontSize: '12px', color: '#555' }}>Influencer ✓</span>
+                    )}
                   </div>
                 </div>
               ))}

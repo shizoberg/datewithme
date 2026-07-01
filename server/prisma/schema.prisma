@@ -20,6 +20,8 @@ model User {
   photoUrl         String?
   personalityTags  String?
   onboardingDone   Boolean   @default(false)
+  role             String    @default("user")  // "user" | "influencer"
+  influencerId     String?   // bağlı Influencer kaydı varsa
   createdAt        DateTime  @default(now())
   cards            Card[]
   gnoCards         GNOCard[]
@@ -221,7 +223,15 @@ model BusinessLead {
   phone        String?
   package      String
   message      String?
-  status       String   @default("new")
+  status       String   @default("new")  // new | approved | rejected
+  // Profil alanları (admin doldurur)
+  slug         String?  @unique
+  description  String?
+  logoUrl      String?
+  city         String?
+  website      String?
+  instagram    String?
+  highlights   String?  // JSON array, max 3 öne çıkan detay
   createdAt    DateTime @default(now())
 }
 
@@ -273,6 +283,8 @@ model VenueSubmission {
   rating         Float?
   priceLevel     Int?
   description    String?
+  photoUrl       String?   // kullanıcı fotoğraf URL'si
+  highlights     String?   // JSON array, max 3 öne çıkan etiket
   submitterName  String?
   submitterEmail String?
   status         String    @default("pending")

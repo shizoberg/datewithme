@@ -118,10 +118,12 @@ const CATEGORIES = [
   { value: 'rooftop', label: 'Rooftop' }, { value: 'cultural', label: 'Kültürel' },
 ]
 
-const EMPTY = { name: '', category: 'cafe', city: '', district: '', address: '', googleMapsUrl: '', instagramUrl: '', rating: 4.5, priceLevel: 2, description: '', submitterName: '', submitterEmail: '' }
+const EMPTY = { name: '', category: 'cafe', city: '', district: '', address: '', googleMapsUrl: '', instagramUrl: '', rating: 4.5, priceLevel: 2, description: '', photoUrl: '', submitterName: '', submitterEmail: '' }
 
 export default function CommunityPage() {
   const [form, setForm] = useState({ ...EMPTY })
+  const [venueHighlights, setVenueHighlights] = useState<string[]>([])
+  const [highlightInput, setHighlightInput] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
@@ -165,7 +167,8 @@ export default function CommunityPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault(); setError(''); setSubmitting(true)
     try {
-      await api.post('/api/venue-submissions', { name: form.name.trim(), category: form.category, city: form.city.trim(), district: form.district.trim(), address: form.address.trim() || undefined, googleMapsUrl: form.googleMapsUrl.trim() || undefined, instagramUrl: form.instagramUrl.trim() || undefined, rating: form.rating || undefined, priceLevel: form.priceLevel || undefined, description: form.description.trim() || undefined, submitterName: form.submitterName.trim() || undefined, submitterEmail: form.submitterEmail.trim() || undefined })
+      await api.post('/api/venue-submissions', { name: form.name.trim(), category: form.category, city: form.city.trim(), district: form.district.trim(), address: form.address.trim() || undefined, googleMapsUrl: form.googleMapsUrl.trim() || undefined, instagramUrl: form.instagramUrl.trim() || undefined, rating: form.rating || undefined, priceLevel: form.priceLevel || undefined, description: form.description.trim() || undefined, photoUrl: form.photoUrl.trim() || undefined, highlights: venueHighlights.length > 0 ? JSON.stringify(venueHighlights) : undefined, submitterName: form.submitterName.trim() || undefined, submitterEmail: form.submitterEmail.trim() || undefined })
+      setVenueHighlights([]); setHighlightInput('')
       setSuccess(true)
     } catch (err: any) { setError(err.response?.data?.error || 'Bir hata oluştu.') }
     finally { setSubmitting(false) }
@@ -299,6 +302,39 @@ export default function CommunityPage() {
                 <div style={{ marginBottom: '12px' }}>
                   <label style={lbl}>Açıklama <span style={{ color: '#CCC', fontWeight: 400, textTransform: 'none' }}>(opsiyonel)</span></label>
                   <textarea style={{ ...inp, resize: 'vertical', minHeight: '72px' } as React.CSSProperties} placeholder="Bu mekan hakkında bir şey yaz..." maxLength={300} value={form.description} onChange={set('description')} />
+                </div>
+                <div style={{ marginBottom: '12px' }}>
+                  <label style={lbl}>Fotoğraf URL <span style={{ color: '#CCC', fontWeight: 400, textTransform: 'none' }}>(opsiyonel)</span></label>
+                  <input style={inp} placeholder="https://..." type="url" value={form.photoUrl} onChange={set('photoUrl')} />
+                </div>
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={lbl}>Öne Çıkan Detaylar <span style={{ color: '#CCC', fontWeight: 400, textTransform: 'none' }}>(max 3 etiket)</span></label>
+                  {venueHighlights.length > 0 && (
+                    <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: '8px' }}>
+                      {venueHighlights.map((h, i) => (
+                        <span key={i} style={{ background: '#F5F5F5', border: '1px solid #E0E0E0', borderRadius: '9999px', padding: '4px 12px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px', color: '#333' }}>
+                          {h}
+                          <button type="button" onClick={() => setVenueHighlights(p => p.filter((_, j) => j !== i))}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#999', padding: 0, fontSize: '14px', lineHeight: 1, fontFamily: 'inherit' }}>×</button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {venueHighlights.length < 3 && (
+                    <input style={inp} placeholder='Örn: "Türk kahvesi çok iyi" — Enter ile ekle'
+                      value={highlightInput} onChange={e => setHighlightInput(e.target.value)}
+                      onKeyDown={e => {
+                        if ((e.key === 'Enter' || e.key === ',') && highlightInput.trim()) {
+                          e.preventDefault()
+                          const val = highlightInput.trim().replace(/,$/, '')
+                          if (val && venueHighlights.length < 3 && !venueHighlights.includes(val)) {
+                            setVenueHighlights(p => [...p, val])
+                          }
+                          setHighlightInput('')
+                        }
+                      }}
+                    />
+                  )}
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
                   <div><label style={lbl}>Adın</label><input style={inp} placeholder="Zeynep" value={form.submitterName} onChange={set('submitterName')} /></div>

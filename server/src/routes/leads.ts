@@ -21,6 +21,15 @@ router.post('/', async (req: Request, res: Response) => {
   }
 })
 
+// GET /api/leads/profile/:slug — public kurumsal profil
+router.get('/profile/:slug', async (req: Request, res: Response) => {
+  try {
+    const lead = await prisma.businessLead.findUnique({ where: { slug: req.params.slug } })
+    if (!lead || lead.status !== 'approved') { res.status(404).json({ error: 'Bulunamadı' }); return }
+    res.json(lead)
+  } catch { res.status(500).json({ error: 'DB hatası' }) }
+})
+
 // GET /api/leads — admin için başvuruları listele
 router.get('/', async (_req: Request, res: Response) => {
   try {

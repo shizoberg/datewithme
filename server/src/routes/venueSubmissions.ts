@@ -18,6 +18,8 @@ router.post('/', async (req: Request, res: Response) => {
     rating:         z.number().min(1).max(5).optional(),
     priceLevel:     z.number().int().min(1).max(3).optional(),
     description:    z.string().max(300).optional(),
+    photoUrl:       z.string().max(500).optional(),
+    highlights:     z.string().optional(),  // JSON array string
     submitterName:  z.string().max(80).optional(),
     submitterEmail: z.string().email().max(120).optional(),
   })
@@ -42,7 +44,7 @@ router.post('/', async (req: Request, res: Response) => {
     return
   }
 
-  await prisma.venueSubmission.create({ data: parsed.data })
+  await prisma.venueSubmission.create({ data: { ...parsed.data, photoUrl: req.body.photoUrl || null, highlights: req.body.highlights || null } })
   res.status(201).json({ success: true, message: 'Öneriniz alındı, inceleme sonrası yayınlanacak!' })
 })
 
