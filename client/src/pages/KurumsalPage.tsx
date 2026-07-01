@@ -123,17 +123,6 @@ export default function KurumsalPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#FFFFFF', color: '#0D0D0D', fontFamily: 'Raleway, sans-serif' }}>
-      {/* Nav */}
-      <nav style={{ borderBottom: '1px solid #F0F0F0', padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontWeight: 800, fontSize: '18px', color: '#0D0D0D', letterSpacing: '-0.5px' }}>getdate<span style={{ color: '#00C060' }}>with.me</span></span>
-        </Link>
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <Link to="/login" style={{ fontSize: '13px', color: '#666', textDecoration: 'none' }}>Giriş Yap</Link>
-          <a href="#iletisim" style={{ background: '#00C060', color: '#fff', borderRadius: '100px', padding: '8px 18px', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}>Başvur</a>
-        </div>
-      </nav>
-
       {/* Hero */}
       <section style={{ maxWidth: 900, margin: '0 auto', padding: '72px 24px 56px', textAlign: 'center' }}>
         <div style={{ display: 'inline-block', background: '#F0F0F0', border: '1px solid #E0E0E0', borderRadius: '100px', padding: '6px 16px', fontSize: '12px', color: '#555', fontWeight: 600, marginBottom: '24px', letterSpacing: '0.5px' }}>

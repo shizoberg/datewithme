@@ -296,6 +296,7 @@ export default function VenuesPage() {
   const [category, setCategory] = useState('')
   const [badge, setBadge] = useState('')
   const [search, setSearch] = useState('')
+  const [communityOnly, setCommunityOnly] = useState(false)
   const [savedIds, setSavedIds] = useState<string[]>(getSaved)
 
   useEffect(() => { document.title = 'Buluşma Mekanları — getdatewith.me' }, [])
@@ -305,11 +306,12 @@ export default function VenuesPage() {
     const params = new URLSearchParams()
     if (city) params.set('city', city)
     if (category) params.set('category', category)
+    if (communityOnly) params.set('featured', 'community')
     api.get(`/api/venues/all?${params.toString()}`)
       .then(r => setVenues(r.data.venues))
       .catch(() => setVenues([]))
       .finally(() => setLoading(false))
-  }, [city, category])
+  }, [city, category, communityOnly])
 
   const filtered = venues.filter(v => {
     if (search && !v.name.toLowerCase().includes(search.toLowerCase()) &&
@@ -352,6 +354,15 @@ export default function VenuesPage() {
               {cat.emoji} {cat.label}
             </button>
           ))}
+        </div>
+
+        {/* Topluluk filtresi */}
+        <div style={{ marginBottom: '12px' }}>
+          <button onClick={() => { setCommunityOnly(v => !v); setBadge(''); setCategory('') }}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 14px', borderRadius: '9999px', border: `1.5px solid ${communityOnly ? '#00C060' : '#E0E0E0'}`, background: communityOnly ? 'rgba(0,192,96,0.08)' : '#fff', color: communityOnly ? '#00C060' : '#555', fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: 'Raleway, sans-serif', transition: 'all 0.15s' }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill={communityOnly ? '#00C060' : 'none'} stroke="#00C060" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Kullanıcı Onaylı Mekanlar
+          </button>
         </div>
 
         {/* Getdate özel rozetler */}

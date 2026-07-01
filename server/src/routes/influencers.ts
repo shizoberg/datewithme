@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express'
 import { prisma } from '../lib/prisma'
 import { adminAuth, AuthRequest } from '../middleware/auth'
+import { notifyNewInfluencerApplication, notifyInfluencerApproved } from '../lib/mailer'
 
 const router = Router()
 
@@ -36,6 +37,7 @@ router.post('/basvuru', async (req: Request, res: Response) => {
         avatarColor: AVATAR_COLORS[Math.floor(Math.random() * AVATAR_COLORS.length)],
       },
     })
+    notifyNewInfluencerApplication(name, city, instagram, email || undefined).catch(() => {})
     res.json({ ok: true, id: influencer.id })
   } catch {
     res.status(500).json({ error: 'Kayıt başarısız' })
@@ -72,6 +74,9 @@ router.patch('/:id', adminAuth, async (req: AuthRequest, res: Response) => {
       where: { id: req.params.id },
       data: req.body,
     })
+    if (req.body.status === 'approved') {
+      notifyInfluencerApproved(influencer.name, influencer.email || undefined).catch(() => {})
+    }
     res.json(influencer)
   } catch {
     res.status(404).json({ error: 'Bulunamadı' })

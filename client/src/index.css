@@ -28,9 +28,9 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 }
 
 .page-content {
-  max-width: 600px;
+  max-width: 800px;
   margin: 0 auto;
-  padding: 32px var(--page-padding) 100px;
+  padding: 32px var(--page-padding);
   width: 100%;
   box-sizing: border-box;
 }

@@ -9,7 +9,7 @@ interface TriplistPreview {
   stops: { id: string; venueName: string }[]
   user: { username: string; name: string; avatarId?: string }
   startDate?: string
-  isFeatured?: boolean; featuredBy?: string
+  isFeatured?: boolean; featuredBy?: string; sponsoredBy?: string
 }
 
 const SORT_OPTIONS = [
@@ -19,7 +19,10 @@ const SORT_OPTIONS = [
   { value: 'saves',  label: 'En Çok Kaydedilen',icon: <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> },
 ]
 
-const CITIES = ['', 'İstanbul', 'İzmir', 'Ankara']
+// Türkçe büyük/küçük harf normalizasyonu
+function normCity(s: string) {
+  return s.replace(/İ/g, 'i').replace(/I/g, 'i').replace(/Ğ/g, 'g').replace(/Ü/g, 'u').replace(/Ş/g, 's').replace(/Ö/g, 'o').replace(/Ç/g, 'c').toLowerCase()
+}
 
 function IcHeart({ filled, c }: { filled?: boolean; c: string }) {
   return <svg width="14" height="14" viewBox="0 0 24 24" fill={filled ? c : 'none'} stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -46,19 +49,24 @@ function TriplistCard({ t, liked, saved, onLike, onSave }: {
 }) {
   const isEditorPick = t.isFeatured && t.featuredBy === 'admin'
   const isInfluencer = t.isFeatured && t.featuredBy === 'influencer'
+  const isSponsored = t.isFeatured && !!t.sponsoredBy
+
+  const badgeColor = isSponsored ? '#F59E0B' : isEditorPick ? '#00C060' : isInfluencer ? '#8B5CF6' : ''
+  const badgeLabel = isSponsored ? `✦ ${t.sponsoredBy}` : isEditorPick ? 'Editörün Seçimi' : isInfluencer ? 'Influencer Tavsiyesi' : ''
+  const hasBadge = isSponsored || isEditorPick || isInfluencer
 
   return (
     <div style={{
       background: '#fff',
-      border: isEditorPick ? '1.5px solid #F59E0B' : isInfluencer ? '1.5px solid #8B5CF6' : '1px solid #EBEBEB',
+      border: isSponsored ? '1.5px solid #F59E0B' : isEditorPick ? '1.5px solid #00C060' : isInfluencer ? '1.5px solid #8B5CF6' : '1px solid #EBEBEB',
       borderRadius: '16px', overflow: 'hidden',
-      boxShadow: isEditorPick ? '0 4px 16px rgba(245,158,11,0.1)' : isInfluencer ? '0 4px 16px rgba(139,92,246,0.1)' : '0 1px 4px rgba(0,0,0,0.05)',
+      boxShadow: hasBadge ? `0 4px 16px ${badgeColor}22` : '0 1px 4px rgba(0,0,0,0.05)',
     }}>
-      {(isEditorPick || isInfluencer) && (
-        <div style={{ background: isEditorPick ? '#F59E0B' : '#8B5CF6', padding: '5px 14px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+      {hasBadge && (
+        <div style={{ background: badgeColor, padding: '5px 14px', display: 'flex', alignItems: 'center', gap: '5px' }}>
           <IcStar c="#fff" />
           <span style={{ color: '#fff', fontSize: '11px', fontWeight: 800, letterSpacing: '0.3px' }}>
-            {isEditorPick ? 'Editörün Seçimi' : 'Influencer Tavsiyesi'}
+            {badgeLabel}
           </span>
         </div>
       )}
@@ -163,7 +171,13 @@ export default function CommunityPage() {
     finally { setSubmitting(false) }
   }
 
-  const filtered = cityFilter ? triplists.filter(t => t.city.toLowerCase() === cityFilter.toLowerCase()) : triplists
+  // Dinamik şehir listesi — triplistlerden çek, unique + sıralı
+  const cities = Array.from(new Set(triplists.map(t => t.city).filter(Boolean)))
+    .sort((a, b) => a.localeCompare(b, 'tr'))
+
+  const filtered = cityFilter
+    ? triplists.filter(t => normCity(t.city) === normCity(cityFilter))
+    : triplists
 
   const inp: React.CSSProperties = { width: '100%', padding: '11px 14px', borderRadius: '10px', border: '1px solid #E0E0E0', background: '#FAFAFA', color: '#0D0D0D', fontSize: '14px', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box' }
   const lbl: React.CSSProperties = { display: 'block', fontSize: '12px', fontWeight: 700, color: '#888', letterSpacing: '0.5px', marginBottom: '6px', textTransform: 'uppercase' }
@@ -205,12 +219,16 @@ export default function CommunityPage() {
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px 20px 80px' }}>
           {/* Filtreler */}
           <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '16px', alignItems: 'center', justifyContent: 'space-between' }}>
-            {/* Şehir filtresi */}
+            {/* Şehir filtresi — dinamik */}
             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-              {CITIES.map(c => (
+              <button onClick={() => setCityFilter('')}
+                style={{ padding: '5px 14px', borderRadius: '9999px', border: `1px solid ${cityFilter === '' ? '#00C060' : '#E0E0E0'}`, background: cityFilter === '' ? '#E8FFF4' : '#fff', color: cityFilter === '' ? '#00A050' : '#666', fontSize: '12px', fontWeight: cityFilter === '' ? 700 : 500, cursor: 'pointer', fontFamily: 'inherit' }}>
+                Tümü
+              </button>
+              {cities.map(c => (
                 <button key={c} onClick={() => setCityFilter(c)}
-                  style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '6px 12px', borderRadius: '9999px', border: `1px solid ${cityFilter === c ? '#00C060' : '#E0E0E0'}`, background: cityFilter === c ? '#E8FFF4' : '#fff', color: cityFilter === c ? '#00A050' : '#666', fontSize: '12px', fontWeight: cityFilter === c ? 700 : 500, cursor: 'pointer', fontFamily: 'inherit' }}>
-                  {c === '' ? 'Tüm Şehirler' : c}
+                  style={{ padding: '5px 14px', borderRadius: '9999px', border: `1px solid ${normCity(cityFilter) === normCity(c) ? '#00C060' : '#E0E0E0'}`, background: normCity(cityFilter) === normCity(c) ? '#E8FFF4' : '#fff', color: normCity(cityFilter) === normCity(c) ? '#00A050' : '#666', fontSize: '12px', fontWeight: normCity(cityFilter) === normCity(c) ? 700 : 500, cursor: 'pointer', fontFamily: 'inherit' }}>
+                  {c}
                 </button>
               ))}
             </div>

@@ -187,6 +187,10 @@ model Triplist {
   likes       TriplistLike[]
   likeCount   Int      @default(0)
   saveCount   Int      @default(0)
+  isFeatured  Boolean  @default(false)
+  featuredBy  String?  // "admin" | "influencer"
+  featuredInfluencerId String?
+  sponsoredBy String?  // marka/işletme adı (sponsorlu triplist için)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

@@ -154,7 +154,7 @@ export default function TriplistPage() {
                 </span>
               </div>
 
-              <h1 style={{ fontWeight: 800, fontSize: '28px', margin: '0 0 10px', letterSpacing: '-0.5px', lineHeight: 1.2 }}>{data.title}</h1>
+              <h1 style={{ fontWeight: 800, fontSize: 'clamp(28px, 5vw, 42px)', margin: '0 0 10px', letterSpacing: '-1px', lineHeight: 1.15 }}>{data.title}</h1>
               {data.description && <p style={{ color: '#666', fontSize: '14px', lineHeight: '1.6', margin: '0 0 18px' }}>{data.description}</p>}
 
               {/* Yazar + meta */}

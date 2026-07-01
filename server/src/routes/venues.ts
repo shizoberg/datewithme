@@ -50,9 +50,10 @@ router.get('/map', async (_req: Request, res: Response) => {
 
 // GET /api/venues/all
 router.get('/all', async (req: Request, res: Response) => {
-  const { city, category, limit = '100' } = req.query as Record<string, string>
+  const { city, category, limit = '100', featured } = req.query as Record<string, string>
   const where: Record<string, unknown> = { isActive: true }
   if (city) where.city = { equals: city, mode: 'insensitive' }
+  if (featured === 'community') where.isFeatured = true
   if (category) {
     if (VENUE_TYPE_CATEGORIES.includes(category)) {
       where.venueType = category
