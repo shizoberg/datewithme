@@ -209,6 +209,7 @@ model TripStop {
   transitMode  String?
   transitLine  String?
   transitNote  String?
+  tags         String?  // JSON array, max 3 tags e.g. '["Türk kahvesi çok iyi","Karaköy manzarası"]'
   createdAt    DateTime @default(now())
 }
 

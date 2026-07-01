@@ -7,6 +7,7 @@ interface Stop {
   id: string; order: number; venueName: string; venueId?: string
   address?: string; description?: string
   transitMode?: string; transitLine?: string; transitNote?: string
+  tags?: string  // JSON array string
 }
 
 interface Triplist {
@@ -192,7 +193,21 @@ export default function TriplistPage() {
                             <IconPin /> {stop.address}
                           </div>
                         )}
-                        {stop.description && <div style={{ fontSize: '13px', color: '#666', lineHeight: '1.5', borderLeft: '2px solid #E8E8E8', paddingLeft: '10px' }}>{stop.description}</div>}
+                        {stop.description && <div style={{ fontSize: '13px', color: '#666', lineHeight: '1.5', borderLeft: '2px solid #E8E8E8', paddingLeft: '10px', marginBottom: '8px' }}>{stop.description}</div>}
+                        {stop.tags && (() => {
+                          try {
+                            const tags: string[] = JSON.parse(stop.tags)
+                            return tags.length > 0 ? (
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginBottom: '8px' }}>
+                                {tags.map((tag, ti) => (
+                                  <span key={ti} style={{ display: 'inline-flex', alignItems: 'center', background: '#F0FAF5', border: '1px solid #00C06030', borderRadius: '9999px', padding: '3px 10px', fontSize: '11px', color: '#00A050', fontWeight: 700 }}>
+                                    ✦ {tag}
+                                  </span>
+                                ))}
+                              </div>
+                            ) : null
+                          } catch { return null }
+                        })()}
                         {stop.venueId && (
                           <div style={{ marginTop: '10px', display: 'inline-flex', alignItems: 'center', gap: '5px', background: 'rgba(0,192,96,0.08)', border: '1px solid rgba(0,192,96,0.2)', borderRadius: '100px', padding: '3px 10px', fontSize: '11px', color: '#00C060', fontWeight: 600 }}>
                             <IconCheck /> Veritabanımızda mevcut

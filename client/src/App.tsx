@@ -26,11 +26,12 @@ import InfluencerBasvuruPage from './pages/InfluencerBasvuruPage'
 import MapPage from './pages/MapPage'
 import RehberPage from './pages/RehberPage'
 import RehberDetailPage from './pages/RehberDetailPage'
+import InfluencerProfilePage from './pages/InfluencerProfilePage'
 
 // Bu rotalarda global header gösterilmez (kendi layoutları var)
 const NO_HEADER_PREFIXES = ['/login', '/register', '/admin', '/onboarding', '/girlsnightout/']
-// Sadece 2-segment /:username/:slug (invite sayfaları) hariç — triplist'in 3 segment'i var
-const NO_HEADER_PATTERNS = [/^\/[^/]+\/[^/]+$/]
+// Sadece 2-segment /:username/:slug (invite sayfaları) hariç — triplist ve influencer profil header gösterir
+const NO_HEADER_PATTERNS = [/^\/(?!influencer\/)([^/]+)\/([^/]+)$/]
 
 const PlanCreatePage = () => (
   <div style={{ background: '#0D0D0D', minHeight: '100vh', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -75,6 +76,7 @@ function Layout({ isMobile }: { isMobile: boolean }) {
         <Route path="/harita" element={<MapPage />} />
         <Route path="/rehber" element={<RehberPage />} />
         <Route path="/rehber/:slug" element={<RehberDetailPage />} />
+        <Route path="/influencer/:id" element={<InfluencerProfilePage />} />
         <Route path="/:username/triplist/:slug" element={<TriplistPage />} />
         <Route path="/:username/:slug" element={<InvitePage />} />
       </Routes>

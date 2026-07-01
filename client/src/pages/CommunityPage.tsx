@@ -52,7 +52,7 @@ function TriplistCard({ t, liked, saved, onLike, onSave }: {
   const isSponsored = t.isFeatured && !!t.sponsoredBy
 
   const badgeColor = isSponsored ? '#F59E0B' : isEditorPick ? '#00C060' : isInfluencer ? '#8B5CF6' : ''
-  const badgeLabel = isSponsored ? `✦ ${t.sponsoredBy}` : isEditorPick ? 'Editörün Seçimi' : isInfluencer ? 'Influencer Tavsiyesi' : ''
+  const badgeLabel = isSponsored ? `✦ ${t.sponsoredBy}` : isEditorPick ? "Berk'in Seçimi" : isInfluencer ? 'Influencer Tavsiyesi' : ''
   const hasBadge = isSponsored || isEditorPick || isInfluencer
 
   return (

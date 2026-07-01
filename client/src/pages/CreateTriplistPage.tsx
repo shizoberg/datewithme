@@ -13,6 +13,8 @@ interface Stop {
   transitMode?: string
   transitLine?: string
   transitNote?: string
+  tags?: string[]     // max 3 custom tag
+  _tagInput?: string  // current tag being typed
   _venueSearch?: string
   _results?: VenueResult[]
 }
@@ -97,6 +99,7 @@ export default function CreateTriplistPage() {
           venueName: s.venueName, venueId: s.venueId,
           address: s.address, description: s.description,
           transitMode: s.transitMode, transitLine: s.transitLine, transitNote: s.transitNote,
+          tags: s.tags && s.tags.length > 0 ? JSON.stringify(s.tags) : undefined,
         })),
       })
       navigate(`/${user?.username}/triplist/${data.slug}`)
@@ -223,6 +226,45 @@ export default function CreateTriplistPage() {
                   <div>
                     <label style={lbl}>Açıklama</label>
                     <input style={inp} placeholder="Harika kahvesi var, açık oturmayı tercih edin..." value={stop.description || ''} onChange={e => updateStop(i, { description: e.target.value })} />
+                  </div>
+
+                  {/* Etiketler */}
+                  <div style={{ marginTop: '12px' }}>
+                    <label style={lbl}>Öne Çıkan Detay <span style={{ color: '#AAA', fontWeight: 400, textTransform: 'none', letterSpacing: 0 }}>(max 3 etiket)</span></label>
+                    {(stop.tags || []).length > 0 && (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '8px' }}>
+                        {(stop.tags || []).map((tag, ti) => (
+                          <span key={ti} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', background: '#F0FAF5', border: '1px solid #00C06040', borderRadius: '9999px', padding: '4px 10px', fontSize: '12px', color: '#00A050', fontWeight: 600 }}>
+                            {tag}
+                            <button type="button" onClick={() => updateStop(i, { tags: (stop.tags || []).filter((_, ti2) => ti2 !== ti) })}
+                              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#888', padding: 0, fontSize: '14px', lineHeight: 1 }}>×</button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    {(stop.tags || []).length < 3 && (
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <input style={{ ...inp, flex: 1 }}
+                          placeholder="Türk kahvesi çok iyi, Karaköy manzarası..."
+                          value={stop._tagInput || ''}
+                          onChange={e => updateStop(i, { _tagInput: e.target.value })}
+                          onKeyDown={e => {
+                            if ((e.key === 'Enter' || e.key === ',') && stop._tagInput?.trim()) {
+                              e.preventDefault()
+                              const tag = stop._tagInput.trim().replace(/,$/, '')
+                              if (tag) updateStop(i, { tags: [...(stop.tags || []), tag], _tagInput: '' })
+                            }
+                          }} />
+                        <button type="button"
+                          onClick={() => {
+                            const tag = (stop._tagInput || '').trim()
+                            if (tag) updateStop(i, { tags: [...(stop.tags || []), tag], _tagInput: '' })
+                          }}
+                          style={{ background: '#F0F0F0', border: '1px solid #DDD', borderRadius: '8px', padding: '0 14px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', color: '#444' }}>
+                          Ekle
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   {/* Ulaşım (sonraki durağa) */}

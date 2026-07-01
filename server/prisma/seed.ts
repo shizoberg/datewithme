@@ -3,6 +3,13 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
+  // Mekan seeding devre dışı — mekanlar admin panelinden yönetilir
+  const venueCount = await prisma.venue.count()
+  if (venueCount > 0) {
+    console.log(`ℹ️ ${venueCount} mekan zaten var, seed atlanıyor.`)
+    return
+  }
+
   const venues = [
     // İSTANBUL — ANADOLU YAKASI
     { name: "GOU Society", category: "bar", city: "İstanbul", district: "Kadıköy", address: "Suadiye, Vapur Yolu Sk. No:2 D:1A", googleMapsUrl: "https://maps.app.goo.gl/gouSociety", instagramUrl: "gousociety", rating: 4.8, priceLevel: 3, description: "Bağdat Cad.'nin en sofistike kokteyl&restoran adresi. Modern dünya mutfağı + imza kokteyller. Smart chic. Rezervasyon şart.", isActive: true },

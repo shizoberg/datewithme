@@ -165,7 +165,7 @@ export default function MapPage() {
           ))}
           <button onClick={() => setActiveCategory('')} style={{ display: 'flex', alignItems: 'center', gap: '5px', background: '#FFF7E6', border: '1px solid #F59E0B', borderRadius: '9999px', padding: '4px 10px', fontSize: '11px', cursor: 'pointer', fontFamily: 'Raleway, sans-serif', fontWeight: 600 }}>
             <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#F59E0B', border: '2px solid white', flexShrink: 0 }} />
-            Editörün Seçimi
+            Berk'in Seçimi
           </button>
         </div>
       </div>
@@ -199,7 +199,7 @@ export default function MapPage() {
                   {selectedVenue.rating && <span style={{ color: '#00C060', fontSize: '12px', fontWeight: 700 }}>★ {selectedVenue.rating.toFixed(1)}</span>}
                   {selectedVenue.isFeatured && (
                     <span style={{ background: selectedVenue.featuredBy === 'admin' ? '#FFF7E6' : '#F5F3FF', color: selectedVenue.featuredBy === 'admin' ? '#F59E0B' : '#8B5CF6', borderRadius: '9999px', padding: '2px 9px', fontSize: '11px', fontWeight: 700 }}>
-                      {selectedVenue.featuredBy === 'admin' ? '★ Editörün Seçimi' : '✦ Influencer Tavsiyesi'}
+                      {selectedVenue.featuredBy === 'admin' ? "★ Berk'in Seçimi" : '✦ Influencer Tavsiyesi'}
                     </span>
                   )}
                 </div>

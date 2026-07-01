@@ -7,6 +7,25 @@ const router = Router()
 
 const AVATAR_COLORS = ['#00C060', '#4A90E2', '#D46080', '#F59E0B', '#8B5CF6', '#06B6D4']
 
+// GET /api/influencers/:id — tek influencer profili (public, sadece approved)
+router.get('/:id', async (req: Request, res: Response) => {
+  try {
+    const influencer = await prisma.influencer.findUnique({
+      where: { id: req.params.id },
+      include: {
+        guideEntries: {
+          where: { status: 'published' },
+          orderBy: { publishedAt: 'desc' },
+        },
+      },
+    })
+    if (!influencer) { res.status(404).json({ error: 'Bulunamadı' }); return }
+    res.json(influencer)
+  } catch {
+    res.status(500).json({ error: 'DB hatası' })
+  }
+})
+
 // GET /api/influencers — onaylanmış influencerları herkese aç (Kurumsal sayfa için)
 router.get('/', async (req: Request, res: Response) => {
   const status = (req.query.status as string) || 'approved'
